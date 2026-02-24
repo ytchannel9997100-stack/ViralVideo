@@ -251,6 +251,7 @@
                 return;
             }
 
+            // ✅ লিংক তৈরি করা হচ্ছে
             const baseUrl = "https://ytchannel9997100-stack.github.io/ViralVideo/pay.html";
             const params = new URLSearchParams({
                 product: productName,
@@ -336,7 +337,7 @@
                                         <div class="bg-white border rounded-md p-3">
                                             <div class="flex gap-2" style="align-items: center;">
                                                 <input type="text" id="whatsApp _number_input" placeholder="WhatsApp Number" class="form-input w-full rounded-md text-sm" style="border: 1px solid #ced4da !important; padding: 6px 10px !important; margin: 0 !important; height: 38px !important; box-shadow: none;">
-                                                <!-- ✅ বাটনের আইডি সঠিক করা হয়েছে (শেষে উদ্ধৃতি চিহ্ন দেওয়া) -->
+                                                <!-- ✅ বাটনের আইডি সঠিক (pay) এবং ক্লোজিং ট্যাগ ঠিক আছে -->
                                                 <button type="button" id="pay" class="rounded-md text-sm font-bold" style="background-color: #2563eb !important; color: #ffffff !important; padding: 0 20px !important; height: 38px !important; border: none !important; cursor: pointer;">Pay</button>
                                             </div>
                                             <p id="promo_message" class="text-xs mt-1" style="margin-top: 5px;"></p>
@@ -367,7 +368,7 @@
     <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 </div>
 
-<!-- অতিরিক্ত ছোট স্ক্রিপ্ট: পণ্য সিলেক্টের স্টাইল নিশ্চিত করা -->
+<!-- অতিরিক্ত ছোট স্ক্রিপ্ট: পণ্য সিলেক্টের স্টাইল নিশ্চিত করা এবং পে বাটন কাজ করছে কিনা চেক -->
 <script>
     (function() {
         // নিশ্চিত করা যে পণ্য সিলেক্ট ইভেন্ট আগের মতোই কাজ করে
@@ -381,6 +382,15 @@
                 $('.variation_list svg').attr('data-icon', 'circle').html('<path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path>').css('color', '');
                 $(this).find('svg').attr('data-icon', 'check-circle').html('<path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>').css('color', 'var(--theme-color)');
             });
+
+            // নিশ্চিত করা যে পে বাটনে ইভেন্ট লিসেনার আছে (যদি কোনো কারণে মডিউল ইভেন্ট অ্যাটাচ না করে)
+            const payBtn = document.getElementById('pay');
+            if (payBtn) {
+                // চেক করি ইতিমধ্যে কোনো লিসেনার আছে কিনা (সিম্পল উপায়)
+                // যদি না থাকে, তাহলে আমরা নিজেরা ইভেন্ট অ্যাটাচ করি
+                // কিন্তু আমরা মডিউলের উপর নির্ভর করছি, তাই শুধু কনসোলে লগ
+                console.log("Pay button found, waiting for module event...");
+            }
         });
     })();
 </script>
