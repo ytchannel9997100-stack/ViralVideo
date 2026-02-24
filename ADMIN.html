@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Drip Client</title>
+    <title>Admin Panel - Platform Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script type="importmap">
@@ -11,16 +11,19 @@
             "imports": {
                 "firebase/app": "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js",
                 "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js",
-                "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
+                "firebase/database": "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"
             }
         }
     </script>
     <style>
-        .hidden { display: none; }
+        .hidden { display: none !important; }
+        .tab-active { background-color: #3b82f6; color: white; }
+        .platform-tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
+        .platform-tab:hover { background-color: #e5e7eb; }
     </style>
 </head>
 <body class="bg-gray-100 p-4">
-    <!-- Login Card (Google Sign-In) -->
+    <!-- Login Card -->
     <div id="loginCard" class="max-w-md mx-auto mt-20 bg-white rounded-xl shadow-lg p-8">
         <h2 class="text-2xl font-bold text-center mb-6">🔐 Admin Login</h2>
         <div class="space-y-4">
@@ -31,39 +34,58 @@
         </div>
     </div>
 
-    <!-- Admin Dashboard (only visible after successful login) -->
+    <!-- Admin Dashboard -->
     <div id="adminDashboard" class="max-w-6xl mx-auto hidden space-y-6">
         <div class="bg-white rounded-xl shadow-md p-6 flex justify-between items-center">
-            <h1 class="text-2xl font-bold"><i class="fas fa-crown text-yellow-500 mr-2"></i>Drip Client Admin</h1>
+            <h1 class="text-2xl font-bold"><i class="fas fa-crown text-yellow-500 mr-2"></i>Platform Admin Panel</h1>
             <div class="flex items-center gap-4">
                 <span id="userEmail" class="text-sm text-gray-600"></span>
                 <button id="logoutBtn" class="bg-gray-600 text-white px-5 py-2 rounded-lg">Logout</button>
             </div>
         </div>
 
-        <!-- Settings -->
+        <!-- Platform Tabs -->
+        <div class="bg-white rounded-xl shadow-md p-4">
+            <div class="flex flex-wrap gap-2">
+                <button class="platform-tab tab-active" data-platform="drip">Drip Client</button>
+                <button class="platform-tab" data-platform="hg">HG Cheats</button>
+                <button class="platform-tab" data-platform="dark">Dark Patch</button>
+                <button class="platform-tab" data-platform="pato">Pato Team</button>
+            </div>
+        </div>
+
+        <!-- Settings Section (Platform Specific) -->
         <div class="bg-white rounded-xl shadow-md p-6">
-            <h2 class="text-xl font-semibold mb-4"><i class="fas fa-cog text-blue-500 mr-2"></i>Global Settings</h2>
+            <h2 class="text-xl font-semibold mb-4"><i class="fas fa-cog text-blue-500 mr-2"></i><span id="currentPlatform">Drip Client</span> Settings</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <input type="url" id="videoLink" placeholder="Video Link" class="border rounded-lg px-3 py-2">
-                <input type="url" id="downloadLink" placeholder="Download Link" class="border rounded-lg px-3 py-2">
-                <input type="url" id="redirectBase" placeholder="Redirect Base URL" class="border rounded-lg px-3 py-2">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Video Link</label>
+                    <input type="url" id="videoLink" placeholder="https://youtu.be/..." class="w-full px-3 py-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Download Link</label>
+                    <input type="url" id="downloadLink" placeholder="https://t.me/..." class="w-full px-3 py-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Redirect Base URL</label>
+                    <input type="url" id="redirectBase" placeholder="https://t.me/yourchannel?start=" class="w-full px-3 py-2 border rounded-lg">
+                </div>
             </div>
             <button id="saveSettings" class="mt-4 bg-green-600 text-white px-5 py-2 rounded-lg">Save Settings</button>
             <p id="settingsMessage" class="text-sm mt-2"></p>
         </div>
 
-        <!-- Products -->
+        <!-- Products Section -->
         <div class="bg-white rounded-xl shadow-md p-6">
             <div class="flex justify-between mb-4">
-                <h2 class="text-xl font-semibold"><i class="fas fa-boxes text-purple-500 mr-2"></i>Products</h2>
+                <h2 class="text-xl font-semibold"><i class="fas fa-boxes text-purple-500 mr-2"></i><span id="currentPlatformProducts">Drip Client</span> Products</h2>
                 <button id="addProductBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg">+ New Product</button>
             </div>
 
             <!-- Product Form -->
             <div id="productForm" class="hidden bg-gray-50 border rounded-lg p-4 mb-4">
                 <h3 id="formTitle" class="font-medium mb-3">➕ Add Product</h3>
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+                <div class="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
                     <div>
                         <label class="block text-xs text-gray-600">Name</label>
                         <input type="text" id="prodName" class="w-full px-3 py-2 border rounded text-sm">
@@ -75,6 +97,15 @@
                     <div>
                         <label class="block text-xs text-gray-600">Order</label>
                         <input type="number" id="prodOrder" class="w-full px-3 py-2 border rounded text-sm" value="0">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-600">Platform</label>
+                        <select id="prodPlatform" class="w-full px-3 py-2 border rounded text-sm">
+                            <option value="drip">Drip Client</option>
+                            <option value="hg">HG Cheats</option>
+                            <option value="dark">Dark Patch</option>
+                            <option value="pato">Pato Team</option>
+                        </select>
                     </div>
                     <div class="flex items-center">
                         <label class="flex items-center text-sm">
@@ -97,6 +128,7 @@
                             <th class="px-4 py-2">Name</th>
                             <th class="px-4 py-2">Price</th>
                             <th class="px-4 py-2">Order</th>
+                            <th class="px-4 py-2">Platform</th>
                             <th class="px-4 py-2">Visible</th>
                             <th class="px-4 py-2">Actions</th>
                         </tr>
@@ -106,15 +138,39 @@
             </div>
             <p id="productsMessage" class="text-sm mt-2"></p>
         </div>
+
+        <!-- Admin Users Section -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4"><i class="fas fa-users text-green-500 mr-2"></i>Admin Users</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input type="email" id="adminEmail" placeholder="Admin Email" class="border rounded-lg px-3 py-2">
+                <input type="text" id="adminRole" placeholder="Role (super_admin/admin)" class="border rounded-lg px-3 py-2" value="admin">
+                <button id="addAdminBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg">Add Admin</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full border">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-4 py-2">Email</th>
+                            <th class="px-4 py-2">Role</th>
+                            <th class="px-4 py-2">Created At</th>
+                            <th class="px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUsersTable"></tbody>
+                </table>
+            </div>
+            <p id="adminMessage" class="text-sm mt-2"></p>
+        </div>
     </div>
 
     <script type="module">
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getDatabase, ref, get, set, update, remove, push, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Firebase Config (replace with your own if different)
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyAy4ST9A4KUBzQpuNpjdD6aU40s8p1YNEg",
             authDomain: "top-up-4db01.firebaseapp.com",
@@ -122,14 +178,13 @@
             projectId: "top-up-4db01",
             storageBucket: "top-up-4db01.appspot.com",
             messagingSenderId: "264548197473",
-            appId: "1:264548197473:web:17a5f1b5622d464f5d7620",
-            measurementId: "G-ZEMKJ3BD0G"
+            appId: "1:264548197473:web:17a5f1b5622d464f5d7620"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
-        const db = getFirestore(app);
+        const db = getDatabase(app);
 
         // DOM elements
         const loginCard = document.getElementById('loginCard');
@@ -138,46 +193,93 @@
         const loginError = document.getElementById('loginError');
         const logoutBtn = document.getElementById('logoutBtn');
         const userEmailSpan = document.getElementById('userEmail');
-
+        
+        // Platform tabs
+        const platformTabs = document.querySelectorAll('.platform-tab');
+        const currentPlatformSpan = document.getElementById('currentPlatform');
+        const currentPlatformProductsSpan = document.getElementById('currentPlatformProducts');
+        
+        // Settings
         const videoLink = document.getElementById('videoLink');
         const downloadLink = document.getElementById('downloadLink');
         const redirectBase = document.getElementById('redirectBase');
         const saveSettings = document.getElementById('saveSettings');
         const settingsMessage = document.getElementById('settingsMessage');
-
+        
+        // Products
         const addProductBtn = document.getElementById('addProductBtn');
         const productForm = document.getElementById('productForm');
         const formTitle = document.getElementById('formTitle');
         const prodName = document.getElementById('prodName');
         const prodPrice = document.getElementById('prodPrice');
         const prodOrder = document.getElementById('prodOrder');
+        const prodPlatform = document.getElementById('prodPlatform');
         const prodVisible = document.getElementById('prodVisible');
         const editProdId = document.getElementById('editProdId');
         const saveProduct = document.getElementById('saveProduct');
         const cancelProduct = document.getElementById('cancelProduct');
         const productsTable = document.getElementById('productsTable');
         const productsMessage = document.getElementById('productsMessage');
+        
+        // Admin Users
+        const adminEmail = document.getElementById('adminEmail');
+        const adminRole = document.getElementById('adminRole');
+        const addAdminBtn = document.getElementById('addAdminBtn');
+        const adminUsersTable = document.getElementById('adminUsersTable');
+        const adminMessage = document.getElementById('adminMessage');
 
-        // ✅ Authorized admin emails - Add your emails here
-        const ADMIN_EMAILS = ['your-email@gmail.com', 'another-admin@gmail.com']; // Change to your emails
+        // State
+        let currentUser = null;
+        let currentPlatform = 'drip';
+
+        // Platform tabs click handler
+        platformTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                platformTabs.forEach(t => t.classList.remove('tab-active', 'bg-blue-600', 'text-white'));
+                tab.classList.add('tab-active', 'bg-blue-600', 'text-white');
+                currentPlatform = tab.dataset.platform;
+                
+                const platformNames = { drip: 'Drip Client', hg: 'HG Cheats', dark: 'Dark Patch', pato: 'Pato Team' };
+                currentPlatformSpan.textContent = platformNames[currentPlatform];
+                currentPlatformProductsSpan.textContent = platformNames[currentPlatform];
+                
+                prodPlatform.value = currentPlatform;
+                loadSettings();
+                loadProducts();
+            });
+        });
+
+        // Check if user is admin
+        async function isAdmin(user) {
+            if (!user) return false;
+            try {
+                const adminRef = ref(db, `__collections__/adminUsers/${user.uid}`);
+                const snapshot = await get(adminRef);
+                return snapshot.exists();
+            } catch (e) {
+                console.error('Admin check error:', e);
+                return false;
+            }
+        }
 
         // Auth state
         onAuthStateChanged(auth, async (user) => {
-            if (user && ADMIN_EMAILS.includes(user.email)) {
-                // Valid admin
+            if (user && await isAdmin(user)) {
+                currentUser = user;
                 loginCard.classList.add('hidden');
                 adminDash.classList.remove('hidden');
                 userEmailSpan.textContent = user.email;
-                await loadSettings();
-                await loadProducts();
-            } else if (user && !ADMIN_EMAILS.includes(user.email)) {
-                // Logged in but not admin
+                
+                // Load data
+                loadSettings();
+                loadProducts();
+                loadAdminUsers();
+            } else if (user && !await isAdmin(user)) {
                 await signOut(auth);
                 loginError.textContent = 'You are not authorized as admin.';
                 loginCard.classList.remove('hidden');
                 adminDash.classList.add('hidden');
             } else {
-                // Not logged in
                 loginCard.classList.remove('hidden');
                 adminDash.classList.add('hidden');
             }
@@ -185,8 +287,19 @@
 
         googleLoginBtn.addEventListener('click', async () => {
             try {
-                await signInWithPopup(auth, provider);
-                loginError.textContent = '';
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                
+                // Check if user exists in adminUsers, if not, don't allow login
+                const adminRef = ref(db, `__collections__/adminUsers/${user.uid}`);
+                const snapshot = await get(adminRef);
+                
+                if (!snapshot.exists()) {
+                    await signOut(auth);
+                    loginError.textContent = 'You are not authorized as admin.';
+                } else {
+                    loginError.textContent = '';
+                }
             } catch (err) {
                 loginError.textContent = err.message;
             }
@@ -194,72 +307,86 @@
 
         logoutBtn.addEventListener('click', () => signOut(auth));
 
-        // Settings
+        // Load platform-specific settings
         async function loadSettings() {
             try {
-                const snap = await getDoc(doc(db, 'settings', 'general'));
-                if (snap.exists()) {
-                    const data = snap.data();
+                const settingsRef = ref(db, `__collections__/settings/${currentPlatform}`);
+                const snapshot = await get(settingsRef);
+                
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
                     videoLink.value = data.videoLink || '';
                     downloadLink.value = data.downloadLink || '';
                     redirectBase.value = data.redirectBaseUrl || '';
                 } else {
-                    videoLink.value = 'https://youtu.be/nZ2maK61xeY';
-                    downloadLink.value = 'https://t.me/g_tools_official/1872';
-                    redirectBase.value = 'https://t.me/yourchannel?start=';
+                    videoLink.value = '';
+                    downloadLink.value = '';
+                    redirectBase.value = '';
                 }
+                settingsMessage.innerHTML = '';
             } catch (e) {
                 settingsMessage.innerHTML = '<span class="text-red-500">Load error: ' + e.message + '</span>';
             }
         }
 
+        // Save platform-specific settings
         saveSettings.addEventListener('click', async () => {
             try {
-                await setDoc(doc(db, 'settings', 'general'), {
+                await set(ref(db, `__collections__/settings/${currentPlatform}`), {
                     videoLink: videoLink.value,
                     downloadLink: downloadLink.value,
                     redirectBaseUrl: redirectBase.value
-                }, { merge: true });
-                settingsMessage.innerHTML = '<span class="text-green-500">Saved</span>';
+                });
+                settingsMessage.innerHTML = '<span class="text-green-500">Settings saved successfully!</span>';
             } catch (e) {
                 settingsMessage.innerHTML = '<span class="text-red-500">Error: ' + e.message + '</span>';
             }
         });
 
-        // Products
+        // Load products for current platform
         async function loadProducts() {
             try {
-                const q = query(collection(db, 'products'), orderBy('order'));
-                const snap = await getDocs(q);
-                const prods = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                renderProducts(prods);
+                const productsRef = ref(db, '__collections__/products');
+                const snapshot = await get(productsRef);
+                
+                if (!snapshot.exists()) {
+                    productsTable.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-400">No products yet. Add one.</td></tr>';
+                    return;
+                }
+
+                const productsData = snapshot.val();
+                const products = Object.entries(productsData)
+                    .map(([id, data]) => ({ id, ...data }))
+                    .filter(p => p.platform === currentPlatform)
+                    .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+                if (products.length === 0) {
+                    productsTable.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-400">No products for this platform. Add one.</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                products.forEach(p => {
+                    html += `<tr>
+                        <td class="px-4 py-3">${escapeHtml(p.name)}</td>
+                        <td class="px-4 py-3">৳${p.price}</td>
+                        <td class="px-4 py-3">${p.order || 0}</td>
+                        <td class="px-4 py-3">${p.platform}</td>
+                        <td class="px-4 py-3">${p.visible ? '✅' : '❌'}</td>
+                        <td class="px-4 py-3">
+                            <button class="edit-product text-blue-600 mx-1" data-id="${p.id}"><i class="fas fa-edit"></i></button>
+                            <button class="toggle-visibility text-orange-600 mx-1" data-id="${p.id}" data-visible="${p.visible}"><i class="fas ${p.visible ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
+                            <button class="delete-product text-red-600 mx-1" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+                });
+                
+                productsTable.innerHTML = html;
+                attachProductActions();
                 productsMessage.innerHTML = '';
             } catch (e) {
                 productsMessage.innerHTML = '<span class="text-red-500">Load error: ' + e.message + '</span>';
             }
-        }
-
-        function renderProducts(prods) {
-            if (prods.length === 0) {
-                productsTable.innerHTML = '<tr><td colspan="5" class="text-center py-6 text-gray-400">No products yet. Add one.</td></tr>';
-                return;
-            }
-            let html = '';
-            prods.forEach(p => {
-                html += `<tr>
-                    <td class="px-4 py-3">${escapeHtml(p.name)}</td>
-                    <td class="px-4 py-3">৳${p.price}</td>
-                    <td class="px-4 py-3">${p.order}</td>
-                    <td class="px-4 py-3">${p.visible ? '✅' : '❌'}</td>
-                    <td class="px-4 py-3">
-                        <button class="edit-product text-blue-600" data-id="${p.id}"><i class="fas fa-edit"></i></button>
-                        <button class="toggle-visibility text-orange-600" data-id="${p.id}" data-visible="${p.visible}"><i class="fas ${p.visible ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
-                        <button class="delete-product text-red-600" data-id="${p.id}"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>`;
-            });
-            productsTable.innerHTML = html;
-            attachProductActions();
         }
 
         function escapeHtml(unsafe) {
@@ -284,6 +411,7 @@
             prodName.value = '';
             prodPrice.value = '';
             prodOrder.value = '0';
+            prodPlatform.value = currentPlatform;
             prodVisible.checked = true;
             editProdId.value = '';
         });
@@ -296,6 +424,7 @@
             const name = prodName.value.trim();
             const price = parseFloat(prodPrice.value);
             const order = parseInt(prodOrder.value) || 0;
+            const platform = prodPlatform.value;
             const visible = prodVisible.checked;
             const id = editProdId.value;
 
@@ -304,31 +433,37 @@
                 return;
             }
 
-            const data = { name, price, order, visible };
+            const data = { name, price, order, platform, visible };
+            const productsRef = ref(db, '__collections__/products');
 
             try {
                 if (id) {
-                    await updateDoc(doc(db, 'products', id), data);
+                    await set(ref(db, `__collections__/products/${id}`), data);
                 } else {
-                    await addDoc(collection(db, 'products'), data);
+                    const newRef = push(productsRef);
+                    await set(newRef, data);
                 }
+                
                 productForm.classList.add('hidden');
                 editProdId.value = '';
                 await loadProducts();
             } catch (e) {
-                console.error('🔥 Save error:', e);
+                console.error('Save error:', e);
                 alert('Error: ' + e.message);
             }
         });
 
         async function editProduct(id) {
-            const snap = await getDoc(doc(db, 'products', id));
-            if (snap.exists()) {
-                const p = snap.data();
-                prodName.value = p.name;
-                prodPrice.value = p.price;
-                prodOrder.value = p.order;
-                prodVisible.checked = p.visible;
+            const productRef = ref(db, `__collections__/products/${id}`);
+            const snapshot = await get(productRef);
+            
+            if (snapshot.exists()) {
+                const p = snapshot.val();
+                prodName.value = p.name || '';
+                prodPrice.value = p.price || '';
+                prodOrder.value = p.order || 0;
+                prodPlatform.value = p.platform || currentPlatform;
+                prodVisible.checked = p.visible !== false;
                 editProdId.value = id;
                 formTitle.textContent = '✏️ Edit Product';
                 productForm.classList.remove('hidden');
@@ -336,14 +471,90 @@
         }
 
         async function toggleVisibility(id, current) {
-            await updateDoc(doc(db, 'products', id), { visible: !current });
+            await set(ref(db, `__collections__/products/${id}/visible`), !current);
             await loadProducts();
         }
 
         async function deleteProduct(id) {
-            if (confirm('Delete?')) {
-                await deleteDoc(doc(db, 'products', id));
+            if (confirm('Are you sure you want to delete this product?')) {
+                await remove(ref(db, `__collections__/products/${id}`));
                 await loadProducts();
+            }
+        }
+
+        // Load admin users
+        async function loadAdminUsers() {
+            try {
+                const adminRef = ref(db, '__collections__/adminUsers');
+                const snapshot = await get(adminRef);
+                
+                if (!snapshot.exists()) {
+                    adminUsersTable.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-gray-400">No admin users yet.</td></tr>';
+                    return;
+                }
+
+                const admins = Object.entries(snapshot.val()).map(([uid, data]) => ({ uid, ...data }));
+                
+                let html = '';
+                admins.forEach(admin => {
+                    html += `<tr>
+                        <td class="px-4 py-3">${escapeHtml(admin.email || '')}</td>
+                        <td class="px-4 py-3">${escapeHtml(admin.role || 'admin')}</td>
+                        <td class="px-4 py-3">${admin.createdAt || 'N/A'}</td>
+                        <td class="px-4 py-3">
+                            <button class="delete-admin text-red-600" data-uid="${admin.uid}"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+                });
+                
+                adminUsersTable.innerHTML = html;
+                
+                document.querySelectorAll('.delete-admin').forEach(btn => {
+                    btn.addEventListener('click', () => deleteAdmin(btn.dataset.uid));
+                });
+                
+                adminMessage.innerHTML = '';
+            } catch (e) {
+                adminMessage.innerHTML = '<span class="text-red-500">Load error: ' + e.message + '</span>';
+            }
+        }
+
+        addAdminBtn.addEventListener('click', async () => {
+            const email = adminEmail.value.trim();
+            const role = adminRole.value.trim() || 'admin';
+            
+            if (!email) {
+                alert('Please enter an email');
+                return;
+            }
+
+            try {
+                // Generate a unique ID for the admin (using email as key)
+                const adminId = email.replace(/[.#$\[\]]/g, '_');
+                await set(ref(db, `__collections__/adminUsers/${adminId}`), {
+                    email: email,
+                    role: role,
+                    createdAt: new Date().toISOString().split('T')[0]
+                });
+                
+                adminEmail.value = '';
+                adminRole.value = 'admin';
+                await loadAdminUsers();
+                adminMessage.innerHTML = '<span class="text-green-500">Admin added successfully!</span>';
+            } catch (e) {
+                adminMessage.innerHTML = '<span class="text-red-500">Error: ' + e.message + '</span>';
+            }
+        });
+
+        async function deleteAdmin(uid) {
+            if (confirm('Are you sure you want to remove this admin?')) {
+                try {
+                    await remove(ref(db, `__collections__/adminUsers/${uid}`));
+                    await loadAdminUsers();
+                    adminMessage.innerHTML = '<span class="text-green-500">Admin removed successfully!</span>';
+                } catch (e) {
+                    adminMessage.innerHTML = '<span class="text-red-500">Error: ' + e.message + '</span>';
+                }
             }
         }
     </script>
