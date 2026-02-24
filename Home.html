@@ -50,6 +50,7 @@
             if (!navContainer) return;
 
             if (user) {
+                // ইউজার লগইন করলে হেডার আপডেট
                 navContainer.innerHTML = `
                     <div class="flex items-center space-x-3">
                         <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName || 'User')}" alt="avatar" class="w-8 h-8 rounded-full border-2 border-primary-500">
@@ -60,7 +61,12 @@
                 document.getElementById('firebaseLogoutBtn')?.addEventListener('click', async () => {
                     await signOut(auth);
                 });
+
+                // লগইন করা অবস্থায় মূল কন্টেন্ট দেখাও, লগইন বার্তা লুকাও
+                document.getElementById('mainContent')?.classList.remove('hidden');
+                document.getElementById('loginPrompt')?.classList.add('hidden');
             } else {
+                // লগইন না থাকলে হেডারে লগইন বাটন
                 navContainer.innerHTML = `
                     <a href="#" id="fakeLoginBtn" class="btn-pro btn-pro-login rounded mx-2 border-2 text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white transition px-4 py-2">LOGIN</a>
                 `;
@@ -68,6 +74,10 @@
                     e.preventDefault();
                     signInWithPopup(auth, provider);
                 });
+
+                // লগইন না থাকলে মূল কন্টেন্ট লুকাও, লগইন বার্তা দেখাও
+                document.getElementById('mainContent')?.classList.add('hidden');
+                document.getElementById('loginPrompt')?.classList.remove('hidden');
             }
         }
 
@@ -209,6 +219,18 @@
             position: absolute !important;
             pointer-events: none !important;
         }
+
+        /* লগইন প্রম্পটের জন্য স্টাইল (অতিরিক্ত) */
+        #loginPrompt {
+            min-height: 60vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .hidden {
+            display: none !important;
+        }
     </style>
 
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/tailwindcss.css">
@@ -246,14 +268,23 @@
         </nav>
         <!-- Dynamic login / user area -->
         <div class="flex items-center">
-          <a href="https://panelsell.store/login" class="btn-pro btn-pro-login rounded mx-2 border-2 text-primary-500 border-primary-500">LOGIN</a>
+          <!-- এই স্থানটি JavaScript এ আপডেট হবে -->
         </div>
       </div>
     </nav>
   </div>
 </div>
 
-<div>
+<!-- লগইন না থাকলে দেখানোর জন্য প্রম্পট -->
+<div id="loginPrompt" class="hidden">
+    <div>
+        <h2 class="text-2xl mb-4">Please Login to Continue</h2>
+        <button id="promptLoginBtn" class="btn-pro btn-pro-login rounded border-2 text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white transition px-6 py-3 text-lg">LOGIN WITH GOOGLE</button>
+    </div>
+</div>
+
+<!-- মূল কন্টেন্ট (লগইন করলে দেখাবে) -->
+<div id="mainContent">
     <div class="p-2">
  
 <!-- slider -->
@@ -446,8 +477,8 @@
     })();
 </script>
     
-</div>
-</div>
+</div> <!-- p-2 শেষ -->
+</div> <!-- mainContent শেষ -->
 
 <!-- Footer Section - সম্পূর্ণ কালো, কোন বর্ডার/লাইন নেই -->
 <footer class="footer" style="padding-bottom: calc(30px + env(safe-area-inset-bottom)); background-color: #000000 !important; border: none !important; border-top: none !important; outline: none !important; box-shadow: none !important;">
@@ -461,6 +492,25 @@
 <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
 <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 
-</div>
+</div> <!-- body-bg শেষ -->
+
+<!-- প্রম্পটের লগইন বাটনে ইভেন্ট যোগ (কারণ এটি updateUI এর বাইরে) -->
+<script>
+    document.getElementById('promptLoginBtn')?.addEventListener('click', () => {
+        // Firebase এর signInWithPopup কল করতে হবে। যেহেতু এটা module স্ক্রিপ্টের বাইরে, আমরা একটি কাস্টম ইভেন্ট তৈরি করতে পারি অথবা গ্লোবাল ফাংশন ব্যবহার করতে পারি।
+        // সহজ উপায়: fakeLoginBtn-এ ক্লিক ট্রিগার করা। কিন্তু fakeLoginBtn তখনো DOM-এ নাও থাকতে পারে। তাই আমরা আবার auth ইম্পোর্ট করে কল করতে পারি না। 
+        // আমরা একটি গ্লোবাল ফাংশন তৈরি করি যা updateUI এর ভিতরে সংজ্ঞায়িত করা যায় না। 
+        // তাই আমরা একটি hidden বাটন রেখে দিতে পারি যা fakeLoginBtn-এর মতো কাজ করে। অথবা আমরা একটি ইভেন্ট ডিসপ্যাচ করতে পারি।
+        // সবচেয়ে সহজ: প্রম্পটের বাটনে ক্লিক করলে fakeLoginBtn-এ ক্লিক ইভেন্ট ঘটানো।
+        const fakeBtn = document.getElementById('fakeLoginBtn');
+        if (fakeBtn) {
+            fakeBtn.click();
+        } else {
+            // যদি fakeLoginBtn না থাকে (যেমন লগইন অবস্থায়), তাহলে কিছু করার নেই। কিন্তু লগইন অবস্থায় তো প্রম্পট দেখা যাবে না। 
+            // সুতরাং এটা নিরাপদ।
+        }
+    });
+</script>
+
 </body>
 </html>
