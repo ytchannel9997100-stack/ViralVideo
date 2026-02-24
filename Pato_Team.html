@@ -1,4 +1,3 @@
-<!-- Pato_Team.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,6 +79,7 @@
         const db = getDatabase(app);
 
         const HOME_PAGE_URL = "https://ytchannel9997100-stack.github.io/ViralVideo/Home.html";
+        const PLATFORM = "pato"; // এই প্ল্যাটফর্মের আইডি
 
         onAuthStateChanged(auth, (user) => {
             if (!user) {
@@ -99,8 +99,8 @@
                 const productsData = snapshot.val();
                 const products = Object.entries(productsData).map(([id, data]) => ({ id, ...data }));
                 
-                // ✅ আপডেটেড ফিল্টার: platform ফিল্ড ব্যবহার করে Pato Team প্রোডাক্ট ফিল্টার করা
-                const filtered = products.filter(p => p.platform === 'pato');
+                // ✅ platform ফিল্ড ব্যবহার করে Pato Team প্রোডাক্ট ফিল্টার করা
+                const filtered = products.filter(p => p.platform === PLATFORM);
                 filtered.sort((a, b) => (a.order || a.price) - (b.order || b.price));
 
                 const container = document.querySelector('.package-item-outer');
@@ -140,20 +140,31 @@
 
         async function loadSettings() {
             try {
-                const settingsRef = ref(db, '__collections__/settings/general');
+                // ✅ প্ল্যাটফর্ম স্পেসিফিক সেটিংস লোড করা
+                const settingsRef = ref(db, `__collections__/settings/${PLATFORM}`);
                 const snap = await get(settingsRef);
                 if (!snap.exists()) return;
+                
                 const data = snap.val();
                 const videoLink = data.videoLink || '#';
                 const downloadLink = data.downloadLink || '#';
+                
                 const descDiv = document.querySelector('.p-2');
                 if (descDiv) {
                     let html = descDiv.innerHTML;
-                    html = html.replace(/<a[^>]*href="[^"]*youtu\.be[^"]*"[^>]*>.*?<\/a>/i, `<a href="${videoLink}" target="_blank"><span style="text-decoration: underline;">CLICK&nbsp;HERE</span></a>`);
-                    html = html.replace(/<a[^>]*href="[^"]*t\.me\/g_tools_official[^"]*"[^>]*>.*?<\/a>/i, `<a href="${downloadLink}" target="_blank"><span style="text-decoration: underline;">CLICK HERE</span></a>`);
+                    
+                    // ভিডিও লিংক আপডেট
+                    const videoRegex = /<a[^>]*href="[^"]*youtu\.be[^"]*"[^>]*>.*?<\/a>/i;
+                    const downloadRegex = /<a[^>]*href="[^"]*t\.me\/[^"]*"[^>]*>.*?<\/a>/i;
+                    
+                    html = html.replace(videoRegex, `<a href="${videoLink}" target="_blank"><span style="text-decoration: underline;">CLICK&nbsp;HERE</span></a>`);
+                    html = html.replace(downloadRegex, `<a href="${downloadLink}" target="_blank"><span style="text-decoration: underline;">CLICK HERE</span></a>`);
+                    
                     descDiv.innerHTML = html;
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.error("Settings load error:", e);
+            }
         }
 
         window.setupPayButton = function() {
@@ -180,6 +191,7 @@
                 url.searchParams.set('price', price);
                 url.searchParams.set('variation', vid);
                 url.searchParams.set('whatsapp', whatsapp);
+                url.searchParams.set('platform', PLATFORM);
                 window.location.href = url.toString();
             };
             payBtn.addEventListener('click', window.payHandler);
@@ -326,6 +338,7 @@
             url.searchParams.set('price', price);
             url.searchParams.set('variation', vid);
             url.searchParams.set('whatsapp', whatsapp);
+            url.searchParams.set('platform', 'pato');
             window.location.href = url.toString();
         });
     })();
