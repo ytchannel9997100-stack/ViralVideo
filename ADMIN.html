@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drip Client Admin Panel</title>
-    <!-- Tailwind for clean UI -->
+    <title>Drip Client Admin (Fixed)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Firebase modular SDK (via import map) -->
     <script type="importmap">
         {
             "imports": {
@@ -18,202 +15,161 @@
             }
         }
     </script>
-    <style>
-        .hidden { display: none !important; }
-        .editing-row { background-color: #fef3c7; }
-    </style>
 </head>
-<body class="bg-gray-100 p-4 md:p-6 font-sans antialiased">
-
-<!-- ========== LOGIN CARD ========== -->
-<div id="loginCard" class="max-w-md mx-auto mt-20 bg-white rounded-xl shadow-lg p-8">
-    <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">🔐 Admin Login</h2>
-    <div class="space-y-4">
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input type="email" id="loginEmail" placeholder="admin@example.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent">
+<body class="bg-gray-100 p-4">
+    <!-- Login and Dashboard (same structure as before, but with enhanced error handling) -->
+    <div id="loginCard" class="max-w-md mx-auto mt-20 bg-white rounded-xl shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-center mb-6">🔐 Admin Login</h2>
+        <div class="space-y-4">
+            <input type="email" id="loginEmail" placeholder="Email" class="w-full px-4 py-2 border rounded-lg">
+            <input type="password" id="loginPassword" placeholder="Password" class="w-full px-4 py-2 border rounded-lg">
+            <button id="loginBtn" class="w-full bg-blue-600 text-white py-2 rounded-lg">Login</button>
+            <p id="loginError" class="text-sm text-red-500 text-center"></p>
         </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input type="password" id="loginPassword" placeholder="••••••••" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent">
-        </div>
-        <button id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition">Login</button>
-        <p id="loginError" class="text-sm text-red-500 text-center"></p>
-    </div>
-    <p class="text-xs text-gray-500 mt-6 text-center">Use Firebase Auth email/password<br>Create user in Firebase Console first.</p>
-</div>
-
-<!-- ========== ADMIN DASHBOARD (visible only after login) ========== -->
-<div id="adminDashboard" class="max-w-6xl mx-auto hidden space-y-6">
-    <!-- Header -->
-    <div class="bg-white rounded-xl shadow-md p-6 flex justify-between items-center">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-800"><i class="fas fa-crown text-yellow-500 mr-2"></i>Drip Client Admin</h1>
-        <button id="logoutBtn" class="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg transition"><i class="fas fa-sign-out-alt mr-2"></i>Logout</button>
     </div>
 
-    <!-- Settings card -->
-    <div class="bg-white rounded-xl shadow-md p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4"><i class="fas fa-cog text-blue-500 mr-2"></i>Global Settings</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Video Link</label>
-                <input type="url" id="videoLink" placeholder="https://youtu.be/..." class="w-full px-3 py-2 border rounded-lg">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Download Link</label>
-                <input type="url" id="downloadLink" placeholder="https://t.me/..." class="w-full px-3 py-2 border rounded-lg">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Redirect Base URL</label>
-                <input type="url" id="redirectBase" placeholder="https://t.me/yourbot?start=" class="w-full px-3 py-2 border rounded-lg">
-            </div>
+    <div id="adminDashboard" class="max-w-6xl mx-auto hidden space-y-6">
+        <!-- Header -->
+        <div class="bg-white rounded-xl shadow-md p-6 flex justify-between">
+            <h1 class="text-2xl font-bold"><i class="fas fa-crown text-yellow-500 mr-2"></i>Drip Client Admin</h1>
+            <button id="logoutBtn" class="bg-gray-600 text-white px-5 py-2 rounded-lg">Logout</button>
         </div>
-        <button id="saveSettings" class="mt-4 bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2 rounded-lg transition"><i class="fas fa-save mr-2"></i>Save Settings</button>
-        <p id="settingsMessage" class="text-sm mt-2"></p>
+
+        <!-- Settings (same) -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <h2 class="text-xl font-semibold mb-4"><i class="fas fa-cog text-blue-500 mr-2"></i>Global Settings</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="url" id="videoLink" placeholder="Video Link" class="border rounded-lg px-3 py-2">
+                <input type="url" id="downloadLink" placeholder="Download Link" class="border rounded-lg px-3 py-2">
+                <input type="url" id="redirectBase" placeholder="Redirect Base URL" class="border rounded-lg px-3 py-2">
+            </div>
+            <button id="saveSettings" class="mt-4 bg-green-600 text-white px-5 py-2 rounded-lg">Save Settings</button>
+            <p id="settingsMessage" class="text-sm mt-2"></p>
+        </div>
+
+        <!-- Products -->
+        <div class="bg-white rounded-xl shadow-md p-6">
+            <div class="flex justify-between mb-4">
+                <h2 class="text-xl font-semibold"><i class="fas fa-boxes text-purple-500 mr-2"></i>Products</h2>
+                <button id="addProductBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg">+ New Product</button>
+            </div>
+
+            <!-- Product Form -->
+            <div id="productForm" class="hidden bg-gray-50 border rounded-lg p-4 mb-4">
+                <h3 id="formTitle" class="font-medium mb-3">➕ Add Product</h3>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
+                    <div>
+                        <label class="block text-xs text-gray-600">Name</label>
+                        <input type="text" id="prodName" class="w-full px-3 py-2 border rounded text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-600">Price (৳)</label>
+                        <input type="number" id="prodPrice" class="w-full px-3 py-2 border rounded text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-600">Order</label>
+                        <input type="number" id="prodOrder" class="w-full px-3 py-2 border rounded text-sm" value="0">
+                    </div>
+                    <div class="flex items-center">
+                        <label class="flex items-center text-sm">
+                            <input type="checkbox" id="prodVisible" class="mr-2" checked> Visible
+                        </label>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="saveProduct" class="bg-green-600 text-white px-4 py-2 rounded text-sm">Save</button>
+                        <button id="cancelProduct" class="bg-gray-400 text-white px-4 py-2 rounded text-sm">Cancel</button>
+                    </div>
+                </div>
+                <input type="hidden" id="editProdId" value="">
+            </div>
+
+            <!-- Products Table -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full border">
+                    <thead class="bg-gray-100"><tr><th>Name</th><th>Price</th><th>Order</th><th>Visible</th><th>Actions</th></tr></thead>
+                    <tbody id="productsTable"></tbody>
+                </table>
+            </div>
+            <p id="productsMessage" class="text-sm mt-2"></p>
+        </div>
     </div>
 
-    <!-- Products card -->
-    <div class="bg-white rounded-xl shadow-md p-6">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-semibold text-gray-800"><i class="fas fa-boxes text-purple-500 mr-2"></i>Products (Packages)</h2>
-            <button id="addProductBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition"><i class="fas fa-plus mr-1"></i>New Product</button>
-        </div>
+    <script type="module">
+        // Firebase imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        <!-- Product form (hidden by default) -->
-        <div id="productForm" class="hidden bg-gray-50 border rounded-lg p-4 mb-4">
-            <h3 id="formTitle" class="font-medium text-gray-800 mb-3">➕ Add Product</h3>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end">
-                <div>
-                    <label class="block text-xs text-gray-600 mb-1">Name</label>
-                    <input type="text" id="prodName" class="w-full px-3 py-2 border rounded text-sm" placeholder="e.g. Drip Apk 30 Days">
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-600 mb-1">Price (৳)</label>
-                    <input type="number" id="prodPrice" class="w-full px-3 py-2 border rounded text-sm" placeholder="950">
-                </div>
-                <div>
-                    <label class="block text-xs text-gray-600 mb-1">Order (sort)</label>
-                    <input type="number" id="prodOrder" class="w-full px-3 py-2 border rounded text-sm" placeholder="1">
-                </div>
-                <div class="flex items-center">
-                    <label class="flex items-center text-sm">
-                        <input type="checkbox" id="prodVisible" class="mr-2" checked> Visible
-                    </label>
-                </div>
-                <div class="flex gap-2">
-                    <button id="saveProduct" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"><i class="fas fa-check mr-1"></i>Save</button>
-                    <button id="cancelProduct" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded text-sm"><i class="fas fa-times mr-1"></i>Cancel</button>
-                </div>
-            </div>
-            <input type="hidden" id="editProdId" value="">
-        </div>
+        // Firebase Config (replace with your own)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAy4ST9A4KUBzQpuNpjdD6aU40s8p1YNEg",
+            authDomain: "top-up-4db01.firebaseapp.com",
+            databaseURL: "https://top-up-4db01-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "top-up-4db01",
+            storageBucket: "top-up-4db01.appspot.com",
+            messagingSenderId: "264548197473",
+            appId: "1:264548197473:web:17a5f1b5622d464f5d7620",
+            measurementId: "G-ZEMKJ3BD0G"
+        };
 
-        <!-- Products table -->
-        <div class="overflow-x-auto">
-            <table class="min-w-full border">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Price</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Order</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Visible</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="productsTable" class="divide-y"></tbody>
-            </table>
-        </div>
-        <p id="productsMessage" class="text-sm mt-2"></p>
-    </div>
-</div>
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-<script type="module">
-    // ---------- Firebase Imports ----------
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // DOM elements
+        const loginCard = document.getElementById('loginCard');
+        const adminDash = document.getElementById('adminDashboard');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginError = document.getElementById('loginError');
+        const logoutBtn = document.getElementById('logoutBtn');
 
-    // ---------- Firebase Config (from user) ----------
-    const firebaseConfig = {
-        apiKey: "AIzaSyAy4ST9A4KUBzQpuNpjdD6aU40s8p1YNEg",
-        authDomain: "top-up-4db01.firebaseapp.com",
-        databaseURL: "https://top-up-4db01-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "top-up-4db01",
-        storageBucket: "top-up-4db01.appspot.com",
-        messagingSenderId: "264548197473",
-        appId: "1:264548197473:web:17a5f1b5622d464f5d7620",
-        measurementId: "G-ZEMKJ3BD0G"
-    };
+        const videoLink = document.getElementById('videoLink');
+        const downloadLink = document.getElementById('downloadLink');
+        const redirectBase = document.getElementById('redirectBase');
+        const saveSettings = document.getElementById('saveSettings');
+        const settingsMessage = document.getElementById('settingsMessage');
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+        const addProductBtn = document.getElementById('addProductBtn');
+        const productForm = document.getElementById('productForm');
+        const formTitle = document.getElementById('formTitle');
+        const prodName = document.getElementById('prodName');
+        const prodPrice = document.getElementById('prodPrice');
+        const prodOrder = document.getElementById('prodOrder');
+        const prodVisible = document.getElementById('prodVisible');
+        const editProdId = document.getElementById('editProdId');
+        const saveProduct = document.getElementById('saveProduct');
+        const cancelProduct = document.getElementById('cancelProduct');
+        const productsTable = document.getElementById('productsTable');
+        const productsMessage = document.getElementById('productsMessage');
 
-    // ---------- DOM Elements ----------
-    const loginCard = document.getElementById('loginCard');
-    const adminDash = document.getElementById('adminDashboard');
-    const loginEmail = document.getElementById('loginEmail');
-    const loginPassword = document.getElementById('loginPassword');
-    const loginBtn = document.getElementById('loginBtn');
-    const loginError = document.getElementById('loginError');
-    const logoutBtn = document.getElementById('logoutBtn');
+        // Auth state
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                loginCard.classList.add('hidden');
+                adminDash.classList.remove('hidden');
+                await loadSettings();
+                await loadProducts();
+            } else {
+                loginCard.classList.remove('hidden');
+                adminDash.classList.add('hidden');
+            }
+        });
 
-    // Settings
-    const videoLink = document.getElementById('videoLink');
-    const downloadLink = document.getElementById('downloadLink');
-    const redirectBase = document.getElementById('redirectBase');
-    const saveSettings = document.getElementById('saveSettings');
-    const settingsMessage = document.getElementById('settingsMessage');
+        loginBtn.addEventListener('click', async () => {
+            try {
+                await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
+                loginError.textContent = '';
+            } catch (err) {
+                loginError.textContent = err.message;
+            }
+        });
 
-    // Products
-    const addProductBtn = document.getElementById('addProductBtn');
-    const productForm = document.getElementById('productForm');
-    const formTitle = document.getElementById('formTitle');
-    const prodName = document.getElementById('prodName');
-    const prodPrice = document.getElementById('prodPrice');
-    const prodOrder = document.getElementById('prodOrder');
-    const prodVisible = document.getElementById('prodVisible');
-    const editProdId = document.getElementById('editProdId');
-    const saveProduct = document.getElementById('saveProduct');
-    const cancelProduct = document.getElementById('cancelProduct');
-    const productsTable = document.getElementById('productsTable');
-    const productsMessage = document.getElementById('productsMessage');
+        logoutBtn.addEventListener('click', () => signOut(auth));
 
-    // ---------- Auth State ----------
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            loginCard.classList.add('hidden');
-            adminDash.classList.remove('hidden');
-            await loadSettings();
-            await loadProducts();
-        } else {
-            loginCard.classList.remove('hidden');
-            adminDash.classList.add('hidden');
-        }
-    });
-
-    // ---------- Login ----------
-    loginBtn.addEventListener('click', async () => {
-        const email = loginEmail.value.trim();
-        const pass = loginPassword.value.trim();
-        if (!email || !pass) {
-            loginError.textContent = 'Email and password required';
-            return;
-        }
-        try {
-            await signInWithEmailAndPassword(auth, email, pass);
-            loginError.textContent = '';
-        } catch (err) {
-            loginError.textContent = err.message;
-        }
-    });
-
-    // ---------- Logout ----------
-    logoutBtn.addEventListener('click', () => signOut(auth));
-
-    // ---------- Load Settings (doc: settings/general) ----------
-    async function loadSettings() {
-        try {
+        // Settings
+        async function loadSettings() {
             const snap = await getDoc(doc(db, 'settings', 'general'));
             if (snap.exists()) {
                 const data = snap.data();
@@ -221,179 +177,146 @@
                 downloadLink.value = data.downloadLink || '';
                 redirectBase.value = data.redirectBaseUrl || '';
             } else {
-                // defaults
                 videoLink.value = 'https://youtu.be/nZ2maK61xeY';
                 downloadLink.value = 'https://t.me/g_tools_official/1872';
                 redirectBase.value = 'https://t.me/yourchannel?start=';
             }
-        } catch (e) {
-            console.error('load settings error', e);
-        }
-    }
-
-    // ---------- Save Settings ----------
-    saveSettings.addEventListener('click', async () => {
-        const v = videoLink.value.trim();
-        const d = downloadLink.value.trim();
-        const r = redirectBase.value.trim();
-        if (!v || !d || !r) {
-            settingsMessage.innerHTML = '<span class="text-red-500">All fields required</span>';
-            return;
-        }
-        try {
-            await setDoc(doc(db, 'settings', 'general'), {
-                videoLink: v,
-                downloadLink: d,
-                redirectBaseUrl: r
-            }, { merge: true });
-            settingsMessage.innerHTML = '<span class="text-green-500">Settings saved!</span>';
-        } catch (e) {
-            settingsMessage.innerHTML = '<span class="text-red-500">Error: ' + e.message + '</span>';
-        }
-    });
-
-    // ---------- Load Products ----------
-    async function loadProducts() {
-        try {
-            const q = query(collection(db, 'products'), orderBy('order', 'asc'));
-            const snap = await getDocs(q);
-            const prods = [];
-            snap.forEach(d => prods.push({ id: d.id, ...d.data() }));
-            renderProducts(prods);
-        } catch (e) {
-            productsMessage.innerHTML = '<span class="text-red-500">Failed to load products</span>';
-        }
-    }
-
-    function renderProducts(products) {
-        if (products.length === 0) {
-            productsTable.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-400">No products yet. Add one.</td></tr>`;
-            return;
-        }
-        let html = '';
-        products.forEach(p => {
-            html += `<tr class="hover:bg-gray-50 ${p.id === editProdId.value ? 'editing-row' : ''}">
-                <td class="px-4 py-3">${escapeHtml(p.name || '')}</td>
-                <td class="px-4 py-3">৳${p.price || 0}</td>
-                <td class="px-4 py-3">${p.order || 0}</td>
-                <td class="px-4 py-3">${p.visible ? '✅ Yes' : '❌ No'}</td>
-                <td class="px-4 py-3 space-x-2">
-                    <button class="edit-product text-blue-600 hover:text-blue-800" data-id="${p.id}" title="Edit"><i class="fas fa-edit"></i></button>
-                    <button class="toggle-visibility text-${p.visible ? 'orange' : 'green'}-600 hover:text-${p.visible ? 'orange' : 'green'}-800" data-id="${p.id}" data-visible="${p.visible}" title="${p.visible ? 'Hide' : 'Show'}">
-                        <i class="fas ${p.visible ? 'fa-eye-slash' : 'fa-eye'}"></i>
-                    </button>
-                    <button class="delete-product text-red-600 hover:text-red-800" data-id="${p.id}" title="Delete"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>`;
-        });
-        productsTable.innerHTML = html;
-
-        // attach event listeners
-        document.querySelectorAll('.edit-product').forEach(btn => {
-            btn.addEventListener('click', () => editProduct(btn.dataset.id));
-        });
-        document.querySelectorAll('.toggle-visibility').forEach(btn => {
-            btn.addEventListener('click', () => toggleVisibility(btn.dataset.id, btn.dataset.visible === 'true'));
-        });
-        document.querySelectorAll('.delete-product').forEach(btn => {
-            btn.addEventListener('click', () => deleteProduct(btn.dataset.id));
-        });
-    }
-
-    function escapeHtml(unsafe) {
-        return unsafe.replace(/[&<>"]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[m]));
-    }
-
-    // ---------- Product CRUD ----------
-    addProductBtn.addEventListener('click', () => {
-        productForm.classList.remove('hidden');
-        formTitle.textContent = '➕ Add New Product';
-        prodName.value = '';
-        prodPrice.value = '';
-        prodOrder.value = '0';
-        prodVisible.checked = true;
-        editProdId.value = '';
-    });
-
-    cancelProduct.addEventListener('click', () => {
-        productForm.classList.add('hidden');
-        editProdId.value = '';
-    });
-
-    saveProduct.addEventListener('click', async () => {
-        const name = prodName.value.trim();
-        const price = parseFloat(prodPrice.value);
-        const order = parseInt(prodOrder.value) || 0;
-        const visible = prodVisible.checked;
-        const id = editProdId.value;
-
-        if (!name || isNaN(price) || price <= 0) {
-            alert('Name and valid price required');
-            return;
         }
 
-        const data = { name, price, order, visible };
-
-        try {
-            if (id) {
-                await updateDoc(doc(db, 'products', id), data);
-            } else {
-                await addDoc(collection(db, 'products'), data);
+        saveSettings.addEventListener('click', async () => {
+            try {
+                await setDoc(doc(db, 'settings', 'general'), {
+                    videoLink: videoLink.value,
+                    downloadLink: downloadLink.value,
+                    redirectBaseUrl: redirectBase.value
+                }, { merge: true });
+                settingsMessage.innerHTML = '<span class="text-green-500">Saved</span>';
+            } catch (e) {
+                settingsMessage.innerHTML = '<span class="text-red-500">Error: ' + e.message + '</span>';
             }
-            productForm.classList.add('hidden');
-            editProdId.value = '';
-            await loadProducts();
-        } catch (e) {
-            alert('Error saving: ' + e.message);
-        }
-    });
+        });
 
-    async function editProduct(id) {
-        try {
-            const snap = await getDoc(doc(db, 'products', id));
-            if (!snap.exists()) return;
-            const p = snap.data();
-            prodName.value = p.name || '';
-            prodPrice.value = p.price || '';
-            prodOrder.value = p.order || 0;
-            prodVisible.checked = p.visible !== false;
-            editProdId.value = id;
-            formTitle.textContent = '✏️ Edit Product';
+        // Products
+        async function loadProducts() {
+            try {
+                const q = query(collection(db, 'products'), orderBy('order'));
+                const snap = await getDocs(q);
+                const prods = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderProducts(prods);
+                productsMessage.innerHTML = '';
+            } catch (e) {
+                productsMessage.innerHTML = '<span class="text-red-500">Load error: ' + e.message + '</span>';
+            }
+        }
+
+        function renderProducts(prods) {
+            if (prods.length === 0) {
+                productsTable.innerHTML = '<tr><td colspan="5" class="text-center py-6 text-gray-400">No products yet. Add one.</td></tr>';
+                return;
+            }
+            let html = '';
+            prods.forEach(p => {
+                html += `<tr>
+                    <td class="px-4 py-3">${escapeHtml(p.name)}</td>
+                    <td class="px-4 py-3">৳${p.price}</td>
+                    <td class="px-4 py-3">${p.order}</td>
+                    <td class="px-4 py-3">${p.visible ? '✅' : '❌'}</td>
+                    <td class="px-4 py-3">
+                        <button class="edit-product text-blue-600" data-id="${p.id}"><i class="fas fa-edit"></i></button>
+                        <button class="toggle-visibility text-orange-600" data-id="${p.id}" data-visible="${p.visible}"><i class="fas ${p.visible ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
+                        <button class="delete-product text-red-600" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+            productsTable.innerHTML = html;
+            attachProductActions();
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe.replace(/[&<>"]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[m]));
+        }
+
+        function attachProductActions() {
+            document.querySelectorAll('.edit-product').forEach(btn => {
+                btn.addEventListener('click', () => editProduct(btn.dataset.id));
+            });
+            document.querySelectorAll('.toggle-visibility').forEach(btn => {
+                btn.addEventListener('click', () => toggleVisibility(btn.dataset.id, btn.dataset.visible === 'true'));
+            });
+            document.querySelectorAll('.delete-product').forEach(btn => {
+                btn.addEventListener('click', () => deleteProduct(btn.dataset.id));
+            });
+        }
+
+        addProductBtn.addEventListener('click', () => {
             productForm.classList.remove('hidden');
-        } catch (e) {
-            alert('Error loading product');
-        }
-    }
+            formTitle.textContent = '➕ Add Product';
+            prodName.value = '';
+            prodPrice.value = '';
+            prodOrder.value = '0';
+            prodVisible.checked = true;
+            editProdId.value = '';
+        });
 
-    async function toggleVisibility(id, current) {
-        try {
+        cancelProduct.addEventListener('click', () => {
+            productForm.classList.add('hidden');
+        });
+
+        saveProduct.addEventListener('click', async () => {
+            const name = prodName.value.trim();
+            const price = parseFloat(prodPrice.value);
+            const order = parseInt(prodOrder.value) || 0;
+            const visible = prodVisible.checked;
+            const id = editProdId.value;
+
+            if (!name || isNaN(price) || price <= 0) {
+                alert('Please enter a valid name and price');
+                return;
+            }
+
+            const data = { name, price, order, visible };
+            console.log('Saving product:', data); // 👈 Check console
+
+            try {
+                if (id) {
+                    await updateDoc(doc(db, 'products', id), data);
+                } else {
+                    await addDoc(collection(db, 'products'), data);
+                }
+                productForm.classList.add('hidden');
+                editProdId.value = '';
+                await loadProducts();
+            } catch (e) {
+                console.error('🔥 Save error:', e); // 👈 See exact error
+                alert('Error: ' + e.message);
+            }
+        });
+
+        async function editProduct(id) {
+            const snap = await getDoc(doc(db, 'products', id));
+            if (snap.exists()) {
+                const p = snap.data();
+                prodName.value = p.name;
+                prodPrice.value = p.price;
+                prodOrder.value = p.order;
+                prodVisible.checked = p.visible;
+                editProdId.value = id;
+                formTitle.textContent = '✏️ Edit Product';
+                productForm.classList.remove('hidden');
+            }
+        }
+
+        async function toggleVisibility(id, current) {
             await updateDoc(doc(db, 'products', id), { visible: !current });
             await loadProducts();
-        } catch (e) {
-            alert('Error toggling visibility');
         }
-    }
 
-    async function deleteProduct(id) {
-        if (!confirm('Delete this product?')) return;
-        try {
-            await deleteDoc(doc(db, 'products', id));
-            await loadProducts();
-        } catch (e) {
-            alert('Error deleting');
+        async function deleteProduct(id) {
+            if (confirm('Delete?')) {
+                await deleteDoc(doc(db, 'products', id));
+                await loadProducts();
+            }
         }
-    }
-
-    // Optional: allow Enter key on login
-    loginPassword.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') loginBtn.click();
-    });
-</script>
-<!-- 
-    IMPORTANT: 
-    - Ensure Firestore rules allow read/write only for authenticated users (or adjust as needed).
-    - Create at least one user in Firebase Authentication (Email/Password) before using.
-    - The user's UID shown in your screenshot (OeSnPuc0EQhloLgOT2CN3OJS7vz1) can be used.
--->
+    </script>
 </body>
 </html>
