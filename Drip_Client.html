@@ -91,10 +91,9 @@
         let videoLink = "#";
         let downloadLink = "#";
 
-        // ✅ সঠিক হোমপেজ URL (আপনার দেওয়া)
+        // ✅ হোমপেজ URL (লগইন না থাকলে এখানে যাবে)
         const HOME_PAGE_URL = "https://ytchannel9997100-stack.github.io/ViralVideo/Home.html";
 
-        // Redirect to Home page if not logged in
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 console.log("⛔ No user logged in. Redirecting to Home page...");
@@ -103,13 +102,13 @@
             }
             console.log("✅ User logged in:", user.email);
             
-            // User is logged in, load the page content
+            // ইউজার লগইন করলেই কেবল পণ্য লোড ও পে বাটন সক্রিয় হবে
             loadSettings();
             loadProducts();
             setupPayButton();
         });
 
-        // Load settings from Realtime Database (with __collections__ prefix)
+        // সেটিংস লোড (APK লিংক ও ভিডিও লিংক আপডেটের জন্য)
         async function loadSettings() {
             try {
                 console.log("📥 Loading settings from Realtime DB...");
@@ -124,7 +123,7 @@
                     console.warn("⚠️ __collections__/settings/general not found");
                 }
 
-                // Update DOM links
+                // DOM-এর ভিতরে লিংক আপডেট
                 const descDiv = document.querySelector('.p-2');
                 if (descDiv) {
                     let html = descDiv.innerHTML;
@@ -146,7 +145,7 @@
             }
         }
 
-        // Load products from Realtime Database
+        // পণ্যের তালিকা Firebase থেকে লোড করে HTML-এ বসানো
         async function loadProducts() {
             try {
                 console.log("📥 Loading products from Realtime DB...");
@@ -158,17 +157,17 @@
                     return;
                 }
 
-                const productsData = snapshot.val(); // object with keys doc1, doc2, ...
+                const productsData = snapshot.val(); // যেমন { doc1: {...}, doc2: {...} }
                 const products = Object.entries(productsData).map(([id, data]) => ({ id, ...data }));
                 console.log(`📦 Found ${products.length} products`);
 
-                // Sort by order field
+                // order অনুযায়ী সাজানো (যদি না থাকে তাহলে প্রাইস অনুযায়ী)
                 products.sort((a, b) => (a.order || a.price) - (b.order || b.price));
 
                 const container = document.querySelector('.package-item-outer');
                 if (!container) return;
 
-                container.innerHTML = ''; // clear static items
+                container.innerHTML = ''; // static ফ্যালব্যাক মুছে ফেলা
 
                 const visibleProducts = products.filter(p => p.visible !== false);
                 visibleProducts.forEach(p => {
@@ -192,21 +191,23 @@
                     container.appendChild(button);
                 });
 
-                // Product selection event
+                // পণ্য সিলেক্ট করার ইভেন্ট (ডেলিগেশন)
                 $(document).off('click', '.variation_list').on('click', '.variation_list', function() {
                     $('.variation_list').removeClass('selected_variation');
                     $(this).addClass('selected_variation');
                     
+                    // SVG আইকন পরিবর্তন (check-circle)
                     $('.variation_list svg').attr('data-icon', 'circle').html('<path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path>').css('color', '');
                     $(this).find('svg').attr('data-icon', 'check-circle').html('<path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>').css('color', 'var(--theme-color)');
                 });
 
+                // প্রথম পণ্যটি ডিফল্ট হিসেবে সিলেক্ট করা
                 const first = document.querySelector('.variation_list');
                 if (first) {
                     $(first).click();
                 }
 
-                console.log("✅ Products rendered");
+                console.log("✅ Products rendered and selection enabled");
             } catch (e) {
                 console.error("❌ Error loading products:", e);
                 const container = document.querySelector('.package-item-outer');
@@ -216,44 +217,57 @@
             }
         }
 
-        // Pay button redirect
+        // পে বাটনের কাজ – নির্বাচিত পণ্য ও হোয়াটসঅ্যাপ নম্বর অন্য ওয়েবসাইটে পাঠানো
         function setupPayButton() {
             const payBtn = document.getElementById('pay');
-            if (!payBtn) return;
-            payBtn.addEventListener('click', function(e) {
-                e.preventDefault();
+            if (!payBtn) {
+                console.warn("⚠️ Pay button not found!");
+                return;
+            }
+            console.log("✅ Pay button found, attaching event listener...");
 
-                const selectedVar = document.querySelector('.variation_list.selected_variation');
-                if (!selectedVar) {
-                    alert('Please select a package first.');
-                    return;
-                }
+            // ইভেন্ট লিসেনার যোগ (একাধিকবার অ্যাটাচ এড়াতে পুরনোটা সরিয়ে ফেলা)
+            payBtn.removeEventListener('click', handlePayClick);
+            payBtn.addEventListener('click', handlePayClick);
+        }
 
-                const productName = selectedVar.querySelector('.text-xs.font-primary')?.innerText || 'Unknown';
-                const price = selectedVar.getAttribute('data-price');
-                const variationId = selectedVar.id;
-                const whatsapp = document.getElementById('whatsApp _number_input')?.value.trim();
+        function handlePayClick(e) {
+            e.preventDefault();
+            console.log("💰 Pay button clicked");
 
-                if (!whatsapp) {
-                    alert('Please enter your WhatsApp number.');
-                    return;
-                }
+            const selectedVar = document.querySelector('.variation_list.selected_variation');
+            if (!selectedVar) {
+                alert('Please select a package first.');
+                return;
+            }
 
-                const baseUrl = "https://ytchannel9997100-stack.github.io/ViralVideo/pay.html";
-                const params = new URLSearchParams({
-                    product: productName,
-                    price: price,
-                    variation: variationId,
-                    whatsapp: whatsapp
-                });
-                const redirectUrl = `${baseUrl}?${params.toString()}`;
+            const productName = selectedVar.querySelector('.text-xs.font-primary')?.innerText || 'Unknown';
+            const price = selectedVar.getAttribute('data-price');
+            const variationId = selectedVar.id;
+            const whatsapp = document.getElementById('whatsApp _number_input')?.value.trim();
 
-                window.location.href = redirectUrl;
+            if (!whatsapp) {
+                alert('Please enter your WhatsApp number.');
+                return;
+            }
+
+            // ইউজারের ইমেল (Firebase Auth থেকে নেওয়া) – যদি প্রয়োজন হয়, নিচে যোগ করা যায়
+            // কিন্তু ইমেল না পাঠালেও চলবে, কারণ অন্য সাইটে ইমেলও পাঠাতে চাইলে প্যারামিটারে যোগ করতে হবে
+            // আমরা শুধু product, price, variation, whatsapp পাঠাচ্ছি, যেমন আগের নির্দেশনা ছিল
+            const baseUrl = "https://ytchannel9997100-stack.github.io/ViralVideo/pay.html";
+            const params = new URLSearchParams({
+                product: productName,
+                price: price,
+                variation: variationId,
+                whatsapp: whatsapp
             });
+            const redirectUrl = `${baseUrl}?${params.toString()}`;
+            console.log("Redirecting to:", redirectUrl);
+            window.location.href = redirectUrl;
         }
     </script>
 
-    <!-- jQuery -->
+    <!-- jQuery (আগে থেকে আছে) -->
     <script src="https://panelsell.store/assets/template/js/jquery-3.7.1.min.js"></script>
 </head>
 <body>
@@ -291,7 +305,7 @@
                             </div>
                             <hr>
                             <div class="p-1 md:p-4 inline-grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 package-item-outer w-full">
-                                <!-- Static fallback (will be replaced) -->
+                                <!-- এই স্থানটি Firebase থেকে পাওয়া পণ্য দিয়ে পূর্ণ হবে -->
                                 <button type="button" class="sm-device-package mb-0 w-full drop-shadow-2xl list-group-item flex content-between p-2 active:order-0 variation_list" style="font-size: 11px; position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; height: 50px;" id="84" data-price="150.00">
                                     <div class="w-full flex flex-wrap"><div class="flex items-center"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa h-2 mr-2 w-4 text-gray-300 fa-circle fa-w-16 fa-2x"><path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path></svg><span class="text-xs font-primary">Drip Apk 1 Days</span></div></div>
                                     <div class="font-bold fb-normal" style="color: var(--theme-color); min-width: 46px; float: right; text-align: right;">৳150</div>
@@ -354,5 +368,26 @@
     <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 </div>
+
+<!-- অতিরিক্ত ছোট স্ক্রিপ্ট: পণ্য সিলেক্টের স্টাইল নিশ্চিত করা -->
+<script>
+    (function() {
+        // নিশ্চিত করা যে পণ্য সিলেক্ট ইভেন্ট আগের মতোই কাজ করে
+        $(document).ready(function() {
+            console.log("jQuery ready: ensuring product selection styles");
+            // যদি কোনো কারণে variation_list এ ক্লিক ইভেন্ট না থাকে, তাহলে আবার অ্যাটাচ
+            if (typeof $().off === 'function') {
+                $(document).off('click', '.variation_list').on('click', '.variation_list', function() {
+                    $('.variation_list').removeClass('selected_variation');
+                    $(this).addClass('selected_variation');
+                    
+                    $('.variation_list svg').attr('data-icon', 'circle').html('<path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path>').css('color', '');
+                    $(this).find('svg').attr('data-icon', 'check-circle').html('<path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>').css('color', 'var(--theme-color)');
+                });
+            }
+        });
+    })();
+</script>
+
 </body>
 </html>
