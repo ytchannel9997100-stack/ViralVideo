@@ -69,9 +69,8 @@
     <script type="module">
         console.log("🔥 Firebase script started");
 
-        // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
@@ -86,18 +85,20 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
         const db = getDatabase(app);
 
         // Global variables
         let videoLink = "#";
         let downloadLink = "#";
 
+        // ✅ সঠিক হোমপেজ URL (আপনার দেওয়া)
+        const HOME_PAGE_URL = "https://ytchannel9997100-stack.github.io/ViralVideo/Home.html";
+
         // Redirect to Home page if not logged in
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 console.log("⛔ No user logged in. Redirecting to Home page...");
-                window.location.href = "https://raw.githubusercontent.com/ytchannel9997100-stack/ViralVideo/refs/heads/main/Home.html";
+                window.location.href = HOME_PAGE_URL;
                 return;
             }
             console.log("✅ User logged in:", user.email);
@@ -191,7 +192,7 @@
                     container.appendChild(button);
                 });
 
-                // পণ্য সিলেক্ট করার ইভেন্ট
+                // Product selection event
                 $(document).off('click', '.variation_list').on('click', '.variation_list', function() {
                     $('.variation_list').removeClass('selected_variation');
                     $(this).addClass('selected_variation');
@@ -250,8 +251,6 @@
                 window.location.href = redirectUrl;
             });
         }
-
-        // উইন্ডো লোড হলে Auth state চেক হবে, তারপর উপরের onAuthStateChanged ট্রিগার হবে।
     </script>
 
     <!-- jQuery -->
