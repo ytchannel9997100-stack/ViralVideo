@@ -132,9 +132,17 @@
                     $(this).addClass('selected_variation');
                     $('.variation_list svg').attr('data-icon', 'circle').html('<path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path>').css('color', '');
                     $(this).find('svg').attr('data-icon', 'check-circle').html('<path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>').css('color', 'var(--theme-color)');
+                    
+                    // আপডেট hidden fields
+                    const price = $(this).data('price');
+                    const id = $(this).attr('id');
+                    $('#variation_id').val(id);
+                    $('#variation_price').val(price);
                 });
 
-                $('.variation_list').first().click();
+                if ($('.variation_list').length > 0) {
+                    $('.variation_list').first().click();
+                }
             } catch (e) {
                 console.error(e);
             }
@@ -142,7 +150,8 @@
 
         async function loadSettings() {
             try {
-                const settingsRef = ref(db, '__collections__/settings/general');
+                // HG প্ল্যাটফর্মের জন্য আলাদা সেটিংস
+                const settingsRef = ref(db, '__collections__/settings/hg');
                 const snap = await get(settingsRef);
                 if (!snap.exists()) return;
                 const data = snap.val();
@@ -151,11 +160,14 @@
                 const descDiv = document.querySelector('.p-2');
                 if (descDiv) {
                     let html = descDiv.innerHTML;
+                    // পুরনো লিংকগুলো রিপ্লেস করুন
                     html = html.replace(/<a[^>]*href="[^"]*youtu\.be[^"]*"[^>]*>.*?<\/a>/i, `<a href="${videoLink}" target="_blank"><span style="text-decoration: underline;">CLICK&nbsp;HERE</span></a>`);
                     html = html.replace(/<a[^>]*href="[^"]*t\.me\/g_tools_official[^"]*"[^>]*>.*?<\/a>/i, `<a href="${downloadLink}" target="_blank"><span style="text-decoration: underline;">CLICK HERE</span></a>`);
                     descDiv.innerHTML = html;
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.log('HG settings not found, using defaults');
+            }
         }
 
         window.setupPayButton = function() {
