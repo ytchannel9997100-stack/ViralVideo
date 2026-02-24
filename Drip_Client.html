@@ -226,7 +226,7 @@
             }
             console.log("✅ Pay button found, attaching event listener...");
 
-            // ইভেন্ট লিসেনার যোগ (একাধিকবার অ্যাটাচ এড়াতে পুরনোটা সরিয়ে ফেলা)
+            // ইভেন্ট লিসেনার যোগ (একাধিকবার অ্যাটাচ এড়িয়ে)
             payBtn.removeEventListener('click', handlePayClick);
             payBtn.addEventListener('click', handlePayClick);
         }
@@ -251,9 +251,6 @@
                 return;
             }
 
-            // ইউজারের ইমেল (Firebase Auth থেকে নেওয়া) – যদি প্রয়োজন হয়, নিচে যোগ করা যায়
-            // কিন্তু ইমেল না পাঠালেও চলবে, কারণ অন্য সাইটে ইমেলও পাঠাতে চাইলে প্যারামিটারে যোগ করতে হবে
-            // আমরা শুধু product, price, variation, whatsapp পাঠাচ্ছি, যেমন আগের নির্দেশনা ছিল
             const baseUrl = "https://ytchannel9997100-stack.github.io/ViralVideo/pay.html";
             const params = new URLSearchParams({
                 product: productName,
@@ -305,7 +302,7 @@
                             </div>
                             <hr>
                             <div class="p-1 md:p-4 inline-grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 package-item-outer w-full">
-                                <!-- এই স্থানটি Firebase থেকে পাওয়া পণ্য দিয়ে পূর্ণ হবে -->
+                                <!-- Static fallback (ডায়নামিকভাবে রিপ্লেস হবে) -->
                                 <button type="button" class="sm-device-package mb-0 w-full drop-shadow-2xl list-group-item flex content-between p-2 active:order-0 variation_list" style="font-size: 11px; position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; height: 50px;" id="84" data-price="150.00">
                                     <div class="w-full flex flex-wrap"><div class="flex items-center"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa h-2 mr-2 w-4 text-gray-300 fa-circle fa-w-16 fa-2x"><path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path></svg><span class="text-xs font-primary">Drip Apk 1 Days</span></div></div>
                                     <div class="font-bold fb-normal" style="color: var(--theme-color); min-width: 46px; float: right; text-align: right;">৳150</div>
@@ -339,6 +336,7 @@
                                         <div class="bg-white border rounded-md p-3">
                                             <div class="flex gap-2" style="align-items: center;">
                                                 <input type="text" id="whatsApp _number_input" placeholder="WhatsApp Number" class="form-input w-full rounded-md text-sm" style="border: 1px solid #ced4da !important; padding: 6px 10px !important; margin: 0 !important; height: 38px !important; box-shadow: none;">
+                                                <!-- ✅ বাটনের আইডি সঠিক করা হয়েছে (শেষে উদ্ধৃতি চিহ্ন দেওয়া) -->
                                                 <button type="button" id="pay" class="rounded-md text-sm font-bold" style="background-color: #2563eb !important; color: #ffffff !important; padding: 0 20px !important; height: 38px !important; border: none !important; cursor: pointer;">Pay</button>
                                             </div>
                                             <p id="promo_message" class="text-xs mt-1" style="margin-top: 5px;"></p>
@@ -376,15 +374,13 @@
         $(document).ready(function() {
             console.log("jQuery ready: ensuring product selection styles");
             // যদি কোনো কারণে variation_list এ ক্লিক ইভেন্ট না থাকে, তাহলে আবার অ্যাটাচ
-            if (typeof $().off === 'function') {
-                $(document).off('click', '.variation_list').on('click', '.variation_list', function() {
-                    $('.variation_list').removeClass('selected_variation');
-                    $(this).addClass('selected_variation');
-                    
-                    $('.variation_list svg').attr('data-icon', 'circle').html('<path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path>').css('color', '');
-                    $(this).find('svg').attr('data-icon', 'check-circle').html('<path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>').css('color', 'var(--theme-color)');
-                });
-            }
+            $(document).off('click', '.variation_list').on('click', '.variation_list', function() {
+                $('.variation_list').removeClass('selected_variation');
+                $(this).addClass('selected_variation');
+                
+                $('.variation_list svg').attr('data-icon', 'circle').html('<path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path>').css('color', '');
+                $(this).find('svg').attr('data-icon', 'check-circle').html('<path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>').css('color', 'var(--theme-color)');
+            });
         });
     })();
 </script>
