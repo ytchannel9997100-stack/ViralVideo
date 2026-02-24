@@ -101,8 +101,8 @@
                 const productsData = snapshot.val();
                 const products = Object.entries(productsData).map(([id, data]) => ({ id, ...data }));
                 
-                // ফিল্টার: শুধু HG Cheats পণ্য
-                const filtered = products.filter(p => p.name && p.name.toLowerCase().includes('hg cheats'));
+                // ফিল্টার: platform 'hg' যাদের আছে শুধু তারা দেখাবে
+                const filtered = products.filter(p => p.platform === 'hg');
                 filtered.sort((a, b) => (a.order || a.price) - (b.order || b.price));
 
                 const container = document.querySelector('.package-item-outer');
@@ -201,7 +201,7 @@
             <div class="bg-white border rounded-md">
                 <div class="flex">
                     <div>
-                        <img class="rounded-3xl p-2 w-24 h-24" src="https://panelsell.store/uploads/media/88/01KJ3TWFT0AE8AH751MKC83ZQH.png" alt="HG Cheats">
+                        <img class="rounded-3xl p-2 w-24 h-24" src="https://panelsell.store/uploads/media/84/01KHN90YSX3QTEWMK2DWR6NT0D.png" alt="HG Cheats">
                     </div>
                     <div class="flex items-center">
                         <div>
@@ -216,8 +216,8 @@
             <div>
                 <form method="POST" action="https://panelsell.store/topup/buynow" class="md:flex gap-2">
                     <input type="hidden" name="_token" value="qqWVfD0vZ1bxyc7RlOb5CP41K7H52xerZihL53zk" autocomplete="off">
-                    <input type="hidden" name="variation_id" id="variation_id" value="84">
-                    <input type="hidden" name="variation_price" id="variation_price" value="150.00">
+                    <input type="hidden" name="variation_id" id="variation_id" value="">
+                    <input type="hidden" name="variation_price" id="variation_price" value="">
                     <input type="hidden" name="payment_method" id="payment_method" value="payment_gateway">
                     <input type="hidden" name="applied_promo_code" id="applied_promo_code" value="">
 
@@ -229,14 +229,7 @@
                             </div>
                             <hr>
                             <div class="p-1 md:p-4 inline-grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 package-item-outer w-full">
-                                <button type="button" class="sm-device-package mb-0 w-full drop-shadow-2xl list-group-item flex content-between p-2 active:order-0 variation_list" style="font-size: 11px; position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; height: 50px;" id="84" data-price="150.00">
-                                    <div class="w-full flex flex-wrap"><div class="flex items-center"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa h-2 mr-2 w-4 text-gray-300 fa-circle fa-w-16 fa-2x"><path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path></svg><span class="text-xs font-primary">HG Cheats 1 Day</span></div></div>
-                                    <div class="font-bold fb-normal" style="color: var(--theme-color); min-width: 46px; float: right; text-align: right;">৳150</div>
-                                </button>
-                                <button type="button" class="sm-device-package mb-0 w-full drop-shadow-2xl list-group-item flex content-between p-2 active:order-0 variation_list" style="font-size: 11px; position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; height: 50px;" id="85" data-price="350.00">
-                                    <div class="w-full flex flex-wrap"><div class="flex items-center"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa h-2 mr-2 w-4 text-gray-300 fa-circle fa-w-16 fa-2x"><path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path></svg><span class="text-xs font-primary">HG Cheats 7 Days</span></div></div>
-                                    <div class="font-bold fb-normal" style="color: var(--theme-color); min-width: 46px; float: right; text-align: right;">৳350</div>
-                                </button>
+                                <!-- ডায়নামিকভাবে প্রোডাক্ট লোড হবে -->
                             </div>
                         </div>
                     </section>
@@ -312,6 +305,12 @@
                 svg.innerHTML = '<path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>';
                 svg.style.color = 'var(--theme-color)';
             }
+            
+            // আপডেট hidden fields
+            const price = target.getAttribute('data-price');
+            const id = target.id;
+            document.getElementById('variation_id').value = id;
+            document.getElementById('variation_price').value = price;
         });
 
         document.addEventListener('click', function(e) {
