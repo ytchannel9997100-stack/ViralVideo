@@ -61,7 +61,7 @@
 
     <!-- Firebase SDK (modular) -->
     <script type="module">
-        // 🔥 Firebase এবং প্রয়োজনীয় ইমপোর্ট
+        // Firebase এবং প্রয়োজনীয় ইমপোর্ট
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -104,13 +104,16 @@
 
                 const productsData = snapshot.val();
                 const products = Object.entries(productsData).map(([id, data]) => ({ id, ...data }));
-                products.sort((a, b) => (a.order || a.price) - (b.order || b.price));
+                
+                // শুধুমাত্র Drip Client পণ্য ফিল্টার (platform = 'drip')
+                const filtered = products.filter(p => p.platform === 'drip' || (p.name && p.name.toLowerCase().includes('drip')));
+                filtered.sort((a, b) => (a.order || a.price) - (b.order || b.price));
 
                 const container = document.querySelector('.package-item-outer');
                 if (!container) return;
                 container.innerHTML = '';
 
-                products.filter(p => p.visible !== false).forEach(p => {
+                filtered.filter(p => p.visible !== false).forEach(p => {
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = 'sm-device-package mb-0 w-full drop-shadow-2xl list-group-item flex content-between p-2 active:order-0 variation_list';
@@ -137,7 +140,9 @@
                 });
 
                 // প্রথম পণ্যটি সিলেক্ট করা
-                $('.variation_list').first().click();
+                if ($('.variation_list').length > 0) {
+                    $('.variation_list').first().click();
+                }
             } catch (e) {
                 console.error(e);
             }
@@ -163,7 +168,7 @@
             } catch (e) {}
         }
 
-        // পে বাটনে ক্লিক ইভেন্ট (এটি বাইরে রাখা হয়েছে যেন নিশ্চিতভাবে কাজ করে)
+        // পে বাটনে ক্লিক ইভেন্ট
         window.setupPayButton = function() {
             const payBtn = document.getElementById('pay');
             if (!payBtn) return;
@@ -195,7 +200,6 @@
 
         // DOM লোড হলে পে বাটন সক্রিয় করো
         document.addEventListener('DOMContentLoaded', () => {
-            // সামান্য দেরি করে, কারণ প্রোডাক্ট লোড হতে সময় লাগতে পারে
             setTimeout(setupPayButton, 1000);
         });
     </script>
@@ -272,7 +276,7 @@
                                         <div class="bg-white border rounded-md p-3">
                                             <div class="flex gap-2" style="align-items: center;">
                                                 <input type="text" id="whatsApp _number_input" placeholder="WhatsApp Number" class="form-input w-full rounded-md text-sm" style="border: 1px solid #ced4da !important; padding: 6px 10px !important; margin: 0 !important; height: 38px !important; box-shadow: none;">
-                                                <!-- এই বাটনের id="pay" সঠিক আছে -->
+                                                <!-- পে বাটন -->
                                                 <button type="button" id="pay" class="rounded-md text-sm font-bold" style="background-color: #2563eb !important; color: #ffffff !important; padding: 0 20px !important; height: 38px !important; border: none !important; cursor: pointer;">Pay</button>
                                             </div>
                                             <p id="promo_message" class="text-xs mt-1" style="margin-top: 5px;"></p>
@@ -298,15 +302,15 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS, Toastr (প্রয়োজন নেই তবুও রাখা) -->
+    <!-- Bootstrap JS, Toastr -->
     <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 </div>
 
-<!-- নিশ্চিত করার জন্য অতিরিক্ত স্ক্রিপ্ট -->
+<!-- পণ্য সিলেক্ট ও পে বাটন নিশ্চিত করার স্ক্রিপ্ট -->
 <script>
     (function() {
-        // পণ্য সিলেক্ট ইভেন্ট ডেলিগেশন নিশ্চিত করা (jQuery ছাড়াও)
+        // পণ্য সিলেক্ট ইভেন্ট
         document.addEventListener('click', function(e) {
             const target = e.target.closest('.variation_list');
             if (!target) return;
@@ -328,7 +332,7 @@
             }
         });
 
-        // পে বাটনে ক্লিক ইভেন্ট (নিরাপত্তা হিসেবে দ্বিতীয় স্তর)
+        // পে বাটনে ক্লিক ইভেন্ট
         document.addEventListener('click', function(e) {
             if (e.target.id !== 'pay') return;
             e.preventDefault();
