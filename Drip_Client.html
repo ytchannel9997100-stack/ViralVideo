@@ -42,7 +42,6 @@
             --background-image: linear-gradient(350deg, rgb(244, 249, 255), rgba(237, 244, 255, 0.79)),
                     url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSNx6o-VZvTZLckkZq1usZxCEuwopKi2Xv1w&s");
         }
-        /* Pay button original style kept */
         #pay {
             background-color: #2563eb !important;
             color: #ffffff !important;
@@ -59,14 +58,16 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // TODO: Replace with your Firebase config
+        // Firebase configuration (with all fields provided)
         const firebaseConfig = {
             apiKey: "AIzaSyAy4ST9A4KUBzQpuNpjdD6aU40s8p1YNEg",
             authDomain: "top-up-4db01.firebaseapp.com",
+            databaseURL: "https://top-up-4db01-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "top-up-4db01",
             storageBucket: "top-up-4db01.appspot.com",
             messagingSenderId: "264548197473",
-            appId: "1:264548197473:web:17a5f1b5622d464f5d7620"
+            appId: "1:264548197473:web:17a5f1b5622d464f5d7620",
+            measurementId: "G-ZEMKJ3BD0G"
         };
 
         // Initialize Firebase
@@ -88,24 +89,21 @@
                     downloadLink = data.downloadLink || "#";
                     redirectBaseUrl = data.redirectBaseUrl || "https://t.me/yourchannel?start=";
                 }
-                // Update the DOM with links
-                const videoAnchor = document.querySelector('a[href*="youtu.be"]')?.closest('p')?.querySelector('a');
-                const downloadAnchor = document.querySelector('a[href*="t.me/g_tools_official"]')?.closest('p')?.querySelector('a');
-                // Since the original links are in description, we replace them dynamically
+                // Update the DOM with links (the static description contains placeholder anchors)
                 const descDiv = document.querySelector('.p-2');
                 if (descDiv) {
                     let html = descDiv.innerHTML;
-                    // replace video link
+                    // Replace video link
                     const videoRegex = /<a[^>]*href="[^"]*youtu\.be[^"]*"[^>]*>.*?<\/a>/i;
                     const downloadRegex = /<a[^>]*href="[^"]*t\.me\/g_tools_official[^"]*"[^>]*>.*?<\/a>/i;
                     const videoAnchorHtml = `<a href="${videoLink}" target="_blank"><span style="text-decoration: underline;">CLICK&nbsp;HERE</span></a>`;
                     const downloadAnchorHtml = `<a href="${downloadLink}" target="_blank"><span style="text-decoration: underline;">CLICK HERE</span></a>`;
                     
                     if (videoLink !== "#") {
-                        html = html.replace(/<a[^>]*href="[^"]*youtu\.be[^"]*"[^>]*>.*?<\/a>/i, videoAnchorHtml);
+                        html = html.replace(videoRegex, videoAnchorHtml);
                     }
                     if (downloadLink !== "#") {
-                        html = html.replace(/<a[^>]*href="[^"]*t\.me\/g_tools_official[^"]*"[^>]*>.*?<\/a>/i, downloadAnchorHtml);
+                        html = html.replace(downloadRegex, downloadAnchorHtml);
                     }
                     descDiv.innerHTML = html;
                 }
@@ -123,7 +121,7 @@
                     products.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Sort by order or price, assuming we have 'order' field. if not, sort by price
+                // Sort by order field (if exists), otherwise by price
                 products.sort((a, b) => (a.order || a.price) - (b.order || b.price));
 
                 const container = document.querySelector('.package-item-outer');
@@ -141,7 +139,6 @@
                     button.id = p.id;
                     button.setAttribute('data-price', p.price);
 
-                    // inner structure
                     button.innerHTML = `
                         <div class="w-full flex flex-wrap">
                             <div class="flex items-center">
@@ -155,13 +152,12 @@
                     container.appendChild(button);
                 });
 
-                // Re-initialize event handlers for variation selection (original functions are global, but we call them again)
+                // Re-initialize event handlers and set first item as selected
                 if (typeof selectVariation === 'function') selectVariation();
                 if (typeof selectPaymentMethod === 'function') selectPaymentMethod();
                 if (typeof handleQuantityChange === 'function') handleQuantityChange();
                 if (typeof initializePaymentMethod === 'function') initializePaymentMethod();
 
-                // Also set default selection to first visible product
                 const first = document.querySelector('.variation_list');
                 if (first) {
                     first.click();
@@ -180,7 +176,6 @@
             payBtn.addEventListener('click', function(e) {
                 e.preventDefault();
 
-                // Collect details
                 const selectedVar = document.querySelector('.variation_list.selected_variation');
                 if (!selectedVar) {
                     alert('Please select a package first.');
@@ -197,7 +192,6 @@
                     return;
                 }
 
-                // Build details object
                 const details = {
                     product: productName,
                     price: price,
@@ -206,11 +200,9 @@
                     timestamp: new Date().toISOString()
                 };
 
-                // Base64 encode
                 const jsonStr = JSON.stringify(details);
-                const base64 = btoa(unescape(encodeURIComponent(jsonStr))); // handle unicode
+                const base64 = btoa(unescape(encodeURIComponent(jsonStr)));
 
-                // Redirect to the dynamic link from firebase settings
                 window.location.href = redirectBaseUrl + base64;
             });
         }
@@ -223,13 +215,12 @@
         });
     </script>
 
-    <!-- Original inline scripts (slightly modified to support dynamic elements) -->
+    <!-- Original inline scripts (adapted for dynamic elements) -->
     <script>
-        // We keep all original functions, but adapt selectVariation to use delegation
+        // All original functions, slightly modified to use delegation
         $(document).ready(function() {
-            // Override the original selectVariation to use event delegation
+            // selectVariation with event delegation
             window.selectVariation = function() {
-                // Remove any previously attached direct handlers to avoid duplicates, then use delegation
                 $(document).off('click', '.variation_list').on('click', '.variation_list', function() {
                     var clickedVariation = $(this);
                     var hasStockoutClass = clickedVariation.hasClass('stockout');
@@ -265,7 +256,7 @@
                 });
             };
 
-            // Re-define other functions (they remain same, but we ensure they exist)
+            // Other functions (unchanged but attached to window)
             window.selectPaymentMethod = function() {
                 $('.pm_list').click(function() {
                     var clickedPM = $(this);
@@ -365,7 +356,7 @@
                 }
             };
 
-            // Also promo code logic (unchanged)
+            // Promo code logic (unchanged)
             $('#apply_promo_btn').click(function() {
                 var code = $('#promo_code_input').val();
                 var currentTotal = parseFloat($('#total_cost').text());
@@ -421,10 +412,6 @@
                 $('#promo_message').text('');
                 $('#applied_promo_code').val('');
             });
-
-            // Initial calls will be made after firebase loads products, but we also call them in loadProducts.
-            // We'll call them once after dom ready, but they might be overridden.
-            // The firebase script will re-trigger them.
         });
     </script>
 </head>
@@ -464,9 +451,9 @@
                                 <h2 class="text-lg text-black py-2 font-normal fb">Select Recharge</h2>
                             </div>
                             <hr>
-                            <!-- Product list container - will be populated by Firebase -->
+                            <!-- Product list container - dynamically populated by Firebase -->
                             <div class="p-1 md:p-4 inline-grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 package-item-outer w-full">
-                                <!-- static fallback (will be replaced) -->
+                                <!-- Static fallback (will be replaced by Firebase data) -->
                                 <button type="button" class="sm-device-package mb-0 w-full drop-shadow-2xl list-group-item flex content-between p-2 active:order-0 variation_list" style="font-size: 11px; position: relative; overflow: hidden; display: flex; justify-content: space-between; align-items: center; height: 50px;" id="84" data-price="150.00">
                                     <div class="w-full flex flex-wrap"><div class="flex items-center"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa h-2 mr-2 w-4 text-gray-300 fa-circle fa-w-16 fa-2x"><path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path></svg><span class="text-xs font-primary">Drip Apk 1 Days</span></div></div>
                                     <div class="font-bold fb-normal" style="color: var(--theme-color); min-width: 46px; float: right; text-align: right;">৳150</div>
@@ -475,7 +462,7 @@
                                     <div class="w-full flex flex-wrap"><div class="flex items-center"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa h-2 mr-2 w-4 text-gray-300 fa-circle fa-w-16 fa-2x"><path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path></svg><span class="text-xs font-primary">Drip Apk 7 Days</span></div></div>
                                     <div class="font-bold fb-normal" style="color: var(--theme-color); min-width: 46px; float: right; text-align: right;">৳350</div>
                                 </button>
-                                <!-- others will be replaced -->
+                                <!-- Others will be replaced by Firebase data -->
                             </div>
                         </div>
                     </section>
@@ -514,7 +501,7 @@
                 </form>
             </div>
 
-            <!-- Rules & Conditions with dynamic links -->
+            <!-- Rules & Conditions with dynamic links (updated by Firebase) -->
             <div class="mt-2 bg-white border rounded-md">
                 <h1 class="font-bold p-2">Rules & Conditions</h1>
                 <hr>
@@ -532,8 +519,6 @@
     <script src="https://panelsell.store/assets/template/js/jquery-3.7.1.min.js"></script>
     <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
-
-    <!-- Original scripts (already included above) -->
 </div>
 </body>
 </html>
