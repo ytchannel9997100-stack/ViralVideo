@@ -22,7 +22,9 @@
 
     <!-- Bootstrap & Styles -->
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="https://panelsell.store/assets/template/fonts/fontawesome/css/all.min.css">
+    <!-- Font Awesome - সরাসরি cdnjs থেকে (নিশ্চিত লোড হবে) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- অন্যান্য স্টাইল (প্যানেল সেলের নিজস্ব) -->
     <link rel="stylesheet" href="https://panelsell.store/assets/template/js/toastr/toastr.min.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/styles.css?6335">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/tailwindcss.css">
@@ -279,41 +281,60 @@
             padding-top: 0 !important;
         }
 
-        /* ================== মেসেঞ্জার আইকনের জন্য স্টাইল (যোগ করা হয়েছে) ================== */
-        .messenger-icon {
+        /* ================== ইজিপি স্টাইলের মেসেঞ্জার আইকন ================== */
+        .messenger-float {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: #0084ff;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+            z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            box-shadow: 0 5px 20px rgba(0, 132, 255, 0.4);
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #0084ff, #00b2ff);
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(0, 132, 255, 0.4);
             transition: all 0.3s ease;
-            z-index: 9999;
+            cursor: pointer;
             text-decoration: none;
+            animation: messengerPulse 2s infinite;
             border: 2px solid rgba(255,255,255,0.2);
         }
-        .messenger-icon:hover {
+
+        .messenger-float:hover {
             transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(0, 132, 255, 0.6);
+            box-shadow: 0 15px 30px rgba(0, 132, 255, 0.6);
             background: #006bb3;
         }
-        .messenger-icon i {
-            color: white;
+
+        .messenger-float i {
+            color: white !important;
+            font-size: 2rem;
         }
+
+        @keyframes messengerPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 132, 255, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(0, 132, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 132, 255, 0);
+            }
+        }
+
+        /* মোবাইলের জন্য সাইজ অ্যাডজাস্ট */
         @media (max-width: 768px) {
-            .messenger-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 26px;
+            .messenger-float {
                 bottom: 20px;
                 right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+            .messenger-float i {
+                font-size: 1.6rem;
             }
         }
     </style>
@@ -498,9 +519,8 @@
     </div>
 </footer>
 
-<!-- ================== মেসেঞ্জার আইকন (যোগ করা হয়েছে) ================== -->
-<!-- আপনার মেসেঞ্জার লিংকটি নিচের href এ বসান -->
-<a href="YOUR_MESSENGER_LINK_HERE" target="_blank" class="messenger-icon" aria-label="Messenger">
+<!-- ================== ইজিপি স্টাইলের মেসেঞ্জার আইকন (লিংক পরিবর্তন করুন) ================== -->
+<a href="YOUR_MESSENGER_LINK_HERE" target="_blank" class="messenger-float" title="মেসেঞ্জারে কথা বলুন">
     <i class="fab fa-facebook-messenger"></i>
 </a>
 
