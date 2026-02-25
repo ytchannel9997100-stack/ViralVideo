@@ -4,95 +4,51 @@
     <meta charset="utf-8">
     <title>Home - Panel Sell</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="description" content="Discover the ultimate destination for game panel at panelsell the latest apk mod and panel online. Enjoy competitive prices, fast delivery, and excellent customer service. Elevate your gaming experience with panelsell.store." />
     <meta name="keywords" content="Free Fire, Topup, Garena, Diamond hack, panelsell, panel sell, free fire panel" />
-    
+
     <link rel="shortcut icon" type="image/png" href="https://panelsell.store/uploads/settings/01KHMXWJC5P33DMJ9H83YMC5E2.jpg" />
-    
+
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://panelsell.store">
     <meta property="og:title" content="Home - Panel Sell">
     <meta property="og:description" content="Discover the ultimate destination for game panel at panelsell.">
-    
+
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://panelsell.store">
     <meta property="twitter:title" content="Home - Panel Sell">
     <meta property="twitter:description" content="Discover the ultimate destination for game panel at panelsell.">
-    
+
     <!-- Bootstrap & Styles -->
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/fonts/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/js/toastr/toastr.min.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/styles.css?6335">
+    <link rel="stylesheet" href="https://panelsell.store/assets/template/css/tailwindcss.css">
+    <link rel="stylesheet" href="https://panelsell.store/assets/template/css/custom-styles.css?3101">
 
-    <!-- Firebase SDK (modular) with Base64 encoded full config -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    <!-- ================== সিকিউরিটি হেডার (Easy Premium-এর মতো) ================== -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; font-src 'self' https: data:; style-src 'self' https: 'unsafe-inline'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="format-detection" content="telephone=no, address=no, email=no">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
 
-        // 🔐 সম্পূর্ণ Firebase কনফিগ Base64 এ এনকোড করা (একাধিক স্তরে এনক্রিপ্টেড)
-        const encodedConfig = "ewogICJhcGlLZXkiOiAiQUl6YVN5QXk0U1Q5QTRLVUJ6UXB1TnBqZEQ2YVU0MHM4cDFZTkVnIiwKICAiYXV0aERvbWFpbiI6ICJ0b3AtdXAtNGRiMDEuZmlyZWJhc2VhcHAuY29tIiwKICAiZGF0YWJhc2VVUkwiOiAiaHR0cHM6Ly90b3AtdXAtNGRiMDEtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcCIsCiAgInByb2plY3RJZCI6ICJ0b3AtdXAtNGRiMDEiLAogICJzdG9yYWdlQnVja2V0IjogInRvcC11cC00ZGIwMS5hcHBzcG90LmNvbSIsCiAgIm1lc3NhZ2luZ1NlbmRlcklkIjogIjI2NDU0ODE5NzQ3MyIsCiAgImFwcElkIjogIjE6MjY0NTQ4MTk3NDczOndlYjoxN2E1ZjFiNTYyMmQ0NjRmNWQ3NjIwIiwKICAibWVhc3VyZW1lbnRJZCI6ICJHLVpFTUtKM0JEMEcifQ==";
-
-        // ডিকোড ফাংশন
-        function decodeConfig(encoded) {
-            try {
-                // Base64 ডিকোড
-                const decoded = atob(encoded);
-                // JSON পার্স করে ফেরত
-                return JSON.parse(decoded);
-            } catch (e) {
-                console.error("Failed to decode config", e);
-                return {};
-            }
-        }
-
-        // ডিকোড করা কনফিগ
-        const firebaseConfig = decodeConfig(encodedConfig);
-        
-        console.log("Firebase initialized with secure config"); // ডিবাগ লগ (প্রোডাকশনে সরানো যেতে পারে)
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-
-        function updateUI(user) {
-            const navContainer = document.querySelector('.header .flex.items-center.justify-between .flex.items-center:last-child');
-            if (!navContainer) return;
-
-            if (user) {
-                navContainer.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName || 'User')}" alt="avatar" class="w-8 h-8 rounded-full border-2 border-primary-500">
-                        <span class="text-sm font-medium text-gray-300 hidden md:inline-block">${user.displayName || user.email}</span>
-                        <button id="firebaseLogoutBtn" class="btn-pro btn-pro-login rounded border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition px-3 py-1 text-sm">LOGOUT</button>
-                    </div>
-                `;
-                document.getElementById('firebaseLogoutBtn')?.addEventListener('click', async () => {
-                    await signOut(auth);
-                });
-
-                document.getElementById('mainContent')?.classList.remove('hidden');
-                document.getElementById('loginPrompt')?.classList.add('hidden');
-            } else {
-                navContainer.innerHTML = `
-                    <a href="#" id="fakeLoginBtn" class="btn-pro btn-pro-login rounded mx-2 border-2 text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white transition px-4 py-2">LOGIN</a>
-                `;
-                document.getElementById('fakeLoginBtn')?.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    signInWithPopup(auth, provider);
-                });
-
-                document.getElementById('mainContent')?.classList.add('hidden');
-                document.getElementById('loginPrompt')?.classList.remove('hidden');
-            }
-        }
-
-        onAuthStateChanged(auth, updateUI);
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SKT869XM9G"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-SKT869XM9G');
     </script>
 
-    <!-- সম্পূর্ণ ডার্ক থিম - কোন সাদা লাইন নেই (পুরোপুরি অপরিবর্তিত) -->
     <style>
+        /* সম্পূর্ণ ডার্ক থিম (আপনার দেওয়া স্টাইল অপরিবর্তিত) */
         :root {
             --theme-color: #000000;
             --background-color: #000000;
@@ -252,19 +208,49 @@
         :root {
             color-scheme: dark;
         }
+
+        /* নসস্ক্রিপ্ট স্টাইল (Easy Premium থেকে নেওয়া) */
+        .noscript-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #ff0000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            font-family: monospace;
+            text-align: center;
+            flex-direction: column;
+        }
+        .noscript-overlay div {
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
     </style>
 
-    <link rel="stylesheet" href="https://panelsell.store/assets/template/css/tailwindcss.css">
-    <link rel="stylesheet" href="https://panelsell.store/assets/template/css/custom-styles.css?3101">
-
-    <!-- Google tag (gtag.js) - অপরিবর্তিত -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-SKT869XM9G"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-SKT869XM9G');
-    </script>
+    <!-- ================== নসস্ক্রিপ্ট (JS নিষ্ক্রিয় থাকলে) ================== -->
+    <noscript>
+        <style>
+            body { display: none !important; }
+            html { background: #000 !important; height: 100% !important; overflow: hidden !important; }
+        </style>
+        <div class="noscript-overlay">
+            <div>
+                <h1 style="font-size:120px;margin:0;text-shadow:0 0 20px #ff0000;">🖕</h1>
+                <h1 style="font-size:72px;margin:20px 0;letter-spacing:10px;">FUCK YOU</h1>
+                <p style="font-size:24px;margin:20px 0;color:#fff;">JavaScript is DISABLED</p>
+                <p style="font-size:18px;color:#ff6666;">Nice try, script kiddie</p>
+                <p style="font-size:16px;color:#666;margin-top:30px;">Enable JavaScript to access this site</p>
+            </div>
+        </div>
+    </noscript>
 </head>
 <body>
 <div class="body-bg">
@@ -287,8 +273,8 @@
             </div>
           </div>
         </nav>
-        <div class="flex items-center">
-          <!-- JavaScript এ আপডেট হবে -->
+        <div class="flex items-center" id="authNavContainer">
+          <!-- JavaScript দিয়ে পূরণ হবে -->
         </div>
       </div>
     </nav>
@@ -304,7 +290,7 @@
 
 <div id="mainContent">
     <div class="p-2">
- 
+
 <section class="container m-auto">
   <section class="carousel my-4" dir="ltr" aria-label="Gallery" tabindex="0" style="margin-bottom:10px !important;">
     <div class="carousel__viewport">
@@ -330,30 +316,18 @@
         </li>
       </ol>
     </div>
-    
+
     <button type="button" class="carousel__prev" aria-label="Navigate to previous slide">
-      <svg class="carousel__icon" viewBox="0 0 24 24" role="img" aria-label="Arrow pointing to the left">
-        <title>Previous</title>
-        <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"></path>
-      </svg>
+      <svg class="carousel__icon" viewBox="0 0 24 24" role="img" aria-label="Arrow pointing to the left"><title>Previous</title><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"></path></svg>
     </button>
     <button type="button" class="carousel__next" aria-label="Navigate to next slide">
-      <svg class="carousel__icon" viewBox="0 0 24 24" role="img" aria-label="Arrow pointing to the right">
-        <title>Next</title>
-        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path>
-      </svg>
+      <svg class="carousel__icon" viewBox="0 0 24 24" role="img" aria-label="Arrow pointing to the right"><title>Next</title><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path></svg>
     </button>
-    
+
     <ol class="carousel__pagination">
-      <li class="carousel__pagination-item">
-        <button type="button" class="carousel__pagination-button carousel__pagination-button--active" aria-label="Navigate to slide 1"></button>
-      </li>
-      <li class="carousel__pagination-item">
-        <button type="button" class="carousel__pagination-button" aria-label="Navigate to slide 2"></button>
-      </li>
-      <li class="carousel__pagination-item">
-        <button type="button" class="carousel__pagination-button" aria-label="Navigate to slide 3"></button>
-      </li>
+      <li class="carousel__pagination-item"><button type="button" class="carousel__pagination-button carousel__pagination-button--active" aria-label="Navigate to slide 1"></button></li>
+      <li class="carousel__pagination-item"><button type="button" class="carousel__pagination-button" aria-label="Navigate to slide 2"></button></li>
+      <li class="carousel__pagination-item"><button type="button" class="carousel__pagination-button" aria-label="Navigate to slide 3"></button></li>
     </ol>
   </section>
 </section>
@@ -431,81 +405,258 @@
 </section>
 
 <script src="https://panelsell.store/assets/template/js/slider.js?1879"></script>
-
-<script>
-    (function() {
-        function removeSliderElements() {
-            const elementsToRemove = [
-                ...document.querySelectorAll('.carousel__prev'),
-                ...document.querySelectorAll('.carousel__next'),
-                ...document.querySelectorAll('.carousel__pagination'),
-                ...document.querySelectorAll('.carousel__pagination-item'),
-                ...document.querySelectorAll('.carousel__pagination-button'),
-                ...document.querySelectorAll('button[class*="carousel"]'),
-                ...document.querySelectorAll('svg[class*="carousel"]')
-            ];
-            
-            elementsToRemove.forEach(el => {
-                if (el && el.parentNode) {
-                    el.style.display = 'none';
-                    el.style.opacity = '0';
-                    el.style.visibility = 'hidden';
-                    el.style.width = '0';
-                    el.style.height = '0';
-                    el.style.overflow = 'hidden';
-                    el.style.position = 'absolute';
-                    el.style.pointerEvents = 'none';
-                }
-            });
-            
-            const pagination = document.querySelector('.carousel__pagination');
-            if (pagination) {
-                pagination.innerHTML = '';
-                pagination.style.display = 'none';
-            }
-        }
-        
-        removeSliderElements();
-        
-        const observer = new MutationObserver(function(mutations) {
-            removeSliderElements();
-        });
-        
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-        
-        setTimeout(removeSliderElements, 500);
-        setTimeout(removeSliderElements, 1000);
-        setTimeout(removeSliderElements, 2000);
-    })();
-</script>
-    
     </div>
 </div>
 
 <footer class="footer" style="padding-bottom: calc(30px + env(safe-area-inset-bottom)); background-color: #000000 !important; border: none !important; border-top: none !important; outline: none !important; box-shadow: none !important;">
     <div class="copyright">
-        © 2026  Panel Sell সর্বস্বত্ব সংরক্ষিত।<br>
+        © 2026 Panel Sell সর্বস্বত্ব সংরক্ষিত।<br>
         কন্টাক্ট: mdalamin@gmail.com | হেল্পলাইন: +880174584994
     </div>
 </footer>
 
+<!-- Scripts -->
 <script src="https://panelsell.store/assets/template/js/jquery-3.7.1.min.js"></script>
 <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
 <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 
-</div>
+<!-- ================== Firebase with Encoded Config (Modular SDK) ================== -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-<script>
+    // 🔐 Base64 Encoded Firebase Config (Easy Premium-এর কৌশলে)
+    const encodedConfig = "ewogICJhcGlLZXkiOiAiQUl6YVN5QXk0U1Q5QTRLVUJ6UXB1TnBqZEQ2YVU0MHM4cDFZTkVnIiwKICAiYXV0aERvbWFpbiI6ICJ0b3AtdXAtNGRiMDEuZmlyZWJhc2VhcHAuY29tIiwKICAiZGF0YWJhc2VVUkwiOiAiaHR0cHM6Ly90b3AtdXAtNGRiMDEtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcCIsCiAgInByb2plY3RJZCI6ICJ0b3AtdXAtNGRiMDEiLAogICJzdG9yYWdlQnVja2V0IjogInRvcC11cC00ZGIwMS5hcHBzcG90LmNvbSIsCiAgIm1lc3NhZ2luZ1NlbmRlcklkIjogIjI2NDU0ODE5NzQ3MyIsCiAgImFwcElkIjogIjE6MjY0NTQ4MTk3NDczOndlYjoxN2E1ZjFiNTYyMmQ0NjRmNWQ3NjIwIiwKICAibWVhc3VyZW1lbnRJZCI6ICJHLVpFTUtKM0JEMEcifQ==";
+
+    function decodeConfig(encoded) {
+        try {
+            return JSON.parse(atob(encoded));
+        } catch (e) {
+            console.error("Config decode failed", e);
+            return {};
+        }
+    }
+
+    const firebaseConfig = decodeConfig(encodedConfig);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // UI আপডেট ফাংশন
+    function updateUI(user) {
+        const navContainer = document.getElementById('authNavContainer');
+        if (!navContainer) return;
+
+        if (user) {
+            navContainer.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName || 'User')}" alt="avatar" class="w-8 h-8 rounded-full border-2 border-primary-500">
+                    <span class="text-sm font-medium text-gray-300 hidden md:inline-block">${user.displayName || user.email}</span>
+                    <button id="firebaseLogoutBtn" class="btn-pro btn-pro-login rounded border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition px-3 py-1 text-sm">LOGOUT</button>
+                </div>
+            `;
+            document.getElementById('firebaseLogoutBtn')?.addEventListener('click', async () => {
+                await signOut(auth);
+            });
+
+            document.getElementById('mainContent')?.classList.remove('hidden');
+            document.getElementById('loginPrompt')?.classList.add('hidden');
+        } else {
+            navContainer.innerHTML = `
+                <a href="#" id="fakeLoginBtn" class="btn-pro btn-pro-login rounded mx-2 border-2 text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white transition px-4 py-2">LOGIN</a>
+            `;
+            document.getElementById('fakeLoginBtn')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                signInWithPopup(auth, provider);
+            });
+
+            document.getElementById('mainContent')?.classList.add('hidden');
+            document.getElementById('loginPrompt')?.classList.remove('hidden');
+        }
+    }
+
+    onAuthStateChanged(auth, updateUI);
+
+    // Prompt বাটনের ইভেন্ট
     document.getElementById('promptLoginBtn')?.addEventListener('click', () => {
         const fakeBtn = document.getElementById('fakeLoginBtn');
-        if (fakeBtn) {
-            fakeBtn.click();
-        }
+        if (fakeBtn) fakeBtn.click();
     });
 </script>
 
+<!-- ================== অ্যান্টি-ফিশিং ও ডেভ টুলস ডিটেকশন (Easy Premium-এর কৌশলে) ================== -->
+<script>
+(function() {
+    'use strict';
+
+    const CONFIG = {
+        SESSION_TIMEOUT: 30 * 60 * 1000, // 30 মিনিট
+        MAX_ATTEMPTS: 5,
+        RATE_LIMIT_WINDOW: 15 * 60 * 1000,
+        ENFORCE_HTTPS: true,
+        REDIRECT_ON_DEVTOOLS: true, // ডেভ টুলস ডিটেক্ট করলে রিডাইরেক্ট
+        REDIRECT_URL: 'https://panelsell.store/page/contact-us' // রিডাইরেক্ট URL (আপনার ইচ্ছামত)
+    };
+
+    // HTTPS ফোর্স
+    if (CONFIG.ENFORCE_HTTPS && location.protocol !== 'https:' && location.hostname !== 'localhost' && !location.hostname.includes('127.0.0.1')) {
+        location.replace('https://' + location.host + location.pathname + location.search);
+    }
+
+    // ক্লিকজ্যাকিং প্রোটেকশন
+    if (self !== top) {
+        try { top.location.href = self.location.href; } catch (e) {
+            document.body.innerHTML = '<h1 style="color:red;text-align:center;padding:50px;">Access Denied</h1>';
+            throw new Error('Clickjacking protection');
+        }
+    }
+
+    // ডেভ টুলস ডিটেকশন (রিডাইরেক্ট সহ)
+    let devToolsOpened = false;
+    function detectDevTools() {
+        const start = performance.now();
+        debugger; // ডিবাগার ট্রিগার
+        const end = performance.now();
+
+        if (end - start > 100) {
+            if (!devToolsOpened && CONFIG.REDIRECT_ON_DEVTOOLS) {
+                devToolsOpened = true;
+                window.location.href = CONFIG.REDIRECT_URL;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    setInterval(detectDevTools, 1000);
+    setTimeout(detectDevTools, 500);
+
+    // রেট লিমিটিং
+    window._rateLimitStore = window._rateLimitStore || { attempts: {}, blockUntil: {} };
+    window.checkRateLimit = function(action, userId = 'anonymous') {
+        const key = `${action}_${userId}`;
+        const now = Date.now();
+        if (window._rateLimitStore.blockUntil[key] && window._rateLimitStore.blockUntil[key] > now) {
+            return { allowed: false, message: `অনেক চেষ্টা করেছেন। পরে আবার চেষ্টা করুন।` };
+        }
+        if (!window._rateLimitStore.attempts[key]) window._rateLimitStore.attempts[key] = [];
+        window._rateLimitStore.attempts[key] = window._rateLimitStore.attempts[key].filter(t => t > now - CONFIG.RATE_LIMIT_WINDOW);
+        if (window._rateLimitStore.attempts[key].length >= CONFIG.MAX_ATTEMPTS) {
+            window._rateLimitStore.blockUntil[key] = now + CONFIG.RATE_LIMIT_WINDOW;
+            return { allowed: false, message: 'অনেক চেষ্টা করেছেন। ১৫ মিনিট পরে আবার চেষ্টা করুন।' };
+        }
+        window._rateLimitStore.attempts[key].push(now);
+        return { allowed: true };
+    };
+
+    // সেশন টাইমআউট
+    let sessionTimer;
+    function resetSessionTimer() {
+        if (sessionTimer) clearTimeout(sessionTimer);
+        sessionTimer = setTimeout(() => {
+            if (firebase && firebase.auth && firebase.auth().currentUser) {
+                if (confirm('আপনার সেশন শেষ হয়ে গেছে। আবার লগইন করবেন?')) {
+                    firebase.auth().signOut();
+                    window.location.reload();
+                } else {
+                    firebase.auth().signOut();
+                }
+            }
+        }, CONFIG.SESSION_TIMEOUT);
+    }
+    ['click', 'keypress', 'scroll', 'mousemove', 'touchstart'].forEach(event => {
+        document.addEventListener(event, resetSessionTimer, { passive: true });
+    });
+
+    // XSS প্রোটেকশন (ইনপুট স্যানিটাইজ)
+    function sanitizeInput(input) {
+        if (typeof input !== 'string') return input;
+        return input.replace(/[<>"'`=]/g, '');
+    }
+
+    // লোকাল স্টোরেজ এনক্রিপশন (সংবেদনশীল ডেটার জন্য)
+    const originalSetItem = localStorage.setItem;
+    const originalGetItem = localStorage.getItem;
+    const sensitiveKeys = ['user', 'session', 'token', 'auth'];
+
+    localStorage.setItem = function(key, value) {
+        if (sensitiveKeys.some(k => key.toLowerCase().includes(k))) {
+            try {
+                const encoded = btoa(encodeURIComponent(value));
+                return originalSetItem.call(this, `_sec_${key}`, encoded);
+            } catch (e) {}
+        }
+        return originalSetItem.call(this, key, value);
+    };
+    localStorage.getItem = function(key) {
+        if (sensitiveKeys.some(k => key.toLowerCase().includes(k))) {
+            try {
+                const encoded = originalGetItem.call(this, `_sec_${key}`);
+                if (encoded) return decodeURIComponent(atob(encoded));
+            } catch (e) {}
+        }
+        return originalGetItem.call(this, key);
+    };
+
+    // কীবোর্ড শর্টকাট ব্লক
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83)) { e.preventDefault(); return false; } // Ctrl+U, Ctrl+S
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; } // Ctrl+Shift+I
+        if (e.keyCode === 123) { e.preventDefault(); return false; } // F12
+    });
+
+    // রাইট ক্লিক, ড্র্যাগ, সিলেক্ট নিষ্ক্রিয়
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('mousedown', e => { if (e.button === 2) e.preventDefault(); });
+    document.addEventListener('touchstart', e => {
+        let touchTimer;
+        const handleTouchEnd = () => { clearTimeout(touchTimer); document.removeEventListener('touchend', handleTouchEnd); };
+        if (e.touches.length === 1) {
+            touchTimer = setTimeout(() => e.preventDefault(), 500);
+            document.addEventListener('touchend', handleTouchEnd, { once: true });
+        }
+    }, { passive: false });
+
+    console.log('%c🔒 Panel Sell - উন্নত নিরাপত্তা সক্রিয়', 'color: #4caf50; font-size: 14px; font-weight: bold;');
+})();
+</script>
+
+<!-- ================== ক্যারোসেল কন্ট্রোল হাইড করার স্ক্রিপ্ট (আপনার দেওয়া) ================== -->
+<script>
+(function() {
+    function removeSliderElements() {
+        const elementsToRemove = [
+            ...document.querySelectorAll('.carousel__prev'),
+            ...document.querySelectorAll('.carousel__next'),
+            ...document.querySelectorAll('.carousel__pagination'),
+            ...document.querySelectorAll('.carousel__pagination-item'),
+            ...document.querySelectorAll('.carousel__pagination-button'),
+            ...document.querySelectorAll('button[class*="carousel"]'),
+            ...document.querySelectorAll('svg[class*="carousel"]')
+        ];
+
+        elementsToRemove.forEach(el => {
+            if (el && el.parentNode) {
+                el.style.display = 'none';
+                el.style.opacity = '0';
+                el.style.visibility = 'hidden';
+                el.style.width = '0';
+                el.style.height = '0';
+                el.style.overflow = 'hidden';
+                el.style.position = 'absolute';
+                el.style.pointerEvents = 'none';
+            }
+        });
+    }
+    removeSliderElements();
+    const observer = new MutationObserver(() => removeSliderElements());
+    observer.observe(document.body, { childList: true, subtree: true });
+    setTimeout(removeSliderElements, 500);
+    setTimeout(removeSliderElements, 1000);
+    setTimeout(removeSliderElements, 2000);
+})();
+</script>
+
+</div>
 </body>
 </html>
