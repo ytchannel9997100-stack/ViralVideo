@@ -122,27 +122,6 @@
             box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
         }
 
-        /* মেসেঞ্জার বাটনের স্টাইল */
-        .messenger-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 38px;
-            height: 38px;
-            background: linear-gradient(45deg, #0084ff, #00b2ff);
-            border-radius: 50%;
-            color: white;
-            font-size: 20px;
-            transition: all 0.3s;
-            text-decoration: none;
-            margin-left: 8px;
-        }
-        .messenger-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 132, 255, 0.4);
-            color: white;
-        }
-
         .variation_list.selected_variation {
             background: var(--card-bg) !important;
             border: 2px solid var(--accent-color) !important;
@@ -162,13 +141,39 @@
 
         /* ইনপুট ফিল্ড: সাদা ব্যাকগ্রাউন্ড, কালো টেক্সট */
         #whatsApp_number_input {
-            background-color: #000000 !important;
+            background-color: #ffffff !important;
             color: #000000 !important;
             border: 1px solid #000000 !important;
         }
         #whatsApp_number_input::placeholder {
             color: #666666 !important;
             opacity: 1;
+        }
+
+        /* ফ্লোটিং মেসেঞ্জার বাটন - স্ক্রিনের ডান পাশের নিচে */
+        .floating-messenger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #0084ff, #00b2ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+            box-shadow: 0 4px 20px rgba(0, 132, 255, 0.4);
+            transition: all 0.3s ease;
+            z-index: 9999;
+            text-decoration: none;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .floating-messenger:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 132, 255, 0.6);
+            color: white;
         }
 
         .hidden {
@@ -708,17 +713,12 @@
                                 <div class="row pb-5">
                                     <section class="mt-2">
                                         <div class="bg-white border rounded-md p-3">
-                                            <div class="flex gap-2" style="align-items: center; flex-wrap: wrap;">
+                                            <div class="flex gap-2" style="align-items: center;">
                                                 <!-- হোয়াটসঅ্যাপ ইনপুট (আইডি ফিক্স করা হয়েছে) -->
                                                 <input type="text" id="whatsApp_number_input" placeholder="WhatsApp Number" class="form-input w-full rounded-md text-sm" style="border: 1px solid #000000 !important; padding: 6px 10px !important; margin: 0 !important; height: 38px !important; box-shadow: none;" autocomplete="off">
                                                 
                                                 <!-- পে বাটন -->
                                                 <button type="button" id="pay" class="rounded-md text-sm font-bold" style="background: linear-gradient(45deg, #ff9800, #ff5722) !important; color: white !important; padding: 0 20px !important; height: 38px !important; border: none !important; cursor: pointer;">Pay</button>
-                                                
-                                                <!-- মেসেঞ্জার বাটন (একই লাইনে) – আপনার লিংক পরিবর্তন করুন -->
-                                                <a href="https://m.me/yourpage" target="_blank" class="messenger-btn" title="Messenger">
-                                                    <i class="fab fa-facebook-messenger"></i>
-                                                </a>
                                             </div>
                                             <p id="promo_message" class="text-xs mt-1" style="margin-top: 5px;"></p>
                                         </div>
@@ -743,6 +743,11 @@
             </div>
         </div>
     </div>
+
+    <!-- ফ্লোটিং মেসেঞ্জার বাটন - স্ক্রিনের ডান পাশের নিচে (আপনার লিংক দিন) -->
+    <a href="https://m.me/yourpage" target="_blank" class="floating-messenger" title="Messenger">
+        <i class="fab fa-facebook-messenger"></i>
+    </a>
 
     <!-- Bootstrap JS, Toastr -->
     <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
@@ -802,7 +807,6 @@
     })();
 </script>
 
-<!-- Messenger লিংক আপডেট করার জন্য নির্দেশনা (অপসারণ করা যাবে) -->
-<!-- ⚠️ দয়া করে Messenger বাটনের href="https://m.me/yourpage" আপনার আসল পেজ লিংক দিয়ে পরিবর্তন করুন। -->
+<!-- ⚠️ Messenger বাটনের href="https://m.me/yourpage" আপনার আসল পেজ লিংক দিয়ে পরিবর্তন করুন। -->
 </body>
 </html>
