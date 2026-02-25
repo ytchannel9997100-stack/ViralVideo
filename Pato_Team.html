@@ -204,6 +204,21 @@
             70% { box-shadow: 0 0 0 15px rgba(0, 132, 255, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 132, 255, 0); }
         }
+
+        /* ================== হোয়াটসঅ্যাপ ইনপুট ফিক্স ================== */
+        #whatsApp_number_input {
+            color: #000000 !important;          /* টেক্সট কালো */
+            background-color: #ffffff !important; /* ব্যাকগ্রাউন্ড সাদা */
+            border: 1px solid #ced4da !important; /* আগের বর্ডার ঠিক রাখা */
+            padding: 6px 10px !important;
+            height: 38px !important;
+            box-shadow: none !important;
+        }
+        /* প্লেসহোল্ডারের রঙ ধূসর রাখা (ঐচ্ছিক) */
+        #whatsApp_number_input::placeholder {
+            color: #6c757d !important;
+            opacity: 1;
+        }
     </style>
 
     <!-- ⚠️ নসস্ক্রিপ্ট: JS নিষ্ক্রিয় থাকলে বার্তা -->
