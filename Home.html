@@ -278,6 +278,44 @@
         .checkout_page {
             padding-top: 0 !important;
         }
+
+        /* ================== মেসেঞ্জার আইকনের জন্য স্টাইল (যোগ করা হয়েছে) ================== */
+        .messenger-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #0084ff;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 5px 20px rgba(0, 132, 255, 0.4);
+            transition: all 0.3s ease;
+            z-index: 9999;
+            text-decoration: none;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .messenger-icon:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 132, 255, 0.6);
+            background: #006bb3;
+        }
+        .messenger-icon i {
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .messenger-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 26px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
     </style>
 
     <!-- ================== নসস্ক্রিপ্ট ================== -->
@@ -459,6 +497,12 @@
         কন্টাক্ট: mdalamin@gmail.com | হেল্পলাইন: +880174584994
     </div>
 </footer>
+
+<!-- ================== মেসেঞ্জার আইকন (যোগ করা হয়েছে) ================== -->
+<!-- আপনার মেসেঞ্জার লিংকটি নিচের href এ বসান -->
+<a href="YOUR_MESSENGER_LINK_HERE" target="_blank" class="messenger-icon" aria-label="Messenger">
+    <i class="fab fa-facebook-messenger"></i>
+</a>
 
 <!-- Scripts -->
 <script src="https://panelsell.store/assets/template/js/jquery-3.7.1.min.js"></script>
