@@ -122,6 +122,27 @@
             box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
         }
 
+        /* মেসেঞ্জার বাটনের স্টাইল */
+        .messenger-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(45deg, #0084ff, #00b2ff);
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            transition: all 0.3s;
+            text-decoration: none;
+            margin-left: 8px;
+        }
+        .messenger-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 132, 255, 0.4);
+            color: white;
+        }
+
         .variation_list.selected_variation {
             background: var(--card-bg) !important;
             border: 2px solid var(--accent-color) !important;
@@ -137,6 +158,17 @@
         .variation_list:hover {
             border-color: var(--accent-color) !important;
             transform: translateY(-2px);
+        }
+
+        /* ইনপুট ফিল্ড: সাদা ব্যাকগ্রাউন্ড, কালো টেক্সট */
+        #whatsApp_number_input {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border: 1px solid #000000 !important;
+        }
+        #whatsApp_number_input::placeholder {
+            color: #666666 !important;
+            opacity: 1;
         }
 
         .hidden {
@@ -341,7 +373,8 @@
                 const name = selected.querySelector('.text-xs.font-primary')?.innerText || 'Unknown';
                 const price = selected.getAttribute('data-price');
                 const vid = selected.id;
-                const whatsapp = document.getElementById('whatsApp _number_input')?.value.trim();
+                // ফিক্সড আইডি ব্যবহার করা হয়েছে
+                const whatsapp = document.getElementById('whatsApp_number_input')?.value.trim();
                 if (!whatsapp) {
                     alert('Please enter your WhatsApp number.');
                     return;
@@ -675,10 +708,17 @@
                                 <div class="row pb-5">
                                     <section class="mt-2">
                                         <div class="bg-white border rounded-md p-3">
-                                            <div class="flex gap-2" style="align-items: center;">
-                                                <input type="text" id="whatsApp _number_input" placeholder="WhatsApp Number" class="form-input w-full rounded-md text-sm" style="border: 1px solid #ced4da !important; padding: 6px 10px !important; margin: 0 !important; height: 38px !important; box-shadow: none;">
+                                            <div class="flex gap-2" style="align-items: center; flex-wrap: wrap;">
+                                                <!-- হোয়াটসঅ্যাপ ইনপুট (আইডি ফিক্স করা হয়েছে) -->
+                                                <input type="text" id="whatsApp_number_input" placeholder="WhatsApp Number" class="form-input w-full rounded-md text-sm" style="border: 1px solid #000000 !important; padding: 6px 10px !important; margin: 0 !important; height: 38px !important; box-shadow: none;" autocomplete="off">
+                                                
                                                 <!-- পে বাটন -->
                                                 <button type="button" id="pay" class="rounded-md text-sm font-bold" style="background: linear-gradient(45deg, #ff9800, #ff5722) !important; color: white !important; padding: 0 20px !important; height: 38px !important; border: none !important; cursor: pointer;">Pay</button>
+                                                
+                                                <!-- মেসেঞ্জার বাটন (একই লাইনে) – আপনার লিংক পরিবর্তন করুন -->
+                                                <a href="https://m.me/yourpage" target="_blank" class="messenger-btn" title="Messenger">
+                                                    <i class="fab fa-facebook-messenger"></i>
+                                                </a>
                                             </div>
                                             <p id="promo_message" class="text-xs mt-1" style="margin-top: 5px;"></p>
                                         </div>
@@ -690,6 +730,7 @@
                 </form>
             </div>
 
+            <!-- Rules & Conditions – ব্যাকগ্রাউন্ড ডার্ক রাখা হয়েছে -->
             <div class="mt-2 bg-white border rounded-md">
                 <h1 class="font-bold p-2">Rules & Conditions</h1>
                 <hr>
@@ -708,7 +749,7 @@
     <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 </div>
 
-<!-- পণ্য সিলেক্ট ও পে বাটন নিশ্চিত করার স্ক্রিপ্ট -->
+<!-- পণ্য সিলেক্ট ও পে বাটন নিশ্চিত করার স্ক্রিপ্ট (ইতিমধ্যে উপরে মডিউলে আছে, তবে ব্যাকআপ) -->
 <script>
     (function() {
         // পণ্য সিলেক্ট ইভেন্ট
@@ -733,7 +774,7 @@
             }
         });
 
-        // পে বাটনে ক্লিক ইভেন্ট
+        // পে বাটনে ক্লিক ইভেন্ট (ব্যাকআপ)
         document.addEventListener('click', function(e) {
             if (e.target.id !== 'pay') return;
             e.preventDefault();
@@ -745,7 +786,8 @@
             const name = selected.querySelector('.text-xs.font-primary')?.innerText || 'Unknown';
             const price = selected.getAttribute('data-price');
             const vid = selected.id;
-            const whatsapp = document.getElementById('whatsApp _number_input')?.value.trim();
+            // ফিক্সড আইডি ব্যবহার করা হয়েছে
+            const whatsapp = document.getElementById('whatsApp_number_input')?.value.trim();
             if (!whatsapp) {
                 alert('Please enter your WhatsApp number.');
                 return;
@@ -759,5 +801,8 @@
         });
     })();
 </script>
+
+<!-- Messenger লিংক আপডেট করার জন্য নির্দেশনা (অপসারণ করা যাবে) -->
+<!-- ⚠️ দয়া করে Messenger বাটনের href="https://m.me/yourpage" আপনার আসল পেজ লিংক দিয়ে পরিবর্তন করুন। -->
 </body>
 </html>
