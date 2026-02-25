@@ -205,7 +205,7 @@
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getDatabase, ref, get, set, update, remove, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, get, set, update, remove, push, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         // ================== 🔒 এনকোডেড ফায়ারবেস কনফিগ (মূল সাইটের কৌশল) ==================
         const encodedFirebaseConfig = "ewogICJhcGlLZXkiOiAiQUl6YVN5QXk0U1Q5QTRLVUJ6UXB1TnBqZEQ2YVU0MHM4cDFZTkVnIiwKICAiYXV0aERvbWFpbiI6ICJ0b3AtdXAtNGRiMDEuZmlyZWJhc2VhcHAuY29tIiwKICAiZGF0YWJhc2VVUkwiOiAiaHR0cHM6Ly90b3AtdXAtNGRiMDEtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcCIsCiAgInByb2plY3RJZCI6ICJ0b3AtdXAtNGRiMDEiLAogICJzdG9yYWdlQnVja2V0IjogInRvcC11cC00ZGIwMS5hcHBzcG90LmNvbSIsCiAgIm1lc3NhZ2luZ1NlbmRlcklkIjogIjI2NDU0ODE5NzQ3MyIsCiAgImFwcElkIjogIjE6MjY0NTQ4MTk3NDczOndlYjoxN2E1ZjFiNTYyMmQ0NjRmNWQ3NjIwIgp9";
@@ -370,13 +370,34 @@
             });
         });
 
-        // Check if user is admin
+        // ✅ ফিক্স: অ্যাডমিন চেক করার জন্য ইউআইডি এবং ইমেইল উভয় দিয়ে চেক
         async function isAdmin(user) {
             if (!user) return false;
             try {
-                const adminRef = ref(db, `__collections__/adminUsers/${user.uid}`);
-                const snapshot = await get(adminRef);
-                return snapshot.exists();
+                // প্রথমে ইউআইডি দিয়ে চেক
+                const adminRefByUid = ref(db, `__collections__/adminUsers/${user.uid}`);
+                const snapshotByUid = await get(adminRefByUid);
+                if (snapshotByUid.exists()) return true;
+
+                // ইউআইডি না পেলে ইমেইল দিয়ে চেষ্টা (ইমেইল থেকে স্পেশাল ক্যারেক্টার রিপ্লেস)
+                const emailKey = user.email.replace(/[.#$\[\]]/g, '_');
+                const adminRefByEmail = ref(db, `__collections__/adminUsers/${emailKey}`);
+                const snapshotByEmail = await get(adminRefByEmail);
+                if (snapshotByEmail.exists()) return true;
+
+                // ইমেইল দিয়ে সার্চ (সম্পূর্ণ তালিকায়)
+                const adminRef = ref(db, '__collections__/adminUsers');
+                const snapshotAll = await get(adminRef);
+                if (snapshotAll.exists()) {
+                    const admins = snapshotAll.val();
+                    for (let key in admins) {
+                        if (admins[key].email === user.email) {
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
             } catch (e) {
                 console.error('Admin check error:', e);
                 return false;
@@ -411,10 +432,7 @@
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
                 
-                const adminRef = ref(db, `__collections__/adminUsers/${user.uid}`);
-                const snapshot = await get(adminRef);
-                
-                if (!snapshot.exists()) {
+                if (!await isAdmin(user)) {
                     await signOut(auth);
                     loginError.textContent = 'You are not authorized as admin.';
                 } else {
