@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Home - Panel Sell</title>
-    <!-- ================== আপডেটেড ভিউপোর্ট (Easy Premium থেকে) ================== -->
+    <!-- ================== ফিক্সড ভিউপোর্ট (Easy Premium থেকে) ================== -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="description" content="Discover the ultimate destination for game panel at panelsell the latest apk mod and panel online. Enjoy competitive prices, fast delivery, and excellent customer service. Elevate your gaming experience with panelsell.store." />
     <meta name="keywords" content="Free Fire, Topup, Garena, Diamond hack, panelsell, panel sell, free fire panel" />
@@ -48,7 +48,7 @@
     </script>
 
     <style>
-        /* সম্পূর্ণ ডার্ক থিম (আপনার দেওয়া স্টাইল অপরিবর্তিত) */
+        /* সম্পূর্ণ ডার্ক থিম - টপের ফাঁকা অংশ দূর করার জন্য ফিক্স */
         :root {
             --theme-color: #000000;
             --background-color: #000000;
@@ -58,7 +58,13 @@
             --footer-font-color: #bbbbbb;
         }
 
-        /* ================== টপের সাদা অংশ দূর করার জন্য গুরুত্বপূর্ণ সংযোজন (Easy Premium থেকে) ================== */
+        /* ================== টপের সাদা অংশ দূর করার জন্য গুরুত্বপূর্ণ ফিক্স ================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         html, body {
             background-color: #000000 !important;
             margin: 0 !important;
@@ -68,11 +74,14 @@
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
             position: relative;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
         }
 
         body {
-            background: #000000 !important;
-            background-attachment: fixed !important;
+            background-color: #000000 !important;
             color: #e0e0e0 !important;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -83,12 +92,21 @@
             background-color: #000000 !important;
             flex: 1;
             width: 100%;
+            margin-top: 0;
+            padding-top: 0;
         }
 
-        /* হেডারের কোন বর্ডার নেই (আপনার আগের স্টাইল) */
+        /* হেডারের জন্য ফিক্স */
         .header {
             background-color: #000000 !important;
             border-bottom: none !important;
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+
+        .header .container {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
         }
 
         .logo {
@@ -201,6 +219,8 @@
             align-items: center;
             text-align: center;
             background-color: #000000 !important;
+            margin-top: 0;
+            padding-top: 0;
         }
         .hidden {
             display: none !important;
@@ -214,7 +234,7 @@
             color-scheme: dark;
         }
 
-        /* নসস্ক্রিপ্ট স্টাইল (Easy Premium থেকে নেওয়া) */
+        /* নসস্ক্রিপ্ট স্টাইল */
         .noscript-overlay {
             position: fixed;
             top: 0;
@@ -238,9 +258,20 @@
             0%, 100% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.1); opacity: 0.8; }
         }
+
+        /* Easy Premium স্টাইলে আরও কিছু ফিক্স */
+        .p-2 {
+            padding-top: 0 !important;
+        }
+        .container {
+            padding-top: 0 !important;
+        }
+        .checkout_page {
+            padding-top: 0 !important;
+        }
     </style>
 
-    <!-- ================== নসস্ক্রিপ্ট (JS নিষ্ক্রিয় থাকলে) ================== -->
+    <!-- ================== নসস্ক্রিপ্ট ================== -->
     <noscript>
         <style>
             body { display: none !important; }
@@ -261,7 +292,7 @@
 <div class="body-bg">
 
 <div class="header">
-  <div class="container m-auto p-2 py-3 md:py-5 md:px-0">
+  <div class="container m-auto p-2 py-3 md:py-5 md:px-0" style="padding-top: 0 !important; margin-top: 0 !important;">
     <nav class="flex items-center justify-between" style="border: none !important; outline: none !important;">
       <a href="https://easy-premium.com" class="logo-container">
         <img src="https://panelsell.store/uploads/settings/01KHN43K3QP9B17GMYGKF40ZVD.png" 
@@ -294,9 +325,9 @@
 </div>
 
 <div id="mainContent">
-    <div class="p-2">
+    <div class="p-2" style="padding-top: 0 !important;">
 
-<section class="container m-auto">
+<section class="container m-auto" style="padding-top: 0 !important;">
   <section class="carousel my-4" dir="ltr" aria-label="Gallery" tabindex="0" style="margin-bottom:10px !important;">
     <div class="carousel__viewport">
       <ol class="carousel__track" style="transform: translateX(0px);">
@@ -425,12 +456,11 @@
 <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
 <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 
-<!-- ================== Firebase with Encoded Config (Modular SDK) ================== -->
+<!-- ================== Firebase with Encoded Config ================== -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-    // 🔐 Base64 Encoded Firebase Config (Easy Premium-এর কৌশলে)
     const encodedConfig = "ewogICJhcGlLZXkiOiAiQUl6YVN5QXk0U1Q5QTRLVUJ6UXB1TnBqZEQ2YVU0MHM4cDFZTkVnIiwKICAiYXV0aERvbWFpbiI6ICJ0b3AtdXAtNGRiMDEuZmlyZWJhc2VhcHAuY29tIiwKICAiZGF0YWJhc2VVUkwiOiAiaHR0cHM6Ly90b3AtdXAtNGRiMDEtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcCIsCiAgInByb2plY3RJZCI6ICJ0b3AtdXAtNGRiMDEiLAogICJzdG9yYWdlQnVja2V0IjogInRvcC11cC00ZGIwMS5hcHBzcG90LmNvbSIsCiAgIm1lc3NhZ2luZ1NlbmRlcklkIjogIjI2NDU0ODE5NzQ3MyIsCiAgImFwcElkIjogIjE6MjY0NTQ4MTk3NDczOndlYjoxN2E1ZjFiNTYyMmQ0NjRmNWQ3NjIwIiwKICAibWVhc3VyZW1lbnRJZCI6ICJHLVpFTUtKM0JEMEcifQ==";
 
     function decodeConfig(encoded) {
@@ -447,7 +477,6 @@
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // UI আপডেট ফাংশন
     function updateUI(user) {
         const navContainer = document.getElementById('authNavContainer');
         if (!navContainer) return;
@@ -482,14 +511,13 @@
 
     onAuthStateChanged(auth, updateUI);
 
-    // Prompt বাটনের ইভেন্ট
     document.getElementById('promptLoginBtn')?.addEventListener('click', () => {
         const fakeBtn = document.getElementById('fakeLoginBtn');
         if (fakeBtn) fakeBtn.click();
     });
 </script>
 
-<!-- ================== অ্যান্টি-ফিশিং ও ডেভ টুলস ডিটেকশন (Easy Premium-এর কৌশলে) ================== -->
+<!-- ================== অ্যান্টি-ফিশিং ও ডেভ টুলস ডিটেকশন ================== -->
 <script>
 (function() {
     'use strict';
@@ -617,7 +645,7 @@
 })();
 </script>
 
-<!-- ================== ক্যারোসেল কন্ট্রোল হাইড করার স্ক্রিপ্ট (আপনার দেওয়া) ================== -->
+<!-- ================== ক্যারোসেল কন্ট্রোল হাইড করার স্ক্রিপ্ট ================== -->
 <script>
 (function() {
     function removeSliderElements() {
