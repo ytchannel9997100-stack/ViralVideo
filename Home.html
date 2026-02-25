@@ -3,8 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>Home - Panel Sell</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- ================== আপডেটেড ভিউপোর্ট (Easy Premium থেকে) ================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="description" content="Discover the ultimate destination for game panel at panelsell the latest apk mod and panel online. Enjoy competitive prices, fast delivery, and excellent customer service. Elevate your gaming experience with panelsell.store." />
     <meta name="keywords" content="Free Fire, Topup, Garena, Diamond hack, panelsell, panel sell, free fire panel" />
 
@@ -58,30 +58,34 @@
             --footer-font-color: #bbbbbb;
         }
 
+        /* ================== টপের সাদা অংশ দূর করার জন্য গুরুত্বপূর্ণ সংযোজন (Easy Premium থেকে) ================== */
         html, body {
             background-color: #000000 !important;
-            margin: 0;
-            padding: 0;
-            min-height: 100%;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
         }
 
         body {
-            background-color: #000000 !important;
+            background: #000000 !important;
+            background-attachment: fixed !important;
             color: #e0e0e0 !important;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
         }
 
         .body-bg {
             background-color: #000000 !important;
-            min-height: 100vh;
+            flex: 1;
+            width: 100%;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* হেডারের কোন বর্ডার নেই (আপনার আগের স্টাইল) */
         .header {
             background-color: #000000 !important;
             border-bottom: none !important;
@@ -119,6 +123,7 @@
             color: #e0e0e0;
         }
 
+        /* কোন প্রকার বর্ডার বা আউটলাইন সাদা না হয় */
         * {
             border-color: #333 !important;
         }
@@ -490,20 +495,18 @@
     'use strict';
 
     const CONFIG = {
-        SESSION_TIMEOUT: 30 * 60 * 1000, // 30 মিনিট
+        SESSION_TIMEOUT: 30 * 60 * 1000,
         MAX_ATTEMPTS: 5,
         RATE_LIMIT_WINDOW: 15 * 60 * 1000,
         ENFORCE_HTTPS: true,
-        REDIRECT_ON_DEVTOOLS: true, // ডেভ টুলস ডিটেক্ট করলে রিডাইরেক্ট
-        REDIRECT_URL: 'https://panelsell.store/page/contact-us' // রিডাইরেক্ট URL (আপনার ইচ্ছামত)
+        REDIRECT_ON_DEVTOOLS: true,
+        REDIRECT_URL: 'https://panelsell.store/page/contact-us'
     };
 
-    // HTTPS ফোর্স
     if (CONFIG.ENFORCE_HTTPS && location.protocol !== 'https:' && location.hostname !== 'localhost' && !location.hostname.includes('127.0.0.1')) {
         location.replace('https://' + location.host + location.pathname + location.search);
     }
 
-    // ক্লিকজ্যাকিং প্রোটেকশন
     if (self !== top) {
         try { top.location.href = self.location.href; } catch (e) {
             document.body.innerHTML = '<h1 style="color:red;text-align:center;padding:50px;">Access Denied</h1>';
@@ -511,11 +514,10 @@
         }
     }
 
-    // ডেভ টুলস ডিটেকশন (রিডাইরেক্ট সহ)
     let devToolsOpened = false;
     function detectDevTools() {
         const start = performance.now();
-        debugger; // ডিবাগার ট্রিগার
+        debugger;
         const end = performance.now();
 
         if (end - start > 100) {
@@ -531,7 +533,6 @@
     setInterval(detectDevTools, 1000);
     setTimeout(detectDevTools, 500);
 
-    // রেট লিমিটিং
     window._rateLimitStore = window._rateLimitStore || { attempts: {}, blockUntil: {} };
     window.checkRateLimit = function(action, userId = 'anonymous') {
         const key = `${action}_${userId}`;
@@ -549,7 +550,6 @@
         return { allowed: true };
     };
 
-    // সেশন টাইমআউট
     let sessionTimer;
     function resetSessionTimer() {
         if (sessionTimer) clearTimeout(sessionTimer);
@@ -568,13 +568,11 @@
         document.addEventListener(event, resetSessionTimer, { passive: true });
     });
 
-    // XSS প্রোটেকশন (ইনপুট স্যানিটাইজ)
     function sanitizeInput(input) {
         if (typeof input !== 'string') return input;
         return input.replace(/[<>"'`=]/g, '');
     }
 
-    // লোকাল স্টোরেজ এনক্রিপশন (সংবেদনশীল ডেটার জন্য)
     const originalSetItem = localStorage.setItem;
     const originalGetItem = localStorage.getItem;
     const sensitiveKeys = ['user', 'session', 'token', 'auth'];
@@ -598,14 +596,12 @@
         return originalGetItem.call(this, key);
     };
 
-    // কীবোর্ড শর্টকাট ব্লক
     document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83)) { e.preventDefault(); return false; } // Ctrl+U, Ctrl+S
-        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; } // Ctrl+Shift+I
-        if (e.keyCode === 123) { e.preventDefault(); return false; } // F12
+        if (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83)) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; }
+        if (e.keyCode === 123) { e.preventDefault(); return false; }
     });
 
-    // রাইট ক্লিক, ড্র্যাগ, সিলেক্ট নিষ্ক্রিয়
     document.addEventListener('contextmenu', e => e.preventDefault());
     document.addEventListener('mousedown', e => { if (e.button === 2) e.preventDefault(); });
     document.addEventListener('touchstart', e => {
