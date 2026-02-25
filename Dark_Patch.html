@@ -8,7 +8,7 @@
     <meta name="description" content="Discover the ultimate destination for game panel at panelsell the latest apk mod and panel online. Enjoy competitive prices, fast delivery, and excellent customer service. Elevate your gaming experience with panelsell.store.">
     <meta name="keywords" content="Free Fire,Topup,Id code,Free diamond,Garena,Topup garena,Fftopup,Ff topup,Ff hack,Diamond hack,Low price diamond,BD Games Bazar,bdgamesbazar.com,bdgamesbazar com,bdgamesbazar net,Free fire topup,Free fire airdrop,Garena shell,Uid topup,Weekly topup,Monthly topup,100℅ bonus topup free fire,Less is more topup,Unipin voucher bd,Unipin buy,Weekly lite,panelsell,panel sell,free fire panel">
 
-    <!-- ================== সিকিউরিটি মেটা ট্যাগ (Easy Premium থেকে) ================== -->
+    <!-- ================== সিকিউরিটি মেটা ট্যাগ ================== -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; font-src 'self' https: data:; style-src 'self' https: 'unsafe-inline'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="format-detection" content="telephone=no, address=no, email=no">
@@ -93,7 +93,32 @@
             display: none !important;
         }
 
-        /* নসস্ক্রিপ্ট বার্তার জন্য স্টাইল (Easy Premium থেকে) */
+        /* Drip_Client.html এর মত কালার স্টাইল */
+        .bg-white {
+            background-color: #ffffff !important;
+        }
+        
+        .text-gray-400 {
+            color: #9ca3af !important;
+        }
+        
+        .text-black {
+            color: #000000 !important;
+        }
+        
+        .border {
+            border-color: #e5e7eb !important;
+        }
+        
+        hr {
+            border-color: #e5e7eb !important;
+        }
+        
+        .form-input {
+            background-color: #ffffff !important;
+            border-color: #ced4da !important;
+        }
+
         .noscript-overlay {
             position:fixed;
             top:0;
@@ -119,7 +144,7 @@
         }
     </style>
 
-    <!-- ================== নসস্ক্রিপ্ট: JS নিষ্ক্রিয় থাকলে বার্তা (Easy Premium থেকে) ================== -->
+    <!-- নসস্ক্রিপ্ট -->
     <noscript>
         <style>
             body { display: none !important; }
@@ -232,13 +257,13 @@
 <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
 <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 
-<!-- Firebase SDK (মডুলার সংস্করণ) -->
+<!-- Firebase SDK -->
 <script type="import">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // ================== এনকোডেড ফায়ারবেস কনফিগ (Easy Premium স্টাইল) ==================
+    // এনকোডেড ফায়ারবেস কনফিগ
     const encodedConfig = "ewogICJhcGlLZXkiOiAiQUl6YVN5QXk0U1Q5QTRLVUJ6UXB1TnBqZEQ2YVU0MHM4cDFZTkVnIiwKICAiYXV0aERvbWFpbiI6ICJ0b3AtdXAtNGRiMDEuZmlyZWJhc2VhcHAuY29tIiwKICAiZGF0YWJhc2VVUkwiOiAiaHR0cHM6Ly90b3AtdXAtNGRiMDEtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcCIsCiAgInByb2plY3RJZCI6ICJ0b3AtdXAtNGRiMDEiLAogICJzdG9yYWdlQnVja2V0IjogInRvcC11cC00ZGIwMS5hcHBzcG90LmNvbSIsCiAgIm1lc3NhZ2luZ1NlbmRlcklkIjogIjI2NDU0ODE5NzQ3MyIsCiAgImFwcElkIjogIjE6MjY0NTQ4MTk3NDczOndlYjoxN2E1ZjFiNTYyMmQ0NjRmNWQ3NjIwIiwKICAibWVhc3VyZW1lbnRJZCI6ICJHLVpFTUtKM0JEMEcifQ==";
 
     function decodeConfig(encoded) {
@@ -259,7 +284,6 @@
     const HOME_PAGE_URL = "https://ytchannel9997100-stack.github.io/ViralVideo/Home.html";
     const PLATFORM = "dark";
 
-    // অথ স্টেট চেক
     onAuthStateChanged(auth, (user) => {
         if (!user) {
             window.location.href = HOME_PAGE_URL;
@@ -278,7 +302,7 @@
             const productsData = snapshot.val();
             const products = Object.entries(productsData).map(([id, data]) => ({ id, ...data }));
 
-            const filtered = products.filter(p => p.platform === PLATFORM || (p.name && p.name.toLowerCase().includes('dark patch')));
+            const filtered = products.filter(p => p.platform === PLATFORM);
             filtered.sort((a, b) => (a.order || a.price) - (b.order || b.price));
 
             const container = document.querySelector('.package-item-outer');
@@ -351,27 +375,24 @@
     }
 </script>
 
-<!-- ================== অ্যান্টি-ফিশিং ও স্মার্ট সিকিউরিটি স্ক্রিপ্ট (Easy Premium থেকে) ================== -->
+<!-- সিকিউরিটি স্ক্রিপ্ট -->
 <script>
 (function() {
     'use strict';
 
-    // কনফিগারেশন
     const CONFIG = {
-        SESSION_TIMEOUT: 30 * 60 * 1000, // 30 মিনিট
+        SESSION_TIMEOUT: 30 * 60 * 1000,
         MAX_ATTEMPTS: 5,
         RATE_LIMIT_WINDOW: 15 * 60 * 1000,
-        ALERT_ON_DEVTOOLS: false, // সতর্কতা নয়, সরাসরি রিডাইরেক্ট
+        ALERT_ON_DEVTOOLS: false,
         ENFORCE_HTTPS: true,
-        REDIRECT_URL: 'https://panelsell.store/topup/Dark%20Patch' // রিডাইরেক্ট করার লিংক (একই পৃষ্ঠায় রিফ্রেশ করা যায়, অথবা অন্য কোনো পাতা)
+        REDIRECT_URL: 'https://panelsell.store/topup/Dark%20Patch'
     };
 
-    // HTTPS ফোর্স
     if (CONFIG.ENFORCE_HTTPS && location.protocol !== 'https:' && location.hostname !== 'localhost' && !location.hostname.includes('127.0.0.1')) {
         location.replace('https://' + location.host + location.pathname + location.search);
     }
 
-    // ক্লিকজ্যাকিং প্রোটেকশন
     if (self !== top) {
         try {
             top.location.href = self.location.href;
@@ -381,20 +402,16 @@
         }
     }
 
-    // ডেভ টুলস ডিটেকশন (রিডাইরেক্ট সহ)
     let devToolsOpened = false;
     function detectDevTools() {
         const start = performance.now();
-        debugger; // ডিবাগার ট্রিগার
+        debugger;
         const end = performance.now();
 
         if (end - start > 100) {
             if (!devToolsOpened) {
                 devToolsOpened = true;
-                // সরাসরি রিডাইরেক্ট (একই পৃষ্ঠায় রিফ্রেশ বা অন্য কোনো URL)
-                // আপনি চাইলে এখানে Privacy Policy পৃষ্ঠার লিংক দিতে পারেন
-                // window.location.href = 'https://panelsell.store/privacy';
-                window.location.reload(); // অথবা রিফ্রেশ করে দিন
+                window.location.reload();
             }
             return true;
         }
@@ -404,7 +421,6 @@
     setInterval(detectDevTools, 1000);
     setTimeout(detectDevTools, 500);
 
-    // রেট লিমিটিং
     window._rateLimitStore = window._rateLimitStore || { attempts: {}, blockUntil: {} };
 
     window.checkRateLimit = function(action, userId = 'anonymous') {
@@ -428,26 +444,21 @@
         return { allowed: true };
     };
 
-    // সেশন টাইমআউট
     let sessionTimer;
     function resetSessionTimer() {
         if (sessionTimer) clearTimeout(sessionTimer);
-        sessionTimer = setTimeout(() => {
-            // ফায়ারবেজ অথ না থাকলে কিছু করবে না
-        }, CONFIG.SESSION_TIMEOUT);
+        sessionTimer = setTimeout(() => {}, CONFIG.SESSION_TIMEOUT);
     }
 
     ['click', 'keypress', 'scroll', 'mousemove', 'touchstart'].forEach(event => {
         document.addEventListener(event, resetSessionTimer, { passive: true });
     });
 
-    // XSS প্রোটেকশন (ইনপুট স্যানিটাইজ)
     function sanitizeInput(input) {
         if (typeof input !== 'string') return input;
         return input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F;').replace(/\\/g, '&#x5C;').replace(/`/g, '&#96;').replace(/=/g, '&#61;');
     }
 
-    // ফর্ম প্রোটেকশন
     function setupFormProtection() {
         document.querySelectorAll('form').forEach(form => {
             if (form._protected) return;
@@ -469,7 +480,6 @@
     const observer = new MutationObserver(() => { setupFormProtection(); });
     observer.observe(document.body, { childList: true, subtree: true });
 
-    // লোকাল স্টোরেজ এনক্রিপশন
     const originalSetItem = localStorage.setItem;
     const originalGetItem = localStorage.getItem;
     const sensitiveKeys = ['user', 'session', 'token', 'auth'];
@@ -494,7 +504,6 @@
         return originalGetItem.call(this, key);
     };
 
-    // ডোমেইন ভেরিফিকেশন
     function verifyDomain() {
         const allowedDomains = ['panelsell.store', 'www.panelsell.store', 'localhost', '127.0.0.1'];
         const currentHost = window.location.hostname;
@@ -504,19 +513,16 @@
     }
     verifyDomain();
 
-    // কীবোর্ড শর্টকাট ব্লক
     document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; } // Ctrl+U
-        if (e.ctrlKey && e.keyCode === 83) { e.preventDefault(); return false; } // Ctrl+S
-        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; } // Ctrl+Shift+I
-        if (e.keyCode === 123) { e.preventDefault(); return false; } // F12
+        if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.keyCode === 83) { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; }
+        if (e.keyCode === 123) { e.preventDefault(); return false; }
     });
 
-    // রাইট ক্লিক প্রোটেকশন
     document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
     document.addEventListener('mousedown', function(e) { if (e.button === 2) { e.preventDefault(); return false; } });
 
-    // লং-প্রেস প্রোটেকশন (মোবাইল)
     document.addEventListener('touchstart', function(e) {
         let touchTimer;
         const handleTouchEnd = function() { clearTimeout(touchTimer); document.removeEventListener('touchend', handleTouchEnd); };
@@ -530,7 +536,7 @@
 })();
 </script>
 
-<!-- পে বাটনের জন্য অতিরিক্ত হ্যান্ডলার (জিকুয়েরি ছাড়া) -->
+<!-- পে বাটন হ্যান্ডলার -->
 <script>
     (function() {
         document.addEventListener('click', function(e) {
