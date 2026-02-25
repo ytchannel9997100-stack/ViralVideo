@@ -29,15 +29,17 @@
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/custom-styles.css?6327">
 
     <!-- ================== নিরাপত্তা মেটা ট্যাগ ================== -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; font-src 'self' https: data:; style-src 'self' https: 'unsafe-inline'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="format-detection" content="telephone=no, address=no, email=no">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta name="format-detection" content="telephone=no, address=no, email=no">
 
     <style>
+        /* Drip_Client.html এর মতো স্টাইল */
         :root {
             --theme-color: #fb00ff;
             --logo-color: #5e5e5e;
@@ -58,17 +60,51 @@
             margin: 0 !important;
             padding: 0 !important;
             min-height: 100%;
+            width: 100%;
         }
 
         body {
             background-color: #000000 !important;
+            color: #e0e0e0 !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .body-bg {
             background-color: #000000 !important;
             min-height: 100vh;
+            width: 100%;
         }
 
+        .header {
+            background-color: #000000 !important;
+        }
+
+        /* Drip_Client.html এর মত কালার স্টাইল */
+        .bg-white {
+            background-color: #ffffff !important;
+        }
+        
+        .text-gray-400 {
+            color: #9ca3af !important;
+        }
+        
+        .text-black {
+            color: #000000 !important;
+        }
+        
+        .border {
+            border-color: #e5e7eb !important;
+        }
+        
+        hr {
+            border-color: #e5e7eb !important;
+        }
+        
+        .form-input {
+            background-color: #ffffff !important;
+            border-color: #ced4da !important;
+        }
+        
         #pay {
             background-color: #2563eb !important;
             color: #ffffff !important;
@@ -84,9 +120,34 @@
         .hidden {
             display: none !important;
         }
+
+        /* নসস্ক্রিপ্ট বার্তার জন্য স্টাইল */
+        .noscript-overlay {
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            background:#000;
+            color:#ff0000;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            z-index:999999;
+            font-family:monospace;
+            text-align:center;
+            flex-direction:column;
+        }
+        .pulse {
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
     </style>
 
-    <!-- ================== নসস্ক্রিপ্ট: JS নিষ্ক্রিয় থাকলে বার্তা ================== -->
+    <!-- ================== নসস্ক্রিপ্ট ================== -->
     <noscript>
         <style>
             body { display: none !important; }
@@ -96,8 +157,8 @@
                 overflow: hidden !important;
             }
         </style>
-        <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#ff0000;display:flex;align-items:center;justify-content:center;z-index:999999;font-family:monospace;text-align:center;flex-direction:column;">
-            <div style="animation: pulse 1s infinite;">
+        <div class="noscript-overlay">
+            <div class="pulse">
                 <h1 style="font-size:120px;margin:0;text-shadow:0 0 20px #ff0000;">🖕</h1>
                 <h1 style="font-size:72px;margin:20px 0;letter-spacing:10px;">FUCK YOU</h1>
                 <p style="font-size:24px;margin:20px 0;color:#fff;">JavaScript is DISABLED</p>
@@ -105,12 +166,6 @@
                 <p style="font-size:16px;color:#666;margin-top:30px;">Enable JavaScript to access this site</p>
             </div>
         </div>
-        <style>
-            @keyframes pulse {
-                0%, 100% { transform: scale(1); opacity: 1; }
-                50% { transform: scale(1.1); opacity: 0.8; }
-            }
-        </style>
     </noscript>
 </head>
 <body>
@@ -198,11 +253,12 @@
             </div>
         </div>
     </div>
-
-    <script src="https://panelsell.store/assets/template/js/jquery-3.7.1.min.js"></script>
-    <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
-    <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 </div>
+
+<!-- Scripts -->
+<script src="https://panelsell.store/assets/template/js/jquery-3.7.1.min.js"></script>
+<script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 
 <!-- ================== সুরক্ষিত ফায়ারবেস ও নিরাপত্তা স্ক্রিপ্ট ================== -->
 <script type="module">
