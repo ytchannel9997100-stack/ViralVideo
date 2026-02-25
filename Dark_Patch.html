@@ -204,18 +204,6 @@
             100% { box-shadow: 0 0 0 0 rgba(0, 132, 255, 0); }
         }
 
-        @media (max-width: 768px) {
-            .messenger-float {
-                bottom: 20px;
-                right: 20px;
-                width: 50px;
-                height: 50px;
-            }
-            .messenger-float i {
-                font-size: 1.6rem;
-            }
-        }
-
         /* নসস্ক্রিপ্ট স্টাইল (Home.html থেকে) */
         .noscript-warning {
             position: fixed;
@@ -232,6 +220,58 @@
             font-family: monospace;
             text-align: center;
             flex-direction: column;
+        }
+
+        /* === RESPONSIVE FIXES: মোবাইলে লেখা ও ছবির আকার ঠিক করা === */
+        @media (max-width: 768px) {
+            /* প্রোডাক্ট ইমেজ ছোট করা */
+            .rounded-3xl.p-2.w-24.h-24 {
+                width: 80px !important;
+                height: 80px !important;
+            }
+
+            /* হেডিং সাইজ কমানো */
+            h2.text-lg {
+                font-size: 1.1rem !important; /* text-base এর কাছাকাছি */
+            }
+            ._order_header_step_circle + h2.text-lg {
+                font-size: 1rem !important;
+            }
+
+            /* প্যাকেজ আইটেমের লেখা ছোট করা */
+            .variation_list .text-xs.font-primary {
+                font-size: 0.7rem !important;
+            }
+            .variation_list .fb-normal {
+                font-size: 0.8rem !important;
+            }
+
+            /* Rules & Conditions হেডিং */
+            .bg-white.border.rounded-md h1.font-bold {
+                font-size: 1.1rem !important;
+            }
+            .bg-white.border.rounded-md p {
+                font-size: 0.85rem !important;
+            }
+
+            /* ইনপুট ও বাটনের গ্রুপ ছোট পর্দায় স্ট্যাক না হয়ে এক লাইনে থাকবে */
+            .flex.gap-2 {
+                flex-wrap: nowrap;
+            }
+            #whatsApp_number_input {
+                font-size: 0.85rem !important;
+                padding: 6px 8px !important;
+            }
+            #pay {
+                font-size: 0.85rem !important;
+                padding: 0 12px !important;
+                white-space: nowrap;
+            }
+
+            /* প্যাকেজ গ্রিডের গ্যাপ কমানো */
+            .package-item-outer {
+                gap: 0.5rem !important;
+            }
         }
     </style>
 
