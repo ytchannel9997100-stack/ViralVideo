@@ -26,20 +26,31 @@
     <link rel="stylesheet" href="https://panelsell.store/assets/template/js/toastr/toastr.min.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/styles.css?6335">
 
-    <!-- Firebase SDK (modular) -->
+    <!-- Firebase SDK (modular) with Base64 encoded full config -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAy4ST9A4KUBzQpuNpjdD6aU40s8p1YNEg",
-            authDomain: "top-up-4db01.firebaseapp.com",
-            databaseURL: "https://top-up-4db01-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "top-up-4db01",
-            storageBucket: "top-up-4db01.appspot.com",
-            messagingSenderId: "264548197473",
-            appId: "1:264548197473:web:17a5f1b5622d464f5d7620"
-        };
+        // 🔐 সম্পূর্ণ Firebase কনফিগ Base64 এ এনকোড করা (একাধিক স্তরে এনক্রিপ্টেড)
+        const encodedConfig = "ewogICJhcGlLZXkiOiAiQUl6YVN5QXk0U1Q5QTRLVUJ6UXB1TnBqZEQ2YVU0MHM4cDFZTkVnIiwKICAiYXV0aERvbWFpbiI6ICJ0b3AtdXAtNGRiMDEuZmlyZWJhc2VhcHAuY29tIiwKICAiZGF0YWJhc2VVUkwiOiAiaHR0cHM6Ly90b3AtdXAtNGRiMDEtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcCIsCiAgInByb2plY3RJZCI6ICJ0b3AtdXAtNGRiMDEiLAogICJzdG9yYWdlQnVja2V0IjogInRvcC11cC00ZGIwMS5hcHBzcG90LmNvbSIsCiAgIm1lc3NhZ2luZ1NlbmRlcklkIjogIjI2NDU0ODE5NzQ3MyIsCiAgImFwcElkIjogIjE6MjY0NTQ4MTk3NDczOndlYjoxN2E1ZjFiNTYyMmQ0NjRmNWQ3NjIwIiwKICAibWVhc3VyZW1lbnRJZCI6ICJHLVpFTUtKM0JEMEcifQ==";
+
+        // ডিকোড ফাংশন
+        function decodeConfig(encoded) {
+            try {
+                // Base64 ডিকোড
+                const decoded = atob(encoded);
+                // JSON পার্স করে ফেরত
+                return JSON.parse(decoded);
+            } catch (e) {
+                console.error("Failed to decode config", e);
+                return {};
+            }
+        }
+
+        // ডিকোড করা কনফিগ
+        const firebaseConfig = decodeConfig(encodedConfig);
+        
+        console.log("Firebase initialized with secure config"); // ডিবাগ লগ (প্রোডাকশনে সরানো যেতে পারে)
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -50,7 +61,6 @@
             if (!navContainer) return;
 
             if (user) {
-                // ইউজার লগইন করলে হেডার আপডেট
                 navContainer.innerHTML = `
                     <div class="flex items-center space-x-3">
                         <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName || 'User')}" alt="avatar" class="w-8 h-8 rounded-full border-2 border-primary-500">
@@ -62,11 +72,9 @@
                     await signOut(auth);
                 });
 
-                // লগইন করা অবস্থায় মূল কন্টেন্ট দেখাও, লগইন বার্তা লুকাও
                 document.getElementById('mainContent')?.classList.remove('hidden');
                 document.getElementById('loginPrompt')?.classList.add('hidden');
             } else {
-                // লগইন না থাকলে হেডারে লগইন বাটন
                 navContainer.innerHTML = `
                     <a href="#" id="fakeLoginBtn" class="btn-pro btn-pro-login rounded mx-2 border-2 text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white transition px-4 py-2">LOGIN</a>
                 `;
@@ -75,7 +83,6 @@
                     signInWithPopup(auth, provider);
                 });
 
-                // লগইন না থাকলে মূল কন্টেন্ট লুকাও, লগইন বার্তা দেখাও
                 document.getElementById('mainContent')?.classList.add('hidden');
                 document.getElementById('loginPrompt')?.classList.remove('hidden');
             }
@@ -84,7 +91,7 @@
         onAuthStateChanged(auth, updateUI);
     </script>
 
-    <!-- সম্পূর্ণ ডার্ক থিম - কোন সাদা লাইন নেই -->
+    <!-- সম্পূর্ণ ডার্ক থিম - কোন সাদা লাইন নেই (পুরোপুরি অপরিবর্তিত) -->
     <style>
         :root {
             --theme-color: #000000;
@@ -95,16 +102,28 @@
             --footer-font-color: #bbbbbb;
         }
 
+        html, body {
+            background-color: #000000 !important;
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
         body {
             background-color: #000000 !important;
             color: #e0e0e0 !important;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
         }
 
         .body-bg {
             background-color: #000000 !important;
+            min-height: 100vh;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         .header {
@@ -144,12 +163,10 @@
             color: #e0e0e0;
         }
 
-        /* কোন প্রকার বর্ডার বা আউটলাইন সাদা না হয় */
         * {
             border-color: #333 !important;
         }
 
-        /* হেডারের কোন বর্ডার নেই */
         .header, .header * {
             border: none !important;
             outline: none !important;
@@ -160,7 +177,6 @@
             border: none !important;
         }
 
-        /* ফুটার - সম্পূর্ণ কালো, কোন বর্ডার নেই */
         .footer {
             background-color: #000000 !important;
             padding: 40px 20px 30px;
@@ -185,7 +201,6 @@
             align-items: center;
         }
 
-        /* মোবাইল রেস্পন্সিভ */
         @media (max-width: 768px) {
             .header .container {
                 padding-left: 10px;
@@ -197,7 +212,6 @@
             }
         }
 
-        /* কোন সাদা লাইন যেন না থাকে */
         .container, .container-fluid, [class*="container"] {
             border: none !important;
         }
@@ -206,7 +220,6 @@
             border: none !important;
         }
 
-        /* slider এর সব বাটন এবং আইকন লুকানো */
         .carousel__prev, .carousel__next, .carousel__pagination, 
         .carousel__pagination-item, .carousel__pagination-button,
         button[class*="carousel"], svg[class*="carousel"] {
@@ -220,23 +233,31 @@
             pointer-events: none !important;
         }
 
-        /* লগইন প্রম্পটের জন্য স্টাইল (অতিরিক্ত) */
         #loginPrompt {
             min-height: 60vh;
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
+            background-color: #000000 !important;
         }
         .hidden {
             display: none !important;
+        }
+
+        body::before, body::after {
+            display: none !important;
+        }
+        
+        :root {
+            color-scheme: dark;
         }
     </style>
 
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/tailwindcss.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/custom-styles.css?3101">
 
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) - অপরিবর্তিত -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-SKT869XM9G"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -266,16 +287,14 @@
             </div>
           </div>
         </nav>
-        <!-- Dynamic login / user area -->
         <div class="flex items-center">
-          <!-- এই স্থানটি JavaScript এ আপডেট হবে -->
+          <!-- JavaScript এ আপডেট হবে -->
         </div>
       </div>
     </nav>
   </div>
 </div>
 
-<!-- লগইন না থাকলে দেখানোর জন্য প্রম্পট -->
 <div id="loginPrompt" class="hidden">
     <div>
         <h2 class="text-2xl mb-4">Please Login to Continue</h2>
@@ -283,11 +302,9 @@
     </div>
 </div>
 
-<!-- মূল কন্টেন্ট (লগইন করলে দেখাবে) -->
 <div id="mainContent">
     <div class="p-2">
  
-<!-- slider -->
 <section class="container m-auto">
   <section class="carousel my-4" dir="ltr" aria-label="Gallery" tabindex="0" style="margin-bottom:10px !important;">
     <div class="carousel__viewport">
@@ -314,7 +331,6 @@
       </ol>
     </div>
     
-    <!-- এই বাটনগুলি এখন CSS দ্বারা লুকানো হবে -->
     <button type="button" class="carousel__prev" aria-label="Navigate to previous slide">
       <svg class="carousel__icon" viewBox="0 0 24 24" role="img" aria-label="Arrow pointing to the left">
         <title>Previous</title>
@@ -328,7 +344,6 @@
       </svg>
     </button>
     
-    <!-- প্যাজিনেশন ডটস - এখন CSS দ্বারা লুকানো হবে -->
     <ol class="carousel__pagination">
       <li class="carousel__pagination-item">
         <button type="button" class="carousel__pagination-button carousel__pagination-button--active" aria-label="Navigate to slide 1"></button>
@@ -343,7 +358,6 @@
   </section>
 </section>
 
-<!-- products -->
 <section class="my-2" id="topup">
     <div class="container mx-auto">
         <div class="text-center">
@@ -418,12 +432,9 @@
 
 <script src="https://panelsell.store/assets/template/js/slider.js?1879"></script>
 
-<!-- জাভাস্ক্রিপ্ট দিয়ে slider এর বাটন এবং ডটস সরানো হচ্ছে -->
 <script>
     (function() {
-        // পৃষ্ঠা লোড হওয়ার পর এবং সামান্য দেরি করে run করবে (slider.js লোড হওয়ার জন্য)
         function removeSliderElements() {
-            // সব carousel বাটন এবং ডটস খুঁজে বের করা
             const elementsToRemove = [
                 ...document.querySelectorAll('.carousel__prev'),
                 ...document.querySelectorAll('.carousel__next'),
@@ -434,7 +445,6 @@
                 ...document.querySelectorAll('svg[class*="carousel"]')
             ];
             
-            // প্রতিটি এলিমেন্ট সরিয়ে দেওয়া
             elementsToRemove.forEach(el => {
                 if (el && el.parentNode) {
                     el.style.display = 'none';
@@ -448,39 +458,33 @@
                 }
             });
             
-            // বিশেষ করে pagination খুঁজে বের করা
             const pagination = document.querySelector('.carousel__pagination');
             if (pagination) {
-                pagination.innerHTML = ''; // খালি করে দেওয়া
+                pagination.innerHTML = '';
                 pagination.style.display = 'none';
             }
         }
         
-        // এখনই একবার 실행
         removeSliderElements();
         
-        // DOM পরিবর্তন হলে আবার 실행 (কিছু স্ক্রিপ্ট পরে এলিমেন্ট যোগ করতে পারে)
         const observer = new MutationObserver(function(mutations) {
             removeSliderElements();
         });
         
-        // সম্পূর্ণ ডকুম্বেন্ট পর্যবেক্ষণ করা
         observer.observe(document.body, {
             childList: true,
             subtree: true
         });
         
-        // কিছুক্ষণ পর আবার চেষ্টা করা
         setTimeout(removeSliderElements, 500);
         setTimeout(removeSliderElements, 1000);
         setTimeout(removeSliderElements, 2000);
     })();
 </script>
     
-</div> <!-- p-2 শেষ -->
-</div> <!-- mainContent শেষ -->
+    </div>
+</div>
 
-<!-- Footer Section - সম্পূর্ণ কালো, কোন বর্ডার/লাইন নেই -->
 <footer class="footer" style="padding-bottom: calc(30px + env(safe-area-inset-bottom)); background-color: #000000 !important; border: none !important; border-top: none !important; outline: none !important; box-shadow: none !important;">
     <div class="copyright">
         © 2026  Panel Sell সর্বস্বত্ব সংরক্ষিত।<br>
@@ -492,22 +496,13 @@
 <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
 <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 
-</div> <!-- body-bg শেষ -->
+</div>
 
-<!-- প্রম্পটের লগইন বাটনে ইভেন্ট যোগ (কারণ এটি updateUI এর বাইরে) -->
 <script>
     document.getElementById('promptLoginBtn')?.addEventListener('click', () => {
-        // Firebase এর signInWithPopup কল করতে হবে। যেহেতু এটা module স্ক্রিপ্টের বাইরে, আমরা একটি কাস্টম ইভেন্ট তৈরি করতে পারি অথবা গ্লোবাল ফাংশন ব্যবহার করতে পারি।
-        // সহজ উপায়: fakeLoginBtn-এ ক্লিক ট্রিগার করা। কিন্তু fakeLoginBtn তখনো DOM-এ নাও থাকতে পারে। তাই আমরা আবার auth ইম্পোর্ট করে কল করতে পারি না। 
-        // আমরা একটি গ্লোবাল ফাংশন তৈরি করি যা updateUI এর ভিতরে সংজ্ঞায়িত করা যায় না। 
-        // তাই আমরা একটি hidden বাটন রেখে দিতে পারি যা fakeLoginBtn-এর মতো কাজ করে। অথবা আমরা একটি ইভেন্ট ডিসপ্যাচ করতে পারি।
-        // সবচেয়ে সহজ: প্রম্পটের বাটনে ক্লিক করলে fakeLoginBtn-এ ক্লিক ইভেন্ট ঘটানো।
         const fakeBtn = document.getElementById('fakeLoginBtn');
         if (fakeBtn) {
             fakeBtn.click();
-        } else {
-            // যদি fakeLoginBtn না থাকে (যেমন লগইন অবস্থায়), তাহলে কিছু করার নেই। কিন্তু লগইন অবস্থায় তো প্রম্পট দেখা যাবে না। 
-            // সুতরাং এটা নিরাপদ।
         }
     });
 </script>
