@@ -80,6 +80,10 @@
             bottom: 0;
         }
 
+        /* জোরপূর্বক html এবং body এর ব্যাকগ্রাউন্ড কালো */
+        html {
+            background-color: #000000 !important;
+        }
         body {
             background-color: #000000 !important;
             color: #e0e0e0 !important;
@@ -96,7 +100,7 @@
             padding-top: 0;
         }
 
-        /* হেডারের জন্য ফিক্স */
+        /* হেডারের জন্য ফিক্স - উপরের মার্জিন ও প্যাডিং শূন্য */
         .header {
             background-color: #000000 !important;
             border-bottom: none !important;
@@ -107,6 +111,11 @@
         .header .container {
             margin-top: 0 !important;
             padding-top: 0 !important;
+        }
+
+        /* body-র প্রথম এলিমেন্টের উপরের মার্জিন শূন্য */
+        body > *:first-child {
+            margin-top: 0 !important;
         }
 
         .logo {
