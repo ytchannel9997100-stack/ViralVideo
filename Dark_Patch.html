@@ -355,7 +355,16 @@
                 const snap = await get(settingsRef);
                 if (!snap.exists()) return;
                 const data = snap.val();
-                // লিংক আপডেট করার লজিক এখানে রাখতে পারেন (ঐচ্ছিক)
+                
+                // Update APK and Video links from database
+                const apkLink = document.getElementById('apk-link');
+                const videoLink = document.getElementById('video-link');
+                if (apkLink && data.downloadLink) {
+                    apkLink.href = data.downloadLink;
+                }
+                if (videoLink && data.videoLink) {
+                    videoLink.href = data.videoLink;
+                }
             } catch (e) {
                 console.error(e);
             }
@@ -491,15 +500,16 @@
                 </form>
             </div>
 
-            <!-- Rules & Conditions (স্ক্রিনশট অনুযায়ী) -->
+            <!-- Rules & Conditions (স্ক্রিনশট অনুযায়ী) - লিংক এখন ডাটাবেজ থেকে আসবে -->
             <div class="mt-2 bg-white border rounded-md">
                 <h1 class="font-bold p-2">Rules & Conditions</h1>
                 <hr>
                 <div class="p-2">
                     <p>✅<strong><em>NOTE: it will run directly on your phone and will be in easy use. (no need virtual or root)</em></strong></p>
                     <p>⚠️ Buyers are requested to please make sure the product is suitable for you before purchasing.<br>Refunds will not be possible after the purchase.</p>
-                    <p>APK LINK 👉 <a href="https://t.me/g_tools_official/1872" style="color:#ff9800;"><span style="text-decoration: underline;">CLICK HERE</span></a></p>
-                    <p>SET-UP VIDEO 👉 <a href="https://youtu.be/nZ2maK61xeY?si=rAV27plkguUHEYZj" style="color:#ff9800;"><span style="text-decoration: underline;">CLICK HERE</span></a></p>
+                    <!-- নিচের লিংকগুলোর href ফায়ারবেস থেকে dynamically সেট হবে -->
+                    <p>APK LINK 👉 <a id="apk-link" href="#" style="color:#ff9800;"><span style="text-decoration: underline;">CLICK HERE</span></a></p>
+                    <p>SET-UP VIDEO 👉 <a id="video-link" href="#" style="color:#ff9800;"><span style="text-decoration: underline;">CLICK HERE</span></a></p>
                 </div>
             </div>
         </div>
