@@ -361,21 +361,21 @@
             }
         }
 
+        // সেটিংস লোড (প্ল্যাটফর্ম অনুযায়ী লিংক আপডেট) - সরাসরি আইডি দিয়ে
         async function loadSettings() {
             try {
                 const settingsRef = ref(db, `__collections__/settings/${PLATFORM}`);
                 const snap = await get(settingsRef);
                 if (!snap.exists()) return;
                 const data = snap.val();
-                const videoLink = data.videoLink || '#';
                 const downloadLink = data.downloadLink || '#';
-                const descDiv = document.querySelector('.p-2');
-                if (descDiv) {
-                    let html = descDiv.innerHTML;
-                    html = html.replace(/<a[^>]*href="[^"]*youtu\.be[^"]*"[^>]*>.*?<\/a>/i, `<a href="${videoLink}" target="_blank"><span style="text-decoration: underline;">CLICK&nbsp;HERE</span></a>`);
-                    html = html.replace(/<a[^>]*href="[^"]*t\.me\/g_tools_official[^"]*"[^>]*>.*?<\/a>/i, `<a href="${downloadLink}" target="_blank"><span style="text-decoration: underline;">CLICK HERE</span></a>`);
-                    descDiv.innerHTML = html;
-                }
+                const videoLink = data.videoLink || '#';
+
+                // সরাসরি আইডি ব্যবহার করে লিংক আপডেট করুন
+                const apkAnchor = document.getElementById('apkLink');
+                const videoAnchor = document.getElementById('videoLink');
+                if (apkAnchor) apkAnchor.href = downloadLink;
+                if (videoAnchor) videoAnchor.href = videoLink;
             } catch (e) {
                 console.log('HG settings not found, using defaults');
             }
@@ -685,15 +685,16 @@
                 </form>
             </div>
 
-            <!-- Rules & Conditions -->
+            <!-- Rules & Conditions - links now fetched from database -->
             <div class="mt-2 bg-white border rounded-md">
                 <h1 class="font-bold p-2">Rules & Conditions</h1>
                 <hr>
                 <div class="p-2">
                     <p>✅<strong><em>NOTE: it will run directly on your phone and will be in easy use. (no need virtual or root)</em></strong></p>
                     <p>⚠️ Buyers are requested to please make sure the product is suitable for you before purchasing.<br>Refunds will not be possible after the purchase.</p>
-                    <p>APK LINK 👉 <a href="https://t.me/g_tools_official/1872" style="color:#ff9800;"><span style="text-decoration: underline;">CLICK HERE</span></a></p>
-                    <p>SET-UP VIDEO 👉 <a href="https://youtu.be/nZ2maK61xeY?si=rAV27plkguUHEYZj" style="color:#ff9800;"><span style="text-decoration: underline;">CLICK HERE</span></a></p>
+                    <!-- Added IDs for dynamic linking from database -->
+                    <p>APK LINK 👉 <a id="apkLink" href="#" style="color:#ff9800;"><span style="text-decoration: underline;">CLICK HERE</span></a></p>
+                    <p>SET-UP VIDEO 👉 <a id="videoLink" href="#" style="color:#ff9800;"><span style="text-decoration: underline;">CLICK HERE</span></a></p>
                 </div>
             </div>
         </div>
