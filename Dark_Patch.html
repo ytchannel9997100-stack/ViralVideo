@@ -8,16 +8,6 @@
     <meta name="description" content="Discover the ultimate destination for game panel at panelsell the latest apk mod and panel online. Enjoy competitive prices, fast delivery, and excellent customer service. Elevate your gaming experience with panelsell.store.">
     <meta name="keywords" content="Free Fire,Topup,Id code,Free diamond,Garena,Topup garena,Fftopup,Ff topup,Ff hack,Diamond hack,Low price diamond,BD Games Bazar,bdgamesbazar.com,bdgamesbazar com,bdgamesbazar net,Free fire topup,Free fire airdrop,Garena shell,Uid topup,Weekly topup,Monthly topup,100℅ bonus topup free fire,Less is more topup,Unipin voucher bd,Unipin buy,Weekly lite,panelsell,panel sell,free fire panel">
 
-    <!-- ================== সিকিউরিটি মেটা ট্যাগ ================== -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; font-src 'self' https: data:; style-src 'self' https: 'unsafe-inline'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta name="format-detection" content="telephone=no, address=no, email=no">
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-
     <link rel="shortcut icon" type="image/png" href="https://panelsell.store/uploads/media/83/01KHN8S679GWKE0HGMHXWAK31T.png">
 
     <meta property="og:type" content="website">
@@ -38,113 +28,141 @@
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/tailwindcss.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/custom-styles.css?6327">
 
+    <!-- ✅ নিরাপত্তা হেডার (Easy Premium-এর মতো) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; font-src 'self' https: data:; style-src 'self' https: 'unsafe-inline'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="format-detection" content="telephone=no, address=no, email=no">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <style>
+        /* 🔒 Easy Premium-এর মতো ডার্ক থিম ও নিরাপত্তা স্টাইল */
         :root {
             --theme-color: #fb00ff;
-            --logo-color: #5e5e5e;
-            --background-color: #000000;
-            --primary-font-color: #000000;
-            --navigation-background-color: #ffffff;
-            --navigation-font-color: #000000;
-            --footer-color: #f200ff;
-            --footer-font-color: #ffffff;
-            --content-box-color: #ffffff;
-            --background-image: linear-gradient(350deg, rgb(244, 249, 255), rgba(237, 244, 255, 0.79)),
-                    url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSNx6o-VZvTZLckkZq1usZxCEuwopKi2Xv1w&s");
+            --primary-bg: #0a0a1a;
+            --secondary-bg: #121230;
+            --accent-color: #ff9800;
+            --text-color: #ffffff;
+            --text-secondary: #b0bec5;
+            --card-bg: rgba(20, 20, 40, 0.9);
+            --border-color: rgba(255, 152, 0, 0.3);
         }
 
         /* টপের সাদা অংশ দূর করার জন্য স্টাইল */
         html, body {
-            background-color: #000000 !important;
+            background: var(--primary-bg) !important;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 50%, #1a1a3a 100%) !important;
+            background-attachment: fixed !important;
             margin: 0 !important;
             padding: 0 !important;
             min-height: 100%;
             width: 100%;
+            color: var(--text-color) !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            background-color: #000000 !important;
-            color: #e0e0e0 !important;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 152, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 188, 212, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 152, 0, 0.03) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
         }
 
         .body-bg {
-            background-color: #000000 !important;
+            background: transparent !important;
             min-height: 100vh;
             width: 100%;
         }
 
+        /* হেডারের নিচের অংশও কালো থাকবে */
         .header {
-            background-color: #000000 !important;
+            background: var(--secondary-bg) !important;
+        }
+
+        /* কার্ড ও বাটন স্টাইল */
+        .bg-white {
+            background: var(--card-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            backdrop-filter: blur(10px);
+            color: var(--text-color) !important;
+        }
+
+        .text-black, .text-gray-400, .text-gray-500 {
+            color: var(--text-secondary) !important;
+        }
+
+        h2, .fb, .font-bold {
+            color: var(--accent-color) !important;
         }
 
         #pay {
-            background-color: #2563eb !important;
-            color: #ffffff !important;
+            background: linear-gradient(45deg, var(--accent-color), #ff5722) !important;
+            color: white !important;
             padding: 0 20px !important;
             height: 38px !important;
             border: none !important;
             cursor: pointer;
+            transition: all 0.3s;
         }
+        #pay:hover {
+            background: linear-gradient(45deg, #ff5722, #fb00ff) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+
         .variation_list.selected_variation {
-            background-color: #f0f0ff;
-            border: 1px solid var(--theme-color);
+            background: var(--card-bg) !important;
+            border: 2px solid var(--accent-color) !important;
         }
+
+        .variation_list {
+            background: var(--card-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            color: var(--text-color) !important;
+            transition: all 0.3s;
+        }
+
+        .variation_list:hover {
+            border-color: var(--accent-color) !important;
+            transform: translateY(-2px);
+        }
+
         .hidden {
             display: none !important;
         }
 
-        /* Drip_Client.html এর মত কালার স্টাইল */
-        .bg-white {
-            background-color: #ffffff !important;
-        }
-        
-        .text-gray-400 {
-            color: #9ca3af !important;
-        }
-        
-        .text-black {
-            color: #000000 !important;
-        }
-        
-        .border {
-            border-color: #e5e7eb !important;
-        }
-        
-        hr {
-            border-color: #e5e7eb !important;
-        }
-        
-        .form-input {
-            background-color: #ffffff !important;
-            border-color: #ced4da !important;
-        }
-
-        .noscript-overlay {
-            position:fixed;
-            top:0;
-            left:0;
-            width:100%;
-            height:100%;
-            background:#000;
-            color:#ff0000;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            z-index:999999;
-            font-family:monospace;
-            text-align:center;
-            flex-direction:column;
-        }
-        .pulse {
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
+        /* নসস্ক্রিপ্ট বার্তা */
+        .noscript-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #ff0000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            font-family: monospace;
+            text-align: center;
+            flex-direction: column;
         }
     </style>
 
-    <!-- নসস্ক্রিপ্ট -->
+    <!-- ⚠️ নসস্ক্রিপ্ট: JS নিষ্ক্রিয় থাকলে বার্তা -->
     <noscript>
         <style>
             body { display: none !important; }
@@ -154,8 +172,8 @@
                 overflow: hidden !important;
             }
         </style>
-        <div class="noscript-overlay">
-            <div class="pulse">
+        <div class="noscript-warning">
+            <div style="animation: pulse 1s infinite;">
                 <h1 style="font-size:120px;margin:0;text-shadow:0 0 20px #ff0000;">🖕</h1>
                 <h1 style="font-size:72px;margin:20px 0;letter-spacing:10px;">FUCK YOU</h1>
                 <p style="font-size:24px;margin:20px 0;color:#fff;">JavaScript is DISABLED</p>
@@ -163,7 +181,440 @@
                 <p style="font-size:16px;color:#666;margin-top:30px;">Enable JavaScript to access this site</p>
             </div>
         </div>
+        <style>
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); opacity: 1; }
+                50% { transform: scale(1.1); opacity: 0.8; }
+            }
+        </style>
     </noscript>
+
+    <!-- 🔐 Firebase SDK (modular) with Base64 encoded config (Easy Premium-এর মতো) -->
+    <script type="module">
+        // Firebase এবং প্রয়োজনীয় ইমপোর্ট
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        // 🛡️ সম্পূর্ণ Firebase কনফিগ Base64 এ এনকোড করা (Easy Premium-এর কৌশল)
+        const encodedConfig = "ewogICJhcGlLZXkiOiAiQUl6YVN5QXk0U1Q5QTRLVUJ6UXB1TnBqZEQ2YVU0MHM4cDFZTkVnIiwKICAiYXV0aERvbWFpbiI6ICJ0b3AtdXAtNGRiMDEuZmlyZWJhc2VhcHAuY29tIiwKICAiZGF0YWJhc2VVUkwiOiAiaHR0cHM6Ly90b3AtdXAtNGRiMDEtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcCIsCiAgInByb2plY3RJZCI6ICJ0b3AtdXAtNGRiMDEiLAogICJzdG9yYWdlQnVja2V0IjogInRvcC11cC00ZGIwMS5hcHBzcG90LmNvbSIsCiAgIm1lc3NhZ2luZ1NlbmRlcklkIjogIjI2NDU0ODE5NzQ3MyIsCiAgImFwcElkIjogIjE6MjY0NTQ4MTk3NDczOndlYjoxN2E1ZjFiNTYyMmQ0NjRmNWQ3NjIwIiwKICAibWVhc3VyZW1lbnRJZCI6ICJHLVpFTUtKM0JEMEcifQ==";
+
+        // ডিকোড ফাংশন
+        function decodeConfig(encoded) {
+            try {
+                const decoded = atob(encoded);
+                return JSON.parse(decoded);
+            } catch (e) {
+                console.error("Failed to decode config", e);
+                return {};
+            }
+        }
+
+        // ডিকোড করা কনফিগ
+        const firebaseConfig = decodeConfig(encodedConfig);
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        // হোমপেজ URL (লগইন না থাকলে যাবে)
+        const HOME_PAGE_URL = "https://ytchannel9997100-stack.github.io/ViralVideo/Home.html";
+
+        // প্ল্যাটফর্ম আইডি (এই পৃষ্ঠার জন্য)
+        const PLATFORM_ID = "dark"; // drip, hg, dark, pato
+
+        // ✅ লগইন স্টেট চেক (Easy Premium-এর মতো)
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = HOME_PAGE_URL;
+                return;
+            }
+
+            // ইউজার লগইন করা থাকলে প্রোডাক্ট লোড করো
+            loadProducts();
+            loadSettings();
+        });
+
+        // প্রোডাক্ট লোড করার ফাংশন
+        async function loadProducts() {
+            try {
+                const productsRef = ref(db, '__collections__/products');
+                const snapshot = await get(productsRef);
+                if (!snapshot.exists()) return;
+
+                const productsData = snapshot.val();
+                const products = Object.entries(productsData).map(([id, data]) => ({ id, ...data }));
+
+                // শুধুমাত্র এই প্ল্যাটফর্মের পণ্য ফিল্টার
+                const filtered = products.filter(p => p.platform === PLATFORM_ID);
+                filtered.sort((a, b) => (a.order || a.price) - (b.order || b.price));
+
+                const container = document.querySelector('.package-item-outer');
+                if (!container) return;
+                container.innerHTML = '';
+
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="col-span-2 text-center p-4 text-gray-500">No products available for this platform</div>';
+                    return;
+                }
+
+                filtered.filter(p => p.visible !== false).forEach(p => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'sm-device-package mb-0 w-full drop-shadow-2xl list-group-item flex content-between p-2 active:order-0 variation_list';
+                    btn.id = p.id;
+                    btn.setAttribute('data-price', p.price);
+                    btn.innerHTML = `
+                        <div class="w-full flex flex-wrap">
+                            <div class="flex items-center">
+                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa h-2 mr-2 w-4 text-gray-300 fa-circle fa-w-16 fa-2x"><path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path></svg>
+                                <span class="text-xs font-primary">${p.name}</span>
+                            </div>
+                        </div>
+                        <div class="font-bold fb-normal" style="color: var(--accent-color); min-width: 46px; float: right; text-align: right;">৳${p.price}</div>
+                    `;
+                    container.appendChild(btn);
+                });
+
+                // ইভেন্ট ডেলিগেশন: পণ্য সিলেক্ট করা
+                $(document).off('click', '.variation_list').on('click', '.variation_list', function() {
+                    $('.variation_list').removeClass('selected_variation');
+                    $(this).addClass('selected_variation');
+                    $('.variation_list svg').attr('data-icon', 'circle').html('<path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path>').css('color', '');
+                    $(this).find('svg').attr('data-icon', 'check-circle').html('<path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>').css('color', 'var(--accent-color)');
+                });
+
+                // প্রথম পণ্যটি সিলেক্ট করা
+                if ($('.variation_list').length > 0) {
+                    $('.variation_list').first().click();
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // সেটিংস লোড (প্ল্যাটফর্ম অনুযায়ী লিংক আপডেট)
+        async function loadSettings() {
+            try {
+                const settingsRef = ref(db, `__collections__/settings/${PLATFORM_ID}`);
+                const snap = await get(settingsRef);
+                if (!snap.exists()) return;
+
+                const data = snap.val();
+                const videoLink = data.videoLink || '#';
+                const downloadLink = data.downloadLink || '#';
+
+                // রুলস ও কন্ডিশনের লিংক আপডেট
+                const descDiv = document.querySelector('.p-2');
+                if (descDiv) {
+                    let html = descDiv.innerHTML;
+
+                    // ভিডিও লিংক আপডেট
+                    const videoRegex = /<a[^>]*href="[^"]*youtu\.be[^"]*"[^>]*>.*?<\/a>/i;
+                    const videoAnchorHtml = `<a href="${videoLink}" target="_blank"><span style="text-decoration: underline;">CLICK&nbsp;HERE</span></a>`;
+                    html = html.replace(videoRegex, videoAnchorHtml);
+
+                    // ডাউনলোড লিংক আপডেট
+                    const downloadRegex = /<a[^>]*href="[^"]*t\.me\/g_tools_official[^"]*"[^>]*>.*?<\/a>/i;
+                    const downloadAnchorHtml = `<a href="${downloadLink}" target="_blank"><span style="text-decoration: underline;">CLICK HERE</span></a>`;
+                    html = html.replace(downloadRegex, downloadAnchorHtml);
+
+                    descDiv.innerHTML = html;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // পে বাটনে ক্লিক ইভেন্ট
+        window.setupPayButton = function() {
+            const payBtn = document.getElementById('pay');
+            if (!payBtn) return;
+            payBtn.removeEventListener('click', window.payHandler);
+            window.payHandler = function(e) {
+                e.preventDefault();
+                const selected = document.querySelector('.variation_list.selected_variation');
+                if (!selected) {
+                    alert('Please select a package first.');
+                    return;
+                }
+                const name = selected.querySelector('.text-xs.font-primary')?.innerText || 'Unknown';
+                const price = selected.getAttribute('data-price');
+                const vid = selected.id;
+                const whatsapp = document.getElementById('whatsApp _number_input')?.value.trim();
+                if (!whatsapp) {
+                    alert('Please enter your WhatsApp number.');
+                    return;
+                }
+                const url = new URL('https://ytchannel9997100-stack.github.io/ViralVideo/pay.html');
+                url.searchParams.set('product', name);
+                url.searchParams.set('price', price);
+                url.searchParams.set('variation', vid);
+                url.searchParams.set('whatsapp', whatsapp);
+                window.location.href = url.toString();
+            };
+            payBtn.addEventListener('click', window.payHandler);
+        };
+
+        // DOM লোড হলে পে বাটন সক্রিয় করো
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(setupPayButton, 1000);
+        });
+    </script>
+
+    <!-- 🛡️ অ্যান্টি-ফিশিং ও স্মার্ট সিকিউরিটি স্ক্রিপ্ট (Easy Premium-এর মতো) -->
+    <script>
+        (function() {
+            'use strict';
+
+            // কনফিগারেশন
+            const CONFIG = {
+                SESSION_TIMEOUT: 30 * 60 * 1000, // 30 মিনিট
+                MAX_ATTEMPTS: 5,
+                RATE_LIMIT_WINDOW: 15 * 60 * 1000,
+                ALERT_ON_DEVTOOLS: false, // সতর্কতা নয়, সরাসরি রিডাইরেক্ট
+                ENABLE_ACTIVITY_LOG: false,
+                ENFORCE_HTTPS: true,
+                REDIRECT_URL: 'https://panelsell.store/Privacy,Refund-Policy,Terms-Of-Service.html' // যেখানে রিডাইরেক্ট করবে
+            };
+
+            // HTTPS ফোর্স
+            if (CONFIG.ENFORCE_HTTPS && location.protocol !== 'https:' && location.hostname !== 'localhost' && !location.hostname.includes('127.0.0.1')) {
+                location.replace('https://' + location.host + location.pathname + location.search);
+            }
+
+            // ক্লিকজ্যাকিং প্রোটেকশন
+            if (self !== top) {
+                try {
+                    top.location.href = self.location.href;
+                } catch (e) {
+                    document.body.innerHTML = '<h1 style="color:red;text-align:center;padding:50px;">Access Denied</h1>';
+                    throw new Error('Clickjacking protection');
+                }
+            }
+
+            // 🚨 ডেভ টুলস ডিটেকশন (রিডাইরেক্ট সহ) - Easy Premium-এর কৌশল
+            let devToolsOpened = false;
+            function detectDevTools() {
+                const start = performance.now();
+                debugger; // ডিবাগার ট্রিগার
+                const end = performance.now();
+
+                if (end - start > 100) {
+                    if (!devToolsOpened) {
+                        devToolsOpened = true;
+                        // সরাসরি রিডাইরেক্ট (কোনো সতর্কতা নয়)
+                        window.location.href = CONFIG.REDIRECT_URL;
+                    }
+                    return true;
+                }
+                return false;
+            }
+
+            // প্রতি ১ সেকেন্ডে চেক করুন (দ্রুত রেসপন্সের জন্য)
+            setInterval(detectDevTools, 1000);
+            // প্রথমবার চেক
+            setTimeout(detectDevTools, 500);
+
+            // রেট লিমিটিং
+            window._rateLimitStore = window._rateLimitStore || {
+                attempts: {},
+                blockUntil: {}
+            };
+
+            window.checkRateLimit = function(action, userId = 'anonymous') {
+                const key = `${action}_${userId}`;
+                const now = Date.now();
+
+                if (window._rateLimitStore.blockUntil[key] && window._rateLimitStore.blockUntil[key] > now) {
+                    const remaining = Math.ceil((window._rateLimitStore.blockUntil[key] - now) / 1000 / 60);
+                    return {
+                        allowed: false,
+                        message: `অনেক চেষ্টা করেছেন। ${remaining} মিনিট পরে আবার চেষ্টা করুন।`,
+                        remainingMinutes: remaining
+                    };
+                }
+
+                if (!window._rateLimitStore.attempts[key]) {
+                    window._rateLimitStore.attempts[key] = [];
+                }
+
+                window._rateLimitStore.attempts[key] = window._rateLimitStore.attempts[key].filter(t => t > now - CONFIG.RATE_LIMIT_WINDOW);
+
+                if (window._rateLimitStore.attempts[key].length >= CONFIG.MAX_ATTEMPTS) {
+                    window._rateLimitStore.blockUntil[key] = now + CONFIG.RATE_LIMIT_WINDOW;
+                    return {
+                        allowed: false,
+                        message: 'অনেক চেষ্টা করেছেন। ১৫ মিনিট পরে আবার চেষ্টা করুন।',
+                        remainingMinutes: 15
+                    };
+                }
+
+                window._rateLimitStore.attempts[key].push(now);
+                return { allowed: true };
+            };
+
+            // সেশন টাইমআউট
+            let sessionTimer;
+            function resetSessionTimer() {
+                if (sessionTimer) clearTimeout(sessionTimer);
+                sessionTimer = setTimeout(() => {
+                    if (firebase && firebase.auth() && firebase.auth().currentUser) {
+                        if (confirm('আপনার সেশন শেষ হয়ে গেছে। আবার লগইন করবেন?')) {
+                            firebase.auth().signOut();
+                            window.location.reload();
+                        } else {
+                            firebase.auth().signOut();
+                        }
+                    }
+                }, CONFIG.SESSION_TIMEOUT);
+            }
+
+            ['click', 'keypress', 'scroll', 'mousemove', 'touchstart'].forEach(event => {
+                document.addEventListener(event, resetSessionTimer, { passive: true });
+            });
+
+            // XSS প্রোটেকশন (ইনপুট স্যানিটাইজ)
+            function sanitizeInput(input) {
+                if (typeof input !== 'string') return input;
+                return input
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#x27;')
+                    .replace(/\//g, '&#x2F;')
+                    .replace(/\\/g, '&#x5C;')
+                    .replace(/`/g, '&#96;')
+                    .replace(/=/g, '&#61;');
+            }
+
+            function setupFormProtection() {
+                document.querySelectorAll('form').forEach(form => {
+                    if (form._protected) return;
+                    form._protected = true;
+                    form.addEventListener('submit', function(e) {
+                        const textInputs = this.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"], textarea');
+                        textInputs.forEach(input => {
+                            if (input.value && typeof input.value === 'string') {
+                                input.dataset.originalValue = input.value;
+                                if (/[<>"'`=]/.test(input.value)) {
+                                    console.warn('সতর্কতা: ইনপুটে বিপজ্জনক ক্যারেক্টার পাওয়া গেছে');
+                                }
+                            }
+                        });
+                    }, true);
+                });
+            }
+
+            const observer = new MutationObserver(() => {
+                setupFormProtection();
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            // লোকাল স্টোরেজ এনক্রিপশন
+            const originalSetItem = localStorage.setItem;
+            const originalGetItem = localStorage.getItem;
+            const sensitiveKeys = ['user', 'session', 'token', 'auth'];
+
+            localStorage.setItem = function(key, value) {
+                if (sensitiveKeys.some(k => key.toLowerCase().includes(k))) {
+                    try {
+                        const encoded = btoa(encodeURIComponent(value));
+                        return originalSetItem.call(this, `_sec_${key}`, encoded);
+                    } catch (e) {
+                        console.warn('LocalStorage encoding error');
+                    }
+                }
+                return originalSetItem.call(this, key, value);
+            };
+
+            localStorage.getItem = function(key) {
+                if (sensitiveKeys.some(k => key.toLowerCase().includes(k))) {
+                    try {
+                        const encoded = originalGetItem.call(this, `_sec_${key}`);
+                        if (encoded) {
+                            return decodeURIComponent(atob(encoded));
+                        }
+                    } catch (e) {
+                        console.warn('LocalStorage decoding error');
+                    }
+                }
+                return originalGetItem.call(this, key);
+            };
+
+            // ডোমেইন ভেরিফিকেশন
+            function verifyDomain() {
+                const allowedDomains = ['panelsell.store', 'www.panelsell.store', 'localhost', '127.0.0.1'];
+                const currentHost = window.location.hostname;
+                if (!allowedDomains.includes(currentHost) && !currentHost.endsWith('.panelsell.store')) {
+                    console.warn('অজানা ডোমেইনে চলছে:', currentHost);
+                }
+            }
+            verifyDomain();
+
+            // কীবোর্ড শর্টকাট ব্লক
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; } // Ctrl+U
+                if (e.ctrlKey && e.keyCode === 83) { e.preventDefault(); return false; } // Ctrl+S
+                if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; } // Ctrl+Shift+I
+                if (e.keyCode === 123) { e.preventDefault(); return false; } // F12
+            });
+
+            // রাইট ক্লিক প্রোটেকশন
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            document.addEventListener('mousedown', function(e) {
+                if (e.button === 2) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            document.addEventListener('touchstart', function(e) {
+                let touchTimer;
+                const handleTouchEnd = function() {
+                    clearTimeout(touchTimer);
+                    document.removeEventListener('touchend', handleTouchEnd);
+                };
+                if (e.touches.length === 1) {
+                    touchTimer = setTimeout(function() {
+                        e.preventDefault();
+                    }, 500);
+                    document.addEventListener('touchend', handleTouchEnd, { once: true });
+                }
+            }, { passive: false });
+
+            // অর্ডার ফর্মে রেট লিমিট
+            if (window.purchaseForm) {
+                const form = window.purchaseForm;
+                const originalHandler = form.onsubmit;
+                form.onsubmit = async function(e) {
+                    e.preventDefault();
+                    if (firebase && firebase.auth() && firebase.auth().currentUser) {
+                        const userId = firebase.auth().currentUser.uid;
+                        const rateCheck = window.checkRateLimit('purchase', userId);
+                        if (!rateCheck.allowed) {
+                            alert(rateCheck.message);
+                            return false;
+                        }
+                    }
+                    if (originalHandler) {
+                        return originalHandler.call(this, e);
+                    }
+                    return false;
+                };
+            }
+
+            console.log('%c🔒 Easy Premium - অত্যাধুনিক নিরাপত্তা সক্রিয়', 'color: #4caf50; font-size: 14px; font-weight: bold;');
+        })();
+    </script>
+
+    <!-- jQuery (প্রয়োজনীয়) -->
+    <script src="https://panelsell.store/assets/template/js/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 <div class="body-bg">
@@ -226,7 +677,8 @@
                                         <div class="bg-white border rounded-md p-3">
                                             <div class="flex gap-2" style="align-items: center;">
                                                 <input type="text" id="whatsApp _number_input" placeholder="WhatsApp Number" class="form-input w-full rounded-md text-sm" style="border: 1px solid #ced4da !important; padding: 6px 10px !important; margin: 0 !important; height: 38px !important; box-shadow: none;">
-                                                <button type="button" id="pay" class="rounded-md text-sm font-bold" style="background-color: #2563eb !important; color: #ffffff !important; padding: 0 20px !important; height: 38px !important; border: none !important; cursor: pointer;">Pay</button>
+                                                <!-- পে বাটন -->
+                                                <button type="button" id="pay" class="rounded-md text-sm font-bold" style="background: linear-gradient(45deg, #ff9800, #ff5722) !important; color: white !important; padding: 0 20px !important; height: 38px !important; border: none !important; cursor: pointer;">Pay</button>
                                             </div>
                                             <p id="promo_message" class="text-xs mt-1" style="margin-top: 5px;"></p>
                                         </div>
@@ -250,295 +702,16 @@
             </div>
         </div>
     </div>
+
+    <!-- Bootstrap JS, Toastr -->
+    <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 </div>
 
-<!-- Scripts -->
-<script src="https://panelsell.store/assets/template/js/jquery-3.7.1.min.js"></script>
-<script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
-<script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
-
-<!-- Firebase SDK -->
-<script type="import">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-    // এনকোডেড ফায়ারবেস কনফিগ
-    const encodedConfig = "ewogICJhcGlLZXkiOiAiQUl6YVN5QXk0U1Q5QTRLVUJ6UXB1TnBqZEQ2YVU0MHM4cDFZTkVnIiwKICAiYXV0aERvbWFpbiI6ICJ0b3AtdXAtNGRiMDEuZmlyZWJhc2VhcHAuY29tIiwKICAiZGF0YWJhc2VVUkwiOiAiaHR0cHM6Ly90b3AtdXAtNGRiMDEtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcCIsCiAgInByb2plY3RJZCI6ICJ0b3AtdXAtNGRiMDEiLAogICJzdG9yYWdlQnVja2V0IjogInRvcC11cC00ZGIwMS5hcHBzcG90LmNvbSIsCiAgIm1lc3NhZ2luZ1NlbmRlcklkIjogIjI2NDU0ODE5NzQ3MyIsCiAgImFwcElkIjogIjE6MjY0NTQ4MTk3NDczOndlYjoxN2E1ZjFiNTYyMmQ0NjRmNWQ3NjIwIiwKICAibWVhc3VyZW1lbnRJZCI6ICJHLVpFTUtKM0JEMEcifQ==";
-
-    function decodeConfig(encoded) {
-        try {
-            const decoded = atob(encoded);
-            return JSON.parse(decoded);
-        } catch (e) {
-            console.error("Failed to decode config", e);
-            return {};
-        }
-    }
-
-    const firebaseConfig = decodeConfig(encodedConfig);
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    const HOME_PAGE_URL = "https://ytchannel9997100-stack.github.io/ViralVideo/Home.html";
-    const PLATFORM = "dark";
-
-    onAuthStateChanged(auth, (user) => {
-        if (!user) {
-            window.location.href = HOME_PAGE_URL;
-            return;
-        }
-        loadProducts();
-        loadSettings();
-    });
-
-    async function loadProducts() {
-        try {
-            const productsRef = ref(db, '__collections__/products');
-            const snapshot = await get(productsRef);
-            if (!snapshot.exists()) return;
-
-            const productsData = snapshot.val();
-            const products = Object.entries(productsData).map(([id, data]) => ({ id, ...data }));
-
-            const filtered = products.filter(p => p.platform === PLATFORM);
-            filtered.sort((a, b) => (a.order || a.price) - (b.order || b.price));
-
-            const container = document.querySelector('.package-item-outer');
-            if (!container) return;
-            container.innerHTML = '';
-
-            filtered.filter(p => p.visible !== false).forEach(p => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'sm-device-package mb-0 w-full drop-shadow-2xl list-group-item flex content-between p-2 active:order-0 variation_list';
-                btn.id = p.id;
-                btn.setAttribute('data-price', p.price);
-                btn.innerHTML = `
-                    <div class="w-full flex flex-wrap">
-                        <div class="flex items-center">
-                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa h-2 mr-2 w-4 text-gray-300 fa-circle fa-w-16 fa-2x"><path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path></svg>
-                            <span class="text-xs font-primary">${p.name}</span>
-                        </div>
-                    </div>
-                    <div class="font-bold fb-normal" style="color: var(--theme-color); min-width: 46px; float: right; text-align: right;">৳${p.price}</div>
-                `;
-                container.appendChild(btn);
-            });
-
-            $(document).off('click', '.variation_list').on('click', '.variation_list', function() {
-                $('.variation_list').removeClass('selected_variation');
-                $(this).addClass('selected_variation');
-                $('.variation_list svg').attr('data-icon', 'circle').html('<path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path>').css('color', '');
-                $(this).find('svg').attr('data-icon', 'check-circle').html('<path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>').css('color', 'var(--theme-color)');
-            });
-
-            $('.variation_list').first().click();
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    async function loadSettings() {
-        try {
-            const settingsRef = ref(db, `__collections__/settings/${PLATFORM}`);
-            const snap = await get(settingsRef);
-
-            let videoLink = '#';
-            let downloadLink = '#';
-
-            if (snap.exists()) {
-                const data = snap.val();
-                videoLink = data.videoLink || '#';
-                downloadLink = data.downloadLink || '#';
-            } else {
-                const generalRef = ref(db, '__collections__/settings/general');
-                const generalSnap = await get(generalRef);
-                if (generalSnap.exists()) {
-                    const data = generalSnap.val();
-                    videoLink = data.videoLink || '#';
-                    downloadLink = data.downloadLink || '#';
-                }
-            }
-
-            const descDiv = document.querySelector('.p-2');
-            if (descDiv) {
-                let html = descDiv.innerHTML;
-                html = html.replace(/<a[^>]*href="[^"]*youtu\.be[^"]*"[^>]*>.*?<\/a>/i, `<a href="${videoLink}" target="_blank"><span style="text-decoration: underline;">CLICK&nbsp;HERE</span></a>`);
-                html = html.replace(/<a[^>]*href="[^"]*t\.me\/g_tools_official[^"]*"[^>]*>.*?<\/a>/i, `<a href="${downloadLink}" target="_blank"><span style="text-decoration: underline;">CLICK HERE</span></a>`);
-                descDiv.innerHTML = html;
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    }
-</script>
-
-<!-- সিকিউরিটি স্ক্রিপ্ট -->
-<script>
-(function() {
-    'use strict';
-
-    const CONFIG = {
-        SESSION_TIMEOUT: 30 * 60 * 1000,
-        MAX_ATTEMPTS: 5,
-        RATE_LIMIT_WINDOW: 15 * 60 * 1000,
-        ALERT_ON_DEVTOOLS: false,
-        ENFORCE_HTTPS: true,
-        REDIRECT_URL: 'https://panelsell.store/topup/Dark%20Patch'
-    };
-
-    if (CONFIG.ENFORCE_HTTPS && location.protocol !== 'https:' && location.hostname !== 'localhost' && !location.hostname.includes('127.0.0.1')) {
-        location.replace('https://' + location.host + location.pathname + location.search);
-    }
-
-    if (self !== top) {
-        try {
-            top.location.href = self.location.href;
-        } catch (e) {
-            document.body.innerHTML = '<h1 style="color:red;text-align:center;padding:50px;">Access Denied</h1>';
-            throw new Error('Clickjacking protection');
-        }
-    }
-
-    let devToolsOpened = false;
-    function detectDevTools() {
-        const start = performance.now();
-        debugger;
-        const end = performance.now();
-
-        if (end - start > 100) {
-            if (!devToolsOpened) {
-                devToolsOpened = true;
-                window.location.reload();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    setInterval(detectDevTools, 1000);
-    setTimeout(detectDevTools, 500);
-
-    window._rateLimitStore = window._rateLimitStore || { attempts: {}, blockUntil: {} };
-
-    window.checkRateLimit = function(action, userId = 'anonymous') {
-        const key = `${action}_${userId}`;
-        const now = Date.now();
-
-        if (window._rateLimitStore.blockUntil[key] && window._rateLimitStore.blockUntil[key] > now) {
-            const remaining = Math.ceil((window._rateLimitStore.blockUntil[key] - now) / 1000 / 60);
-            return { allowed: false, message: `অনেক চেষ্টা করেছেন। ${remaining} মিনিট পরে আবার চেষ্টা করুন।`, remainingMinutes: remaining };
-        }
-
-        if (!window._rateLimitStore.attempts[key]) window._rateLimitStore.attempts[key] = [];
-        window._rateLimitStore.attempts[key] = window._rateLimitStore.attempts[key].filter(t => t > now - CONFIG.RATE_LIMIT_WINDOW);
-
-        if (window._rateLimitStore.attempts[key].length >= CONFIG.MAX_ATTEMPTS) {
-            window._rateLimitStore.blockUntil[key] = now + CONFIG.RATE_LIMIT_WINDOW;
-            return { allowed: false, message: 'অনেক চেষ্টা করেছেন। ১৫ মিনিট পরে আবার চেষ্টা করুন।', remainingMinutes: 15 };
-        }
-
-        window._rateLimitStore.attempts[key].push(now);
-        return { allowed: true };
-    };
-
-    let sessionTimer;
-    function resetSessionTimer() {
-        if (sessionTimer) clearTimeout(sessionTimer);
-        sessionTimer = setTimeout(() => {}, CONFIG.SESSION_TIMEOUT);
-    }
-
-    ['click', 'keypress', 'scroll', 'mousemove', 'touchstart'].forEach(event => {
-        document.addEventListener(event, resetSessionTimer, { passive: true });
-    });
-
-    function sanitizeInput(input) {
-        if (typeof input !== 'string') return input;
-        return input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;').replace(/\//g, '&#x2F;').replace(/\\/g, '&#x5C;').replace(/`/g, '&#96;').replace(/=/g, '&#61;');
-    }
-
-    function setupFormProtection() {
-        document.querySelectorAll('form').forEach(form => {
-            if (form._protected) return;
-            form._protected = true;
-            form.addEventListener('submit', function(e) {
-                const textInputs = this.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"], textarea');
-                textInputs.forEach(input => {
-                    if (input.value && typeof input.value === 'string') {
-                        input.dataset.originalValue = input.value;
-                        if (/[<>"'`=]/.test(input.value)) {
-                            console.warn('Warning: Dangerous characters detected');
-                        }
-                    }
-                });
-            }, true);
-        });
-    }
-
-    const observer = new MutationObserver(() => { setupFormProtection(); });
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    const originalSetItem = localStorage.setItem;
-    const originalGetItem = localStorage.getItem;
-    const sensitiveKeys = ['user', 'session', 'token', 'auth'];
-
-    localStorage.setItem = function(key, value) {
-        if (sensitiveKeys.some(k => key.toLowerCase().includes(k))) {
-            try {
-                const encoded = btoa(encodeURIComponent(value));
-                return originalSetItem.call(this, `_sec_${key}`, encoded);
-            } catch (e) { console.warn('Encoding error'); }
-        }
-        return originalSetItem.call(this, key, value);
-    };
-
-    localStorage.getItem = function(key) {
-        if (sensitiveKeys.some(k => key.toLowerCase().includes(k))) {
-            try {
-                const encoded = originalGetItem.call(this, `_sec_${key}`);
-                if (encoded) return decodeURIComponent(atob(encoded));
-            } catch (e) { console.warn('Decoding error'); }
-        }
-        return originalGetItem.call(this, key);
-    };
-
-    function verifyDomain() {
-        const allowedDomains = ['panelsell.store', 'www.panelsell.store', 'localhost', '127.0.0.1'];
-        const currentHost = window.location.hostname;
-        if (!allowedDomains.includes(currentHost) && !currentHost.endsWith('.panelsell.store')) {
-            console.warn('Unknown domain:', currentHost);
-        }
-    }
-    verifyDomain();
-
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.keyCode === 83) { e.preventDefault(); return false; }
-        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; }
-        if (e.keyCode === 123) { e.preventDefault(); return false; }
-    });
-
-    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
-    document.addEventListener('mousedown', function(e) { if (e.button === 2) { e.preventDefault(); return false; } });
-
-    document.addEventListener('touchstart', function(e) {
-        let touchTimer;
-        const handleTouchEnd = function() { clearTimeout(touchTimer); document.removeEventListener('touchend', handleTouchEnd); };
-        if (e.touches.length === 1) {
-            touchTimer = setTimeout(function() { e.preventDefault(); }, 500);
-            document.addEventListener('touchend', handleTouchEnd, { once: true });
-        }
-    }, { passive: false });
-
-    console.log('%c🔒 Dark Patch - Advanced Security Active', 'color: #4caf50; font-size: 14px; font-weight: bold;');
-})();
-</script>
-
-<!-- পে বাটন হ্যান্ডলার -->
+<!-- পণ্য সিলেক্ট ও পে বাটন নিশ্চিত করার স্ক্রিপ্ট -->
 <script>
     (function() {
+        // পণ্য সিলেক্ট ইভেন্ট
         document.addEventListener('click', function(e) {
             const target = e.target.closest('.variation_list');
             if (!target) return;
@@ -556,10 +729,11 @@
             if (svg) {
                 svg.setAttribute('data-icon', 'check-circle');
                 svg.innerHTML = '<path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path>';
-                svg.style.color = 'var(--theme-color)';
+                svg.style.color = '#ff9800';
             }
         });
 
+        // পে বাটনে ক্লিক ইভেন্ট
         document.addEventListener('click', function(e) {
             if (e.target.id !== 'pay') return;
             e.preventDefault();
@@ -585,6 +759,5 @@
         });
     })();
 </script>
-
 </body>
 </html>
