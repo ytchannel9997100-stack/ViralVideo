@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/tailwindcss.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/custom-styles.css?6327">
 
-    <!-- ✅ নিরাপত্তা হেডার (Dark_Patch.html এর মতো) -->
+    <!-- ✅ নিরাপত্তা হেডার -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; font-src 'self' https: data:; style-src 'self' https: 'unsafe-inline'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="format-detection" content="telephone=no, address=no, email=no">
@@ -241,15 +241,13 @@
             flex-direction: column;
         }
 
-        /* === RESPONSIVE FIXES: মোবাইলে লেখা ও ছবির আকার ঠিক করা === */
+        /* === RESPONSIVE FIXES ================== */
         @media (max-width: 768px) {
-            /* প্রোডাক্ট ইমেজ ছোট করা */
             .rounded-3xl.p-2.w-24.h-24 {
                 width: 80px !important;
                 height: 80px !important;
             }
 
-            /* হেডিং সাইজ কমানো */
             h2.text-lg {
                 font-size: 1.1rem !important;
             }
@@ -257,7 +255,6 @@
                 font-size: 1rem !important;
             }
 
-            /* প্যাকেজ আইটেমের লেখা ছোট করা */
             .variation_list .text-xs.font-primary {
                 font-size: 0.7rem !important;
             }
@@ -265,7 +262,6 @@
                 font-size: 0.8rem !important;
             }
 
-            /* Rules & Conditions হেডিং */
             .bg-white.border.rounded-md h1.font-bold {
                 font-size: 1.1rem !important;
             }
@@ -273,7 +269,6 @@
                 font-size: 0.85rem !important;
             }
 
-            /* ইনপুট ও বাটনের গ্রুপ ছোট পর্দায় স্ট্যাক না হয়ে এক লাইনে থাকবে */
             .flex.gap-2 {
                 flex-wrap: nowrap;
             }
@@ -287,7 +282,6 @@
                 white-space: nowrap;
             }
 
-            /* প্যাকেজ গ্রিডের গ্যাপ কমানো */
             .package-item-outer {
                 gap: 0.5rem !important;
             }
@@ -317,13 +311,12 @@
         </style>
     </noscript>
 
-    <!-- 🔐 Firebase SDK (modular) with Base64 encoded config -->
+    <!-- 🔐 Firebase SDK with Base64 encoded config - LOGIN DETECT REMOVED -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        // সম্পূর্ণ Firebase কনফিগ Base64 এ এনকোড করা (আপনার দেওয়া)
+        // সম্পূর্ণ Firebase কনফিগ Base64 এ এনকোড করা
         const encodedConfig = "ewogICJhcGlLZXkiOiAiQUl6YVN5QXk0U1Q5QTRLVUJ6UXB1TnBqZEQ2YVU0MHM4cDFZTkVnIiwKICAiYXV0aERvbWFpbiI6ICJ0b3AtdXAtNGRiMDEuZmlyZWJhc2VhcHAuY29tIiwKICAiZGF0YWJhc2VVUkwiOiAiaHR0cHM6Ly90b3AtdXAtNGRiMDEtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcCIsCiAgInByb2plY3RJZCI6ICJ0b3AtdXAtNGRiMDEiLAogICJzdG9yYWdlQnVja2V0IjogInRvcC11cC00ZGIwMS5hcHBzcG90LmNvbSIsCiAgIm1lc3NhZ2luZ1NlbmRlcklkIjogIjI2NDU0ODE5NzQ3MyIsCiAgImFwcElkIjogIjE6MjY0NTQ4MTk3NDczOndlYjoxN2E1ZjFiNTYyMmQ0NjRmNWQ3NjIwIiwKICAibWVhc3VyZW1lbnRJZCI6ICJHLVpFTUtKM0JEMEcifQ==";
 
         function decodeConfig(encoded) {
@@ -338,20 +331,13 @@
 
         const firebaseConfig = decodeConfig(encodedConfig);
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getDatabase(app);
 
-        const HOME_PAGE_URL = "https://ytchannel9997100-stack.github.io/ViralVideo/";
         const PLATFORM = "hg";
 
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = HOME_PAGE_URL;
-                return;
-            }
-            loadProducts();
-            loadSettings();
-        });
+        // ✅ লগইন চেক সরিয়ে দেওয়া হয়েছে - সরাসরি প্রোডাক্ট লোড হবে
+        loadProducts();
+        loadSettings();
 
         async function loadProducts() {
             try {
@@ -413,7 +399,7 @@
             }
         }
 
-        // সেটিংস লোড (প্ল্যাটফর্ম অনুযায়ী লিংক আপডেট) - সরাসরি আইডি দিয়ে
+        // সেটিংস লোড
         async function loadSettings() {
             try {
                 const settingsRef = ref(db, `__collections__/settings/${PLATFORM}`);
@@ -423,7 +409,6 @@
                 const downloadLink = data.downloadLink || '#';
                 const videoLink = data.videoLink || '#';
 
-                // সরাসরি আইডি ব্যবহার করে লিংক আপডেট করুন
                 const apkAnchor = document.getElementById('apkLink');
                 const videoAnchor = document.getElementById('videoLink');
                 if (apkAnchor) apkAnchor.href = downloadLink;
@@ -467,7 +452,7 @@
         });
     </script>
 
-    <!-- সুরক্ষা স্ক্রিপ্ট (Dark_Patch.html থেকে নেওয়া) -->
+    <!-- সুরক্ষা স্ক্রিপ্ট -->
     <script>
         (function() {
             'use strict';
@@ -638,11 +623,12 @@
 <body>
 <div class="body-bg">
 
-    <!-- ================== হেডার (Home.html এর লোগো সহ) ================== -->
+    <!-- ================== হেডার ================== -->
     <div class="header">
         <div class="container m-auto p-2 py-3 md:py-5 md:px-0" style="padding-top: 0 !important; margin-top: 0 !important;">
             <nav class="flex items-center justify-between" style="border: none !important;">
                 <a href="https://easy-premium.com" class="logo-container">
+                    <!-- লোগো এখানে থাকবে (আপনার ইচ্ছামত) -->
                 </a>
                 <div class="flex items-center">
                     <nav class="text-left hidden md:block mr-4">
@@ -695,7 +681,7 @@
                             </div>
                             <hr>
                             <div class="p-1 md:p-4 inline-grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2 package-item-outer w-full">
-                                <!-- ফায়ারবেস থেকে প্রোডাক্ট লোড হবে -->
+                                <!-- ফায়ারবেস থেকে প্রোডাক্ট লোড হবে -->
                             </div>
                         </div>
                     </section>
@@ -717,7 +703,7 @@
                                     <section class="mt-2">
                                         <div class="bg-white border rounded-md p-3">
                                             <div class="flex gap-2" style="align-items: center;">
-                                                <!-- হোয়াটসঅ্যাপ ইনপুট (আইডি ফিক্স করা) -->
+                                                <!-- হোয়াটসঅ্যাপ ইনপুট -->
                                                 <input type="text" id="whatsApp_number_input" placeholder="WhatsApp Number" class="form-input w-full rounded-md text-sm" style="border: 1px solid #000000 !important; padding: 6px 10px !important; margin: 0 !important; height: 38px !important; box-shadow: none;" autocomplete="off">
                                                 
                                                 <!-- পে বাটন -->
@@ -733,14 +719,13 @@
                 </form>
             </div>
 
-            <!-- Rules & Conditions - links now fetched from database -->
+            <!-- Rules & Conditions -->
             <div class="mt-2 bg-white border rounded-md">
                 <h1 class="font-bold p-2">Rules & Conditions</h1>
                 <hr>
                 <div class="p-2">
                     <p>✅<strong><em>NOTE: it will run directly on your phone and will be in easy use. (no need virtual or root)</em></strong></p>
                     <p>⚠️ Buyers are requested to please make sure the product is suitable for you before purchasing.<br>Refunds will not be possible after the purchase.</p>
-                    <!-- Added IDs for dynamic linking from database -->
                     <p>APK LINK 👉 <a id="apkLink" href="#" style="color:#ff9800;"><span style="text-decoration: underline;">CLICK HERE</span></a></p>
                     <p>SET-UP VIDEO 👉 <a id="videoLink" href="#" style="color:#ff9800;"><span style="text-decoration: underline;">CLICK HERE</span></a></p>
                 </div>
@@ -748,18 +733,18 @@
         </div>
     </div>
 
-    <!-- ফ্লোটিং মেসেঞ্জার বাটন (Dark_Patch.html এর মত) -->
+    <!-- ফ্লোটিং মেসেঞ্জার বাটন -->
     <a href="https://m.me/yourpage" target="_blank" class="messenger-float" title="Messenger">
         <i class="fab fa-facebook-messenger"></i>
     </a>
 
-    <!-- Hidden elements for wallet logic (if needed) -->
+    <!-- Hidden elements -->
     <span id="wallet_balance" style="display:none;">0</span>
     <button id="buy_now" style="display:none;"></button>
     <div id="add_fund" style="display:none;"></div>
 </div>
 
-<!-- পণ্য সিলেক্ট ও পে বাটনের ব্যাকআপ ইভেন্ট (Dark_Patch.html থেকে) -->
+<!-- পণ্য সিলেক্ট ও পে বাটনের ব্যাকআপ ইভেন্ট -->
 <script>
     (function() {
         document.addEventListener('click', function(e) {
@@ -813,6 +798,5 @@
         });
     })();
 </script>
-<!-- ⚠️ Messenger লিংক (href) আপনার আসল পেজ দিয়ে পরিবর্তন করুন -->
 </body>
 </html>
