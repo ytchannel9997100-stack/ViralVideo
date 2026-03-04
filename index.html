@@ -229,7 +229,6 @@
             margin-top: 0;
             padding-top: 0;
         }
-        
         .hidden {
             display: none !important;
         }
@@ -276,7 +275,6 @@
             padding-top: 0 !important;
         }
 
-        /* মেসেঞ্জার আইকন */
         .messenger-float {
             position: fixed;
             bottom: 30px;
@@ -357,20 +355,6 @@
                 height: auto;
             }
         }
-
-        /* ইউজার ইনফো স্টাইল */
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255,255,255,0.1);
-            padding: 5px 15px;
-            border-radius: 30px;
-        }
-        .user-info span {
-            color: #bb86fc;
-            font-weight: 600;
-        }
     </style>
 
     <noscript>
@@ -420,11 +404,8 @@
 
 <div id="loginPrompt" class="hidden">
     <div>
-        <h2 class="text-2xl mb-4">Telegram দিয়ে লগইন করুন</h2>
-        <p class="mb-4 text-gray-400">আমাদের টেলিগ্রাম বটে গিয়ে /start দিন এবং অর্ডার বাটনে ক্লিক করুন</p>
-        <a href="https://t.me/YOUR_BOT_USERNAME" target="_blank" class="btn-pro btn-pro-login rounded border-2 text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white transition px-6 py-3 text-lg inline-block">
-            <i class="fab fa-telegram mr-2"></i>TELEGRAM LOGIN
-        </a>
+        <h2 class="text-2xl mb-4">Please Login to Continue</h2>
+        <button id="promptLoginBtn" class="btn-pro btn-pro-login rounded border-2 text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white transition px-6 py-3 text-lg">LOGIN WITH TELEGRAM</button>
     </div>
 </div>
 
@@ -565,7 +546,7 @@
 <script src="https://panelsell.store/assets/template/js/bootstrap/bootstrap.bundle.min.js"></script>
 <script src="https://panelsell.store/assets/template/js/toastr/toastr.min.js"></script>
 
-<!-- ================== টেলিগ্রাম লগইন সিস্টেম ================== -->
+<!-- ================== টেলিগ্রাম লগইন সিস্টেম (Firebase সরিয়ে) ================== -->
 <script>
 (function() {
     // URL থেকে প্যারামিটার পাওয়া
@@ -583,49 +564,57 @@
         const navContainer = document.getElementById('authNavContainer');
         const mainContent = document.getElementById('mainContent');
         const loginPrompt = document.getElementById('loginPrompt');
+        const promptBtn = document.getElementById('promptLoginBtn');
         
         if (!navContainer) return;
 
         // যদি নাম এবং ইউআইডি থাকে (টেলিগ্রাম থেকে এসেছে)
         if (name && uid && name !== '' && uid !== '') {
-            // ডিকোড করা
             const decodedName = decodeURIComponent(name);
             
-            // নেভিগেশনে ইউজার ইনফো দেখান
             navContainer.innerHTML = `
-                <div class="user-info">
-                    <i class="fab fa-telegram text-blue-400"></i>
-                    <span>${decodedName}</span>
-                    <span class="text-gray-400 text-sm">ID: ${uid}</span>
+                <div class="flex items-center space-x-3">
+                    <i class="fab fa-telegram text-blue-400 text-2xl"></i>
+                    <span class="text-sm font-medium text-gray-300 hidden md:inline-block">${decodedName}</span>
+                    <span class="text-xs text-gray-500 hidden md:inline-block">ID: ${uid}</span>
                     <a href="#" id="logoutBtn" class="text-red-400 hover:text-red-300 ml-2">
                         <i class="fas fa-sign-out-alt"></i>
                     </a>
                 </div>
             `;
             
-            // লগআউট বাটন
             document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
                 e.preventDefault();
                 // URL প্যারামিটার ছাড়া পেজ রিলোড
                 window.location.href = window.location.pathname;
             });
 
-            // কন্টেন্ট দেখান, লগইন প্রম্পট লুকান
             mainContent?.classList.remove('hidden');
             loginPrompt?.classList.add('hidden');
         } else {
             // লগইন না থাকলে
             navContainer.innerHTML = `
-                <a href="https://t.me/YOUR_BOT_USERNAME" target="_blank" class="btn-pro btn-pro-login rounded mx-2 border-2 text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white transition px-4 py-2">
-                    <i class="fab fa-telegram mr-2"></i>TELEGRAM LOGIN
+                <a href="#" id="telegramLoginBtn" class="btn-pro btn-pro-login rounded mx-2 border-2 text-primary-500 border-primary-500 hover:bg-primary-500 hover:text-white transition px-4 py-2">
+                    <i class="fab fa-telegram mr-2"></i>LOGIN
                 </a>
             `;
 
-            // কন্টেন্ট লুকান, লগইন প্রম্পট দেখান
+            // টেলিগ্রাম লগইন বাটন ক্লিক করলে
+            document.getElementById('telegramLoginBtn')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.open('https://t.me/YOUR_BOT_USERNAME', '_blank');
+            });
+
             mainContent?.classList.add('hidden');
             loginPrompt?.classList.remove('hidden');
         }
     }
+
+    // প্রম্পট বাটন ক্লিক করলে
+    document.getElementById('promptLoginBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.open('https://t.me/YOUR_BOT_USERNAME', '_blank');
+    });
 
     // পেজ লোড হলে রান করুন
     document.addEventListener('DOMContentLoaded', updateUI);
@@ -697,8 +686,8 @@
     function resetSessionTimer() {
         if (sessionTimer) clearTimeout(sessionTimer);
         sessionTimer = setTimeout(() => {
-            const { name, uid } = new URLSearchParams(window.location.search);
-            if (name && uid) {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('name') && params.get('uid')) {
                 if (confirm('আপনার সেশন শেষ হয়ে গেছে। আবার লগইন করবেন?')) {
                     window.location.href = window.location.pathname;
                 }
@@ -797,4 +786,3 @@
 </div>
 </body>
 </html>
- 
