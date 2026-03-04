@@ -23,14 +23,14 @@
     <!-- Bootstrap & Fonts -->
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/fonts/fontawesome/css/all.min.css">
-    <!-- ✅ Font Awesome CDN (নিশ্চিত করার জন্য) -->
+    <!-- ✅ Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/js/toastr/toastr.min.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/styles.css?1651">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/tailwindcss.css">
     <link rel="stylesheet" href="https://panelsell.store/assets/template/css/custom-styles.css?6327">
 
-    <!-- ✅ নিরাপত্তা হেডার (Easy Premium-এর মতো) -->
+    <!-- ✅ নিরাপত্তা হেডার -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval'; img-src 'self' https: data:; font-src 'self' https: data:; style-src 'self' https: 'unsafe-inline'; script-src 'self' https: 'unsafe-inline' 'unsafe-eval';">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="format-detection" content="telephone=no, address=no, email=no">
@@ -41,7 +41,7 @@
     <meta http-equiv="Expires" content="0">
 
     <style>
-        /* 🔒 Drip_Client.html এর মতো স্টাইল - সম্পূর্ণ কপি করা */
+        /* ড্রিপ ক্লায়েন্টের মতো স্টাইল - সম্পূর্ণ অপরিবর্তিত */
         :root {
             --theme-color: #fb00ff;
             --primary-bg: #0a0a1a;
@@ -88,12 +88,10 @@
             width: 100%;
         }
 
-        /* হেডারের নিচের অংশও কালো থাকবে */
         .header {
             background: var(--secondary-bg) !important;
         }
 
-        /* কার্ড ও বাটন স্টাইল */
         .bg-white {
             background: var(--card-bg) !important;
             border: 1px solid var(--border-color) !important;
@@ -145,7 +143,6 @@
             display: none !important;
         }
 
-        /* নসস্ক্রিপ্ট বার্তা */
         .noscript-warning {
             position: fixed;
             top: 0;
@@ -170,7 +167,6 @@
             50% { transform: scale(1.1); opacity: 0.8; }
         }
 
-        /* ফ্লোটিং মেসেঞ্জার বাটন (Home.html এর মত) */
         .messenger-float {
             position: fixed;
             bottom: 30px;
@@ -205,23 +201,21 @@
             100% { box-shadow: 0 0 0 0 rgba(0, 132, 255, 0); }
         }
 
-        /* ================== হোয়াটসঅ্যাপ ইনপুট ফিক্স ================== */
         #whatsApp_number_input {
-            color: #000000 !important;          /* টেক্সট কালো */
-            background-color: #ffffff !important; /* ব্যাকগ্রাউন্ড সাদা */
-            border: 1px solid #ced4da !important; /* আগের বর্ডার ঠিক রাখা */
+            color: #000000 !important;
+            background-color: #ffffff !important;
+            border: 1px solid #ced4da !important;
             padding: 6px 10px !important;
             height: 38px !important;
             box-shadow: none !important;
         }
-        /* প্লেসহোল্ডারের রঙ ধূসর রাখা (ঐচ্ছিক) */
         #whatsApp_number_input::placeholder {
             color: #6c757d !important;
             opacity: 1;
         }
     </style>
 
-    <!-- ⚠️ নসস্ক্রিপ্ট: JS নিষ্ক্রিয় থাকলে বার্তা -->
+    <!-- ⚠️ নসস্ক্রিপ্ট -->
     <noscript>
         <style>
             body { display: none !important; }
@@ -242,10 +236,9 @@
         </div>
     </noscript>
 
-    <!-- 🔐 Firebase SDK (modular) with Base64 encoded config -->
+    <!-- 🔥 Firebase SDK (লগইন চেক বন্ধ করে দেওয়া হয়েছে) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const encodedConfig = "ewogICJhcGlLZXkiOiAiQUl6YVN5QXk0U1Q5QTRLVUJ6UXB1TnBqZEQ2YVU0MHM4cDFZTkVnIiwKICAiYXV0aERvbWFpbiI6ICJ0b3AtdXAtNGRiMDEuZmlyZWJhc2VhcHAuY29tIiwKICAiZGF0YWJhc2VVUkwiOiAiaHR0cHM6Ly90b3AtdXAtNGRiMDEtZGVmYXVsdC1ydGRiLmFzaWEtc291dGhlYXN0MS5maXJlYmFzZWRhdGFiYXNlLmFwcCIsCiAgInByb2plY3RJZCI6ICJ0b3AtdXAtNGRiMDEiLAogICJzdG9yYWdlQnVja2V0IjogInRvcC11cC00ZGIwMS5hcHBzcG90LmNvbSIsCiAgIm1lc3NhZ2luZ1NlbmRlcklkIjogIjI2NDU0ODE5NzQ3MyIsCiAgImFwcElkIjogIjE6MjY0NTQ4MTk3NDczOndlYjoxN2E1ZjFiNTYyMmQ0NjRmNWQ3NjIwIiwKICAibWVhc3VyZW1lbnRJZCI6ICJHLVpFTUtKM0JEMEcifQ==";
@@ -262,20 +255,13 @@
 
         const firebaseConfig = decodeConfig(encodedConfig);
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getDatabase(app);
 
-        const HOME_PAGE_URL = "https://ytchannel9997100-stack.github.io/ViralVideo/";
         const PLATFORM_ID = "pato";
 
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = HOME_PAGE_URL;
-                return;
-            }
-            loadProducts();
-            loadSettings();
-        });
+        // 🔒 লগইন চেক করা হচ্ছে না - সরাসরি প্রোডাক্ট লোড হচ্ছে
+        loadProducts();
+        loadSettings();
 
         async function loadProducts() {
             try {
@@ -394,7 +380,7 @@
         });
     </script>
 
-    <!-- 🛡️ অ্যান্টি-ফিশিং ও স্মার্ট সিকিউরিটি স্ক্রিপ্ট -->
+    <!-- 🛡️ অ্যান্টি-ফিশিং স্ক্রিপ্ট (অপরিবর্তিত) -->
     <script>
         (function() {
             'use strict';
@@ -593,7 +579,7 @@
 <body>
 <div class="body-bg">
 
-    <!-- ফ্লোটিং মেসেঞ্জার বাটন (Home.html এর মত) - আপনার লিংক এখানে বসান -->
+    <!-- ফ্লোটিং মেসেঞ্জার বাটন -->
     <a href="https://m.me/yourpage" target="_blank" class="messenger-float" title="Messenger">
         <i class="fab fa-facebook-messenger"></i>
     </a>
@@ -736,6 +722,5 @@
         });
     })();
 </script>
-<!-- ⚠️ Messenger লিংক (href) আপনার আসল পেজ দিয়ে পরিবর্তন করুন -->
 </body>
 </html>
