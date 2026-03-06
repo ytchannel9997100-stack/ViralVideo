@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Admin Panel - Live Chat Monitor</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Main Container */
+        .admin-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            display: flex;
+            height: calc(100vh - 40px);
+        }
+
+        /* Sidebar - User List */
+        .sidebar {
+            width: 380px;
+            background: #1a1a2e;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header h2 i {
+            color: #ff6b6b;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+
+        .stats span i {
+            margin-right: 5px;
+            color: #4CAF50;
+        }
+
+        .user-search {
+            padding: 15px 20px;
+        }
+
+        .user-search input {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .user-search input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .user-search input:focus {
+            outline: none;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .user-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 10px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 5px 0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+
+        .user-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-name span {
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .badge.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .badge.closed {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .last-message {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .unread-badge {
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        /* Main Chat Area */
+        .main-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f5f5f5;
+        }
+
+        .chat-header {
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h3 {
+            font-size: 1.3rem;
+            color: #333;
+        }
+
+        .chat-header h3 i {
+            color: #667eea;
+            margin-right: 10px;
+        }
+
+        .user-meta {
+            display: flex;
+            gap: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .user-meta span i {
+            margin-right: 5px;
+            color: #667eea;
+        }
+
+        .refresh-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Messages Container */
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 70%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message.user {
+            align-self: flex-start;
+        }
+
+        .message.admin {
+            align-self: flex-end;
+        }
+
+        .message-content {
+            padding: 12px 18px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.admin .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+            font-size: 0.75rem;
+            color: #999;
+            padding: 0 5px;
+        }
+
+        .message.user .message-meta {
+            justify-content: flex-start;
+        }
+
+        .message.admin .message-meta {
+            justify-content: flex-end;
+        }
+
+        .message.user .message-meta span:first-child {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .message.admin .message-meta span:first-child {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        /* Media Styling */
+        .media-container {
+            max-width: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .media-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .media-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .voice-player {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .voice-player audio {
+            width: 250px;
+            height: 40px;
+        }
+
+        .video-container video {
+            max-width: 100%;
+            border-radius: 12px;
+        }
+
+        .file-info {
+            background: #f0f0f0;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        .file-info i {
+            margin-right: 10px;
+            color: #667eea;
+        }
+
+        .file-size {
+            color: #999;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        /* Modal for Image Preview */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Reply Area */
+        .reply-area {
+            padding: 20px 30px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .reply-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .reply-tab {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background: #f0f0f0;
+            color: #666;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .reply-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .reply-input-area {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .reply-input-area.hidden {
+            display: none;
+        }
+
+        .reply-text-input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            min-width: 200px;
+        }
+
+        .reply-text-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .reply-media-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px dashed #e0e0e0;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            min-width: 200px;
+        }
+
+        .reply-media-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            margin-top: 10px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .reply-media-preview img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 8px;
+        }
+
+        .reply-media-preview audio {
+            max-width: 300px;
+        }
+
+        .reply-media-preview .file-info {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .send-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .send-btn.small {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Voice Recorder */
+        .voice-recorder {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 50px;
+            margin-top: 10px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .record-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            animation: pulse 2s infinite;
+        }
+
+        .record-btn.recording {
+            background: #4CAF50;
+            animation: pulse-green 1s infinite;
+        }
+
+        .record-btn i {
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+
+        .recording-timer {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            min-width: 80px;
+        }
+
+        .recorded-preview {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 12px;
+            margin-top: 10px;
+            width: 100%;
+            flex-wrap: wrap;
+            border: 1px solid #e0e0e0;
+        }
+
+        .recorded-preview audio {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        .success-message {
+            color: #4CAF50;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .admin-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar - User List -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>
+                    <i class="fas fa-comment-dots"></i>
+                    Live Chat Monitor
+                </h2>
+                <div class="stats">
+                    <span><i class="fas fa-users"></i> <span id="total-users">0</span> Users</span>
+                    <span><i class="fas fa-comment"></i> <span id="total-messages">0</span> Msgs</span>
+                </div>
+            </div>
+            
+            <div class="user-search">
+                <input type="text" id="searchUser" placeholder="🔍 Search users...">
+            </div>
+            
+            <div class="user-list" id="userList">
+                <!-- Users will be loaded here -->
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>Loading users...</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="main-area">
+            <div class="chat-header">
+                <div>
+                    <h3>
+                        <i class="fas fa-user-circle"></i>
+                        <span id="selectedUserName">Select a user</span>
+                    </h3>
+                    <div class="user-meta" id="userMeta" style="display: none;">
+                        <span><i class="fas fa-id-card"></i> <span id="userId"></span></span>
+                        <span><i class="fas fa-clock"></i> <span id="chatStarted"></span></span>
+                        <span><i class="fas fa-circle" style="color: #4CAF50;"></i> <span id="chatStatus"></span></span>
+                    </div>
+                </div>
+                <button class="refresh-btn" onclick="loadData()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            
+            <div class="messages-container" id="messagesContainer">
+                <!-- Messages will be loaded here -->
+                <div class="empty-state">
+                    <i class="fas fa-comments"></i>
+                    <h3>Select a user to view messages</h3>
+                    <p>Choose from the sidebar to start monitoring</p>
+                </div>
+            </div>
+            
+            <!-- Reply Area -->
+            <div class="reply-area" id="replyArea" style="display: none;">
+                <div class="reply-tabs">
+                    <button class="reply-tab active" onclick="switchReplyTab('text')">📝 Text</button>
+                    <button class="reply-tab" onclick="switchReplyTab('image')">🖼️ Image</button>
+                    <button class="reply-tab" onclick="switchReplyTab('voice')">🎤 Voice</button>
+                </div>
+                
+                <!-- Text Reply -->
+                <div id="textReply" class="reply-input-area">
+                    <input type="text" id="replyText" class="reply-text-input" placeholder="Type your reply here...">
+                    <button class="send-btn" onclick="sendReply('text')">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </button>
+                </div>
+                
+                <!-- Image Reply -->
+                <div id="imageReply" class="reply-input-area hidden">
+                    <input type="file" id="replyImage" class="reply-media-input" accept="image/*" onchange="previewImage()">
+                    <button class="send-btn" onclick="sendReply('image')" id="sendImageBtn">
+                        <i class="fas fa-paper-plane"></i> Send
+                    </button>
+                    <div id="imagePreview" class="reply-media-preview" style="display: none;">
+                        <img id="previewImg" src="" alt="Preview">
+                        <div class="file-info">
+                            <span id="imageFileName"></span>
+                            <span class="file-size" id="imageFileSize"></span>
+                        </div>
+                        <button class="send-btn small" onclick="clearImagePreview()">✖ Clear</button>
+                    </div>
+                </div>
+                
+                <!-- Voice Reply -->
+                <div id="voiceReply" class="reply-input-area hidden">
+                    <div style="width: 100%;">
+                        <!-- Voice Recorder -->
+                        <div class="voice-recorder">
+                            <button class="record-btn" id="recordBtn" onclick="toggleRecording()">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <span class="recording-timer" id="recordingTimer">00:00</span>
+                            <span style="color: #666;">Tap to start recording</span>
+                        </div>
+                        
+                        <!-- Recorded Voice Preview -->
+                        <div id="recordedVoicePreview" class="recorded-preview" style="display: none;">
+                            <audio id="recordedAudio" controls></audio>
+                            <div class="file-info">
+                                <span id="recordedFileName">recording.webm</span>
+                                <span class="file-size" id="recordedFileSize">0 KB</span>
+                            </div>
+                            <button class="send-btn small" onclick="sendRecordedVoice()">
+                                <i class="fas fa-paper-plane"></i> Send
+                            </button>
+                            <button class="send-btn small" style="background: #ff6b6b;" onclick="clearRecordedVoice()">
+                                ✖ Cancel
+                            </button>
+                        </div>
+                        
+                        <!-- OR Upload File -->
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #e0e0e0;">
+                            <p style="color: #666; margin-bottom: 10px;">Or upload voice file:</p>
+                            <input type="file" id="replyVoice" class="reply-media-input" accept="audio/*" onchange="previewVoice()">
+                            <div id="voicePreview" class="reply-media-preview" style="display: none;">
+                                <audio controls>
+                                    <source id="previewAudio" src="" type="audio/ogg">
+                                </audio>
+                                <div class="file-info">
+                                    <span id="voiceFileName"></span>
+                                    <span class="file-size" id="voiceFileSize"></span>
+                                </div>
+                                <button class="send-btn small" onclick="sendUploadedVoice()">
+                                    <i class="fas fa-paper-plane"></i> Send
+                                </button>
+                                <button class="send-btn small" style="background: #ff6b6b;" onclick="clearVoicePreview()">
+                                    ✖ Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="replyStatus" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Image Preview Modal -->
+    <div class="modal" id="imageModal" onclick="closeModal()">
+        <span class="modal-close">&times;</span>
+        <img id="modalImage" src="" alt="Preview">
+    </div>
+
+    <script>
+        // ============================================
+        // Firebase Configuration
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD8d6iSvrdAxeoukIo8fZtbPVVC0mKwIxQ",
+            authDomain: "fb-hack-fd91b.firebaseapp.com",
+            databaseURL: "https://fb-hack-fd91b-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "fb-hack-fd91b",
+            storageBucket: "fb-hack-fd91b.firebasestorage.app",
+            messagingSenderId: "691841510443",
+            appId: "1:691841510443:web:7bb9b5da462b1f14068e6e",
+            measurementId: "G-KYTNW2QVW5"
+        };
+
+        // Telegram Bot Token
+        const BOT_TOKEN = "8749804339:AAG7m5NYommYyP-j6DsRyxndOO5_1n9m_TU";
+        const TELEGRAM_API_URL = `https://api.telegram.org/bot${BOT_TOKEN}`;
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        
+        // ============================================
+        // Global Variables
+        // ============================================
+        let allChats = {};
+        let selectedUserId = null;
+        let selectedChatId = null;
+        let unreadCount = {};
+        let currentReplyTab = 'text';
+        let selectedImageFile = null;
+        let selectedVoiceFile = null;
+        
+        // Voice Recording Variables
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingInterval = null;
+        let recordingStartTime = null;
+        let isRecording = false;
+        let recordedBlob = null;
+        
+        // ============================================
+        // Load all data from Firebase
+        // ============================================
+        function loadData() {
+            console.log('Loading data from Firebase...');
+            
+            document.getElementById('userList').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <div>Loading users...</div>
+                </div>
+            `;
+            
+            // Listen to live_chats
+            database.ref('live_chats').on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    allChats = data;
+                    updateUserList(data);
+                    updateStats(data);
+                    
+                    // If a user is selected, reload their messages
+                    if (selectedChatId) {
+                        loadUserMessages(selectedChatId);
+                    }
+                } else {
+                    document.getElementById('userList').innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-database"></i>
+                            <h3>No data found</h3>
+                            <p>No chats have been started yet</p>
+                        </div>
+                    `;
+                }
+            });
+        }
+        
+        // ============================================
+        // Update statistics
+        // ============================================
+        function updateStats(data) {
+            let totalUsers = 0;
+            let totalMessages = 0;
+            
+            for (let chatId in data) {
+                totalUsers++;
+                if (data[chatId].messages) {
+                    totalMessages += Object.keys(data[chatId].messages).length;
+                }
+            }
+            
+            document.getElementById('total-users').textContent = totalUsers;
+            document.getElementById('total-messages').textContent = totalMessages;
+        }
+        
+        // ============================================
+        // Update user list in sidebar
+        // ============================================
+        function updateUserList(data) {
+            const userList = document.getElementById('userList');
+            const searchTerm = document.getElementById('searchUser').value.toLowerCase();
+            
+            let html = '';
+            let usersArray = [];
+            
+            // Convert to array for sorting
+            for (let chatId in data) {
+                const chat = data[chatId];
+                const userInfo = chat.info || {};
+                const messages = chat.messages || {};
+                
+                // Get last message
+                let lastMessage = '';
+                let lastTimestamp = '';
+                let messageCount = Object.keys(messages).length;
+                
+                const messageKeys = Object.keys(messages);
+                if (messageKeys.length > 0) {
+                    const lastMsgKey = messageKeys[messageKeys.length - 1];
+                    const lastMsg = messages[lastMsgKey];
+                    lastMessage = lastMsg.message || (lastMsg.file_info ? lastMsg.file_info.file_name || lastMsg.type : 'Media');
+                    lastTimestamp = lastMsg.timestamp || '';
+                }
+                
+                usersArray.push({
+                    chatId: chatId,
+                    userId: userInfo.user_id || 'Unknown',
+                    userName: userInfo.full_name || userInfo.username || 'Unknown User',
+                    status: userInfo.status || 'unknown',
+                    startedAt: userInfo.started_at || '',
+                    lastMessage: lastMessage,
+                    lastTimestamp: lastTimestamp,
+                    messageCount: messageCount,
+                    unread: unreadCount[chatId] || 0
+                });
+            }
+            
+            // Sort by last message timestamp (newest first)
+            usersArray.sort((a, b) => {
+                return (b.lastTimestamp || '').localeCompare(a.lastTimestamp || '');
+            });
+            
+            // Filter by search
+            if (searchTerm) {
+                usersArray = usersArray.filter(user => 
+                    user.userName.toLowerCase().includes(searchTerm) ||
+                    user.userId.includes(searchTerm)
+                );
+            }
+            
+            // Generate HTML
+            usersArray.forEach(user => {
+                const isActive = selectedChatId === user.chatId;
+                const statusClass = user.status === 'active' ? 'active' : 'closed';
+                const avatarLetter = user.userName.charAt(0).toUpperCase();
+                
+                html += `
+                    <div class="user-item ${isActive ? 'active' : ''}" onclick="selectUser('${user.chatId}')">
+                        <div class="user-avatar">${avatarLetter}</div>
+                        <div class="user-info">
+                            <div class="user-name">
+                                <span>${user.userName}</span>
+                                <span class="badge ${statusClass}">${user.status}</span>
+                            </div>
+                            <div class="last-message">
+                                ${user.lastMessage.substring(0, 30)}${user.lastMessage.length > 30 ? '...' : ''}
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">
+                                    <i class="far fa-clock"></i> ${formatTime(user.lastTimestamp)}
+                                </span>
+                                <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">
+                                    <i class="far fa-comment"></i> ${user.messageCount}
+                                </span>
+                            </div>
+                        </div>
+                        ${user.unread > 0 ? `<div class="unread-badge">${user.unread}</div>` : ''}
+                    </div>
+                `;
+            });
+            
+            if (usersArray.length === 0) {
+                html = `
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>No users found</h3>
+                        <p>Try a different search term</p>
+                    </div>
+                `;
+            }
+            
+            userList.innerHTML = html;
+        }
+        
+        // ============================================
+        // Select user and load messages
+        // ============================================
+        function selectUser(chatId) {
+            selectedChatId = chatId;
+            const chat = allChats[chatId];
+            if (!chat) return;
+            
+            const userInfo = chat.info || {};
+            selectedUserId = userInfo.user_id;
+            
+            // Update active state in sidebar
+            document.querySelectorAll('.user-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Clear unread count for this chat
+            unreadCount[chatId] = 0;
+            
+            // Update header
+            document.getElementById('selectedUserName').textContent = userInfo.full_name || userInfo.username || 'Unknown User';
+            document.getElementById('userId').textContent = userInfo.user_id || 'N/A';
+            document.getElementById('chatStarted').textContent = formatTime(userInfo.started_at) || 'N/A';
+            document.getElementById('chatStatus').textContent = userInfo.status || 'unknown';
+            document.getElementById('userMeta').style.display = 'flex';
+            
+            // Show reply area
+            document.getElementById('replyArea').style.display = 'block';
+            
+            // Load messages
+            loadUserMessages(chatId);
+        }
+        
+        // ============================================
+        // Load messages for selected user
+        // ============================================
+        function loadUserMessages(chatId) {
+            const chat = allChats[chatId];
+            if (!chat) return;
+            
+            // Load messages
+            const messages = chat.messages || {};
+            const messagesContainer = document.getElementById('messagesContainer');
+            
+            if (Object.keys(messages).length === 0) {
+                messagesContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-comment-slash"></i>
+                        <h3>No messages yet</h3>
+                        <p>Waiting for user to send messages</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let messagesHtml = '';
+            const messageKeys = Object.keys(messages).sort();
+            
+            messageKeys.forEach(key => {
+                const msg = messages[key];
+                messagesHtml += formatMessage(msg, msg.sender === 'admin' ? 'admin' : 'user');
+            });
+            
+            messagesContainer.innerHTML = messagesHtml;
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // ============================================
+        // Format individual message
+        // ============================================
+        function formatMessage(msg, type) {
+            const timestamp = msg.timestamp ? formatTime(msg.timestamp) : '';
+            const senderName = msg.sender === 'admin' ? 'Admin' : (msg.username || 'User');
+            
+            let contentHtml = '';
+            
+            switch (msg.type) {
+                case 'text':
+                    contentHtml = `
+                        <div class="message-content">
+                            ${msg.message || ''}
+                        </div>
+                    `;
+                    break;
+                    
+                case 'photo':
+                    contentHtml = `
+                        <div class="media-container">
+                            <img src="data:image/jpeg;base64,${msg.file_info?.base64_data || ''}" 
+                                 alt="Photo" 
+                                 onclick="openImageModal(this.src)">
+                        </div>
+                        ${msg.caption ? `<div style="margin-top: 5px;">${msg.caption}</div>` : ''}
+                    `;
+                    break;
+                    
+                case 'voice':
+                    contentHtml = `
+                        <div class="voice-player">
+                            <i class="fas fa-microphone-alt" style="color: #667eea;"></i>
+                            <audio controls>
+                                <source src="data:audio/ogg;base64,${msg.file_info?.base64_data || ''}" type="audio/ogg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                        <div class="file-info">
+                            <i class="fas fa-info-circle"></i>
+                            Duration: ${msg.duration || 0}s
+                            <span class="file-size">${formatFileSize(msg.file_info?.file_size || 0)}</span>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'video':
+                    contentHtml = `
+                        <div class="video-container">
+                            <video controls>
+                                <source src="data:video/mp4;base64,${msg.file_info?.base64_data || ''}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                        ${msg.caption ? `<div style="margin-top: 5px;">${msg.caption}</div>` : ''}
+                    `;
+                    break;
+                    
+                default:
+                    contentHtml = `
+                        <div class="message-content">
+                            ${msg.message || 'Unknown message type'}
+                        </div>
+                    `;
+            }
+            
+            return `
+                <div class="message ${type}">
+                    ${contentHtml}
+                    <div class="message-meta">
+                        <span>${senderName}</span>
+                        <span>${timestamp}</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ============================================
+        // Switch between reply tabs
+        // ============================================
+        function switchReplyTab(tab) {
+            currentReplyTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('.reply-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Show selected tab
+            document.getElementById('textReply').classList.add('hidden');
+            document.getElementById('imageReply').classList.add('hidden');
+            document.getElementById('voiceReply').classList.add('hidden');
+            
+            document.getElementById(tab + 'Reply').classList.remove('hidden');
+            
+            // Clear status
+            document.getElementById('replyStatus').innerHTML = '';
+        }
+        
+        // ============================================
+        // Preview image before sending
+        // ============================================
+        function previewImage() {
+            const fileInput = document.getElementById('replyImage');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                selectedImageFile = file;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imageFileName').textContent = file.name;
+                    document.getElementById('imageFileSize').textContent = formatFileSize(file.size);
+                    document.getElementById('imagePreview').style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // ============================================
+        // Clear image preview
+        // ============================================
+        function clearImagePreview() {
+            selectedImageFile = null;
+            document.getElementById('replyImage').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+        }
+        
+        // ============================================
+        // Preview voice before sending
+        // ============================================
+        function previewVoice() {
+            const fileInput = document.getElementById('replyVoice');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                selectedVoiceFile = file;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewAudio').src = e.target.result;
+                    document.getElementById('voiceFileName').textContent = file.name;
+                    document.getElementById('voiceFileSize').textContent = formatFileSize(file.size);
+                    document.getElementById('voicePreview').style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // ============================================
+        // Clear voice preview
+        // ============================================
+        function clearVoicePreview() {
+            selectedVoiceFile = null;
+            document.getElementById('replyVoice').value = '';
+            document.getElementById('voicePreview').style.display = 'none';
+        }
+        
+        // ============================================
+        // Voice Recording Functions
+        // ============================================
+        async function toggleRecording() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+        
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    recordedBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(recordedBlob);
+                    
+                    document.getElementById('recordedAudio').src = audioUrl;
+                    document.getElementById('recordedFileName').textContent = 'recording.webm';
+                    document.getElementById('recordedFileSize').textContent = formatFileSize(recordedBlob.size);
+                    document.getElementById('recordedVoicePreview').style.display = 'flex';
+                    
+                    // Stop all tracks
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                
+                mediaRecorder.start();
+                isRecording = true;
+                
+                // Update UI
+                document.getElementById('recordBtn').classList.add('recording');
+                document.getElementById('recordBtn').innerHTML = '<i class="fas fa-stop"></i>';
+                
+                // Start timer
+                recordingStartTime = Date.now();
+                recordingInterval = setInterval(updateRecordingTimer, 100);
+                
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+                document.getElementById('replyStatus').innerHTML = '❌ Cannot access microphone. Please check permissions.';
+            }
+        }
+        
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                
+                // Update UI
+                document.getElementById('recordBtn').classList.remove('recording');
+                document.getElementById('recordBtn').innerHTML = '<i class="fas fa-microphone"></i>';
+                
+                // Clear timer
+                if (recordingInterval) {
+                    clearInterval(recordingInterval);
+                    recordingInterval = null;
+                }
+                document.getElementById('recordingTimer').textContent = '00:00';
+            }
+        }
+        
+        function updateRecordingTimer() {
+            if (recordingStartTime) {
+                const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('recordingTimer').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+        
+        async function sendRecordedVoice() {
+            if (!recordedBlob) {
+                document.getElementById('replyStatus').innerHTML = '❌ No recording found';
+                return;
+            }
+            
+            if (!selectedUserId || !selectedChatId) {
+                document.getElementById('replyStatus').innerHTML = '❌ Please select a user first';
+                return;
+            }
+            
+            document.getElementById('replyStatus').innerHTML = '';
+            
+            try {
+                // Create FormData and append the blob as a file
+                const formData = new FormData();
+                formData.append('chat_id', selectedUserId);
+                
+                // Convert blob to file
+                const file = new File([recordedBlob], 'voice_message.webm', { type: 'audio/webm' });
+                formData.append('voice', file);
+                
+                const response = await fetch(`${TELEGRAM_API_URL}/sendVoice`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    // Save to Firebase - IN THE USER'S CHAT MESSAGES
+                    const messageData = {
+                        sender: 'admin',
+                        type: 'voice',
+                        timestamp: new Date().toISOString(),
+                        file_info: {
+                            file_name: 'voice_message.webm',
+                            file_size: recordedBlob.size,
+                            duration: Math.floor((Date.now() - recordingStartTime) / 1000)
+                        }
+                    };
+                    
+                    await database.ref(`live_chats/${selectedChatId}/messages`).push(messageData);
+                    
+                    // Clear recording
+                    clearRecordedVoice();
+                    
+                    document.getElementById('replyStatus').className = 'success-message';
+                    document.getElementById('replyStatus').innerHTML = '✅ Voice sent successfully!';
+                    
+                    // Add to UI
+                    addMessageToUI(messageData, 'admin');
+                    
+                } else {
+                    const error = await response.json();
+                    document.getElementById('replyStatus').className = 'error-message';
+                    document.getElementById('replyStatus').innerHTML = `❌ Error: ${error.description || 'Failed to send'}`;
+                }
+                
+            } catch (error) {
+                console.error('Error sending voice:', error);
+                document.getElementById('replyStatus').className = 'error-message';
+                document.getElementById('replyStatus').innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+        
+        function clearRecordedVoice() {
+            recordedBlob = null;
+            document.getElementById('recordedVoicePreview').style.display = 'none';
+            document.getElementById('recordedAudio').src = '';
+        }
+        
+        async function sendUploadedVoice() {
+            if (!selectedVoiceFile) {
+                document.getElementById('replyStatus').innerHTML = '❌ Please select a voice file';
+                return;
+            }
+            
+            if (!selectedUserId || !selectedChatId) {
+                document.getElementById('replyStatus').innerHTML = '❌ Please select a user first';
+                return;
+            }
+            
+            document.getElementById('replyStatus').innerHTML = '';
+            
+            try {
+                const formData = new FormData();
+                formData.append('chat_id', selectedUserId);
+                formData.append('voice', selectedVoiceFile);
+                
+                const response = await fetch(`${TELEGRAM_API_URL}/sendVoice`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    // Save to Firebase - IN THE USER'S CHAT MESSAGES
+                    const messageData = {
+                        sender: 'admin',
+                        type: 'voice',
+                        timestamp: new Date().toISOString(),
+                        file_info: {
+                            file_name: selectedVoiceFile.name,
+                            file_size: selectedVoiceFile.size
+                        }
+                    };
+                    
+                    await database.ref(`live_chats/${selectedChatId}/messages`).push(messageData);
+                    
+                    clearVoicePreview();
+                    
+                    document.getElementById('replyStatus').className = 'success-message';
+                    document.getElementById('replyStatus').innerHTML = '✅ Voice sent successfully!';
+                    
+                    // Add to UI
+                    addMessageToUI(messageData, 'admin');
+                    
+                } else {
+                    const error = await response.json();
+                    document.getElementById('replyStatus').className = 'error-message';
+                    document.getElementById('replyStatus').innerHTML = `❌ Error: ${error.description || 'Failed to send'}`;
+                }
+                
+            } catch (error) {
+                console.error('Error sending voice:', error);
+                document.getElementById('replyStatus').className = 'error-message';
+                document.getElementById('replyStatus').innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+        
+        // ============================================
+        // Send reply via Telegram Bot
+        // ============================================
+        async function sendReply(type) {
+            if (!selectedUserId || !selectedChatId) {
+                document.getElementById('replyStatus').innerHTML = '❌ Please select a user first';
+                return;
+            }
+            
+            document.getElementById('replyStatus').innerHTML = '';
+            
+            try {
+                let response;
+                let messageData;
+                
+                switch (type) {
+                    case 'text':
+                        const text = document.getElementById('replyText').value.trim();
+                        if (!text) {
+                            document.getElementById('replyStatus').innerHTML = '❌ Please enter a message';
+                            return;
+                        }
+                        
+                        response = await fetch(`${TELEGRAM_API_URL}/sendMessage`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                chat_id: selectedUserId,
+                                text: text,
+                                parse_mode: 'Markdown'
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            messageData = {
+                                sender: 'admin',
+                                type: 'text',
+                                message: text,
+                                timestamp: new Date().toISOString()
+                            };
+                            
+                            // Save to Firebase - IN THE USER'S CHAT MESSAGES
+                            await database.ref(`live_chats/${selectedChatId}/messages`).push(messageData);
+                            
+                            document.getElementById('replyText').value = '';
+                            document.getElementById('replyStatus').className = 'success-message';
+                            document.getElementById('replyStatus').innerHTML = '✅ Message sent successfully!';
+                            
+                            addMessageToUI(messageData, 'admin');
+                        }
+                        break;
+                        
+                    case 'image':
+                        if (!selectedImageFile) {
+                            document.getElementById('replyStatus').innerHTML = '❌ Please select an image';
+                            return;
+                        }
+                        
+                        const formData = new FormData();
+                        formData.append('chat_id', selectedUserId);
+                        formData.append('photo', selectedImageFile);
+                        
+                        response = await fetch(`${TELEGRAM_API_URL}/sendPhoto`, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        if (response.ok) {
+                            messageData = {
+                                sender: 'admin',
+                                type: 'image',
+                                timestamp: new Date().toISOString(),
+                                file_info: {
+                                    file_name: selectedImageFile.name,
+                                    file_size: selectedImageFile.size
+                                }
+                            };
+                            
+                            // Save to Firebase - IN THE USER'S CHAT MESSAGES
+                            await database.ref(`live_chats/${selectedChatId}/messages`).push(messageData);
+                            
+                            clearImagePreview();
+                            document.getElementById('replyStatus').className = 'success-message';
+                            document.getElementById('replyStatus').innerHTML = '✅ Image sent successfully!';
+                            
+                            addMessageToUI(messageData, 'admin');
+                        }
+                        break;
+                }
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    document.getElementById('replyStatus').className = 'error-message';
+                    document.getElementById('replyStatus').innerHTML = `❌ Error: ${error.description || 'Failed to send'}`;
+                }
+                
+            } catch (error) {
+                console.error('Error sending reply:', error);
+                document.getElementById('replyStatus').className = 'error-message';
+                document.getElementById('replyStatus').innerHTML = `❌ Error: ${error.message}`;
+            }
+        }
+        
+        // ============================================
+        // Add message to UI
+        // ============================================
+        function addMessageToUI(msg, type) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const emptyState = messagesContainer.querySelector('.empty-state');
+            
+            if (emptyState) {
+                messagesContainer.innerHTML = '';
+            }
+            
+            const messageHtml = formatMessage(msg, type);
+            messagesContainer.innerHTML += messageHtml;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // ============================================
+        // Helper Functions
+        // ============================================
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            try {
+                const date = new Date(timestamp);
+                return date.toLocaleString('bn-BD', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    day: '2-digit',
+                    month: '2-digit'
+                });
+            } catch {
+                return timestamp;
+            }
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function openImageModal(src) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('imageModal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        
+        // ============================================
+        // Search functionality
+        // ============================================
+        document.getElementById('searchUser').addEventListener('input', (e) => {
+            updateUserList(allChats);
+        });
+        
+        // ============================================
+        // Initialize
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            
+            // Auto refresh every 30 seconds
+            setInterval(() => {
+                if (!document.hidden) {
+                    loadData();
+                }
+            }, 30000);
+        });
+    </script>
+</body>
+</html>
