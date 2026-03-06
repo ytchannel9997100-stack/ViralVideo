@@ -14,6 +14,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
     <style>
+        /* আপনার আগের সমস্ত স্টাইল অপরিবর্তিত থাকবে */
         * {
             margin: 0;
             padding: 0;
@@ -884,9 +885,14 @@
             measurementId: "G-KYTNW2QVW5"
         };
 
-        // Telegram Bot Token
-        const BOT_TOKEN = "8749804339:AAG7m5NYommYyP-j6DsRyxndOO5_1n9m_TU";
-        const TELEGRAM_API_URL = `https://api.telegram.org/bot${BOT_TOKEN}`;
+        // ============================================
+        // TWO BOT TOKENS - উভয় বটের টোকেন
+        // ============================================
+        const BOT1_TOKEN = "8749804339:AAG7m5NYommYyP-j6DsRyxndOO5_1n9m_TU";
+        const BOT2_TOKEN = "8395120592:AAE6b2-QDm9y-9SsQtWq-yT8PIkEQy02ZJI";
+        
+        const TELEGRAM_API_URL_BOT1 = `https://api.telegram.org/bot${BOT1_TOKEN}`;
+        const TELEGRAM_API_URL_BOT2 = `https://api.telegram.org/bot${BOT2_TOKEN}`;
 
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
@@ -899,7 +905,7 @@
         let selectedUserId = null;
         let selectedChatId = null;
         let unreadCount = {};
-        let lastSeenMessage = {}; // প্রতিটি ইউজারের শেষ দেখা মেসেজ ট্র্যাক করবে
+        let lastSeenMessage = {};
         let currentReplyTab = 'text';
         let selectedImageFile = null;
         let selectedVoiceFile = null;
@@ -913,7 +919,7 @@
         let recordedBlob = null;
         
         // ============================================
-        // Audio Context for Notification Sound (Low Volume)
+        // Audio Context for Notification Sound
         // ============================================
         function playNotificationSound() {
             try {
@@ -922,10 +928,9 @@
                 const gainNode = audioContext.createGain();
                 
                 oscillator.type = 'sine';
-                oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800 Hz
-                oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1); // 600 Hz
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
                 
-                // ⬇️ ভলিউম কমালাম (0.1 → 0.03)
                 gainNode.gain.setValueAtTime(1.0, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.7, audioContext.currentTime + 0.15);
                 
@@ -935,7 +940,6 @@
                 oscillator.start();
                 oscillator.stop(audioContext.currentTime + 0.15);
                 
-                // Audio Context automatically closes after use
                 setTimeout(() => {
                     audioContext.close();
                 }, 200);
@@ -955,6 +959,45 @@
         }
         
         // ============================================
+        // দুই বটে মেসেজ পাঠানোর ফাংশন
+        // ============================================
+        async function sendToBothBots(endpoint, payload) {
+            const results = [];
+            
+            // Bot 1 এ পাঠান
+            try {
+                const response1 = await fetch(`${TELEGRAM_API_URL_BOT1}/${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                results.push({ bot: 'bot1', response: response1 });
+            } catch (error) {
+                console.error('Error sending to Bot 1:', error);
+                results.push({ bot: 'bot1', error: error.message });
+            }
+            
+            // Bot 2 এ পাঠান
+            try {
+                const response2 = await fetch(`${TELEGRAM_API_URL_BOT2}/${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+                results.push({ bot: 'bot2', response: response2 });
+            } catch (error) {
+                console.error('Error sending to Bot 2:', error);
+                results.push({ bot: 'bot2', error: error.message });
+            }
+            
+            return results;
+        }
+        
+        // ============================================
         // Load all data from Firebase
         // ============================================
         function loadData() {
@@ -967,7 +1010,6 @@
                 </div>
             `;
             
-            // Listen to live_chats
             database.ref('live_chats').on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
@@ -975,7 +1017,6 @@
                     updateUserList(data);
                     updateStats(data);
                     
-                    // If a user is selected, reload their messages
                     if (selectedChatId) {
                         loadUserMessages(selectedChatId);
                     }
@@ -999,7 +1040,6 @@
             let totalMessages = 0;
             
             for (let chatId in data) {
-                // শুধু active ইউজারদের কাউন্ট করবো
                 if (data[chatId].info && data[chatId].info.status === 'active') {
                     totalUsers++;
                 }
@@ -1023,19 +1063,16 @@
             let usersArray = [];
             let hasNewMessage = false;
             
-            // Convert to array for sorting
             for (let chatId in data) {
                 const chat = data[chatId];
                 const userInfo = chat.info || {};
                 
-                // ✅ শুধু active ইউজারদের দেখাবো
                 if (userInfo.status !== 'active') {
                     continue;
                 }
                 
                 const messages = chat.messages || {};
                 
-                // Get last message
                 let lastMessage = '';
                 let lastTimestamp = '';
                 let messageCount = Object.keys(messages).length;
@@ -1048,16 +1085,12 @@
                     lastMessage = lastMsg.message || (lastMsg.file_info ? lastMsg.file_info.file_name || lastMsg.type : 'Media');
                     lastTimestamp = lastMsg.timestamp || '';
                     
-                    // ✅ চেক করবো এই ইউজারের কোন আনরিড মেসেজ আছে কিনা
-                    // শুধু ইউজারের মেসেজ চেক করবো, অ্যাডমিনের না
                     if (lastMsg.sender !== 'admin') {
                         const lastSeen = lastSeenMessage[chatId] || '';
                         
-                        // যদি এই মেসেজটি আগে না দেখা হয়ে থাকে
                         if (lastMsgKey !== lastSeen) {
                             hasUnread = true;
                             
-                            // যদি এই চ্যাটটি currently selected না থাকে, তাহলে সাউন্ড বাজাবে
                             if (selectedChatId !== chatId) {
                                 hasNewMessage = true;
                             }
@@ -1079,17 +1112,14 @@
                 });
             }
             
-            // যদি নতুন মেসেজ থাকে এবং সেটা কারেন্টলি সিলেক্টেড না হয়, তাহলে সাউন্ড বাজাও
             if (hasNewMessage) {
                 playNotificationSound();
             }
             
-            // Sort by last message timestamp (newest first)
             usersArray.sort((a, b) => {
                 return (b.lastTimestamp || '').localeCompare(a.lastTimestamp || '');
             });
             
-            // Filter by search
             if (searchTerm) {
                 usersArray = usersArray.filter(user => 
                     user.userName.toLowerCase().includes(searchTerm) ||
@@ -1097,13 +1127,10 @@
                 );
             }
             
-            // Generate HTML
             usersArray.forEach(user => {
                 const isActive = selectedChatId === user.chatId;
                 const statusClass = user.status === 'active' ? 'active' : 'closed';
                 const avatarLetter = user.userName.charAt(0).toUpperCase();
-                
-                // ✅ ইউজারের আনরিড স্ট্যাটাস অনুযায়ী ক্লাস যোগ করবো
                 const unreadClass = user.hasUnread ? 'unread' : '';
                 
                 html += `
@@ -1155,36 +1182,29 @@
             const userInfo = chat.info || {};
             selectedUserId = userInfo.user_id;
             
-            // Update active state in sidebar
             document.querySelectorAll('.user-item').forEach(item => {
                 item.classList.remove('active');
             });
             event.currentTarget.classList.add('active');
             
-            // Clear unread count for this chat
             unreadCount[chatId] = 0;
             
-            // ✅ এই ইউজারের শেষ মেসেজটি দেখেছি বলে সেভ করি
             const messages = chat.messages || {};
             const messageKeys = Object.keys(messages);
             if (messageKeys.length > 0) {
                 lastSeenMessage[chatId] = messageKeys[messageKeys.length - 1];
             }
             
-            // Update header
             document.getElementById('selectedUserName').textContent = userInfo.full_name || userInfo.username || 'Unknown User';
             document.getElementById('userId').textContent = userInfo.user_id || 'N/A';
             document.getElementById('chatStarted').textContent = formatTime(userInfo.started_at) || 'N/A';
             document.getElementById('chatStatus').textContent = userInfo.status || 'unknown';
             document.getElementById('userMeta').style.display = 'flex';
             
-            // Show reply area
             document.getElementById('replyArea').style.display = 'block';
             
-            // Load messages
             loadUserMessages(chatId);
             
-            // আবার ইউজার লিস্ট আপডেট করি (আনরিড স্ট্যাটাস রিমুভ করতে)
             setTimeout(() => {
                 updateUserList(allChats);
             }, 100);
@@ -1197,7 +1217,6 @@
             const chat = allChats[chatId];
             if (!chat) return;
             
-            // Load messages
             const messages = chat.messages || {};
             const messagesContainer = document.getElementById('messagesContainer');
             
@@ -1221,8 +1240,6 @@
             });
             
             messagesContainer.innerHTML = messagesHtml;
-            
-            // Scroll to bottom
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
         
@@ -1309,20 +1326,17 @@
         function switchReplyTab(tab) {
             currentReplyTab = tab;
             
-            // Update tab buttons
             document.querySelectorAll('.reply-tab').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.currentTarget.classList.add('active');
             
-            // Show selected tab
             document.getElementById('textReply').classList.add('hidden');
             document.getElementById('imageReply').classList.add('hidden');
             document.getElementById('voiceReply').classList.add('hidden');
             
             document.getElementById(tab + 'Reply').classList.remove('hidden');
             
-            // Clear status
             document.getElementById('replyStatus').innerHTML = '';
         }
         
@@ -1417,18 +1431,15 @@
                     document.getElementById('recordedFileSize').textContent = formatFileSize(recordedBlob.size);
                     document.getElementById('recordedVoicePreview').style.display = 'flex';
                     
-                    // Stop all tracks
                     stream.getTracks().forEach(track => track.stop());
                 };
                 
                 mediaRecorder.start();
                 isRecording = true;
                 
-                // Update UI
                 document.getElementById('recordBtn').classList.add('recording');
                 document.getElementById('recordBtn').innerHTML = '<i class="fas fa-stop"></i>';
                 
-                // Start timer
                 recordingStartTime = Date.now();
                 recordingInterval = setInterval(updateRecordingTimer, 100);
                 
@@ -1443,11 +1454,9 @@
                 mediaRecorder.stop();
                 isRecording = false;
                 
-                // Update UI
                 document.getElementById('recordBtn').classList.remove('recording');
                 document.getElementById('recordBtn').innerHTML = '<i class="fas fa-microphone"></i>';
                 
-                // Clear timer
                 if (recordingInterval) {
                     clearInterval(recordingInterval);
                     recordingInterval = null;
@@ -1480,21 +1489,29 @@
             document.getElementById('replyStatus').innerHTML = '';
             
             try {
-                // Create FormData and append the blob as a file
-                const formData = new FormData();
-                formData.append('chat_id', selectedUserId);
+                // প্রথমে Bot 1 এ পাঠান
+                const formData1 = new FormData();
+                formData1.append('chat_id', selectedUserId);
+                const file1 = new File([recordedBlob], 'voice_message.webm', { type: 'audio/webm' });
+                formData1.append('voice', file1);
                 
-                // Convert blob to file
-                const file = new File([recordedBlob], 'voice_message.webm', { type: 'audio/webm' });
-                formData.append('voice', file);
-                
-                const response = await fetch(`${TELEGRAM_API_URL}/sendVoice`, {
+                const response1 = await fetch(`${TELEGRAM_API_URL_BOT1}/sendVoice`, {
                     method: 'POST',
-                    body: formData
+                    body: formData1
                 });
                 
-                if (response.ok) {
-                    // Save to Firebase - IN THE USER'S CHAT MESSAGES
+                // Bot 2 এ পাঠান
+                const formData2 = new FormData();
+                formData2.append('chat_id', selectedUserId);
+                const file2 = new File([recordedBlob], 'voice_message.webm', { type: 'audio/webm' });
+                formData2.append('voice', file2);
+                
+                const response2 = await fetch(`${TELEGRAM_API_URL_BOT2}/sendVoice`, {
+                    method: 'POST',
+                    body: formData2
+                });
+                
+                if (response1.ok || response2.ok) {
                     const messageData = {
                         sender: 'admin',
                         type: 'voice',
@@ -1508,19 +1525,15 @@
                     
                     await database.ref(`live_chats/${selectedChatId}/messages`).push(messageData);
                     
-                    // Clear recording
                     clearRecordedVoice();
                     
                     document.getElementById('replyStatus').className = 'success-message';
-                    document.getElementById('replyStatus').innerHTML = '✅ Voice sent successfully!';
+                    document.getElementById('replyStatus').innerHTML = '✅ Voice sent successfully to both bots!';
                     
-                    // Add to UI
                     addMessageToUI(messageData, 'admin');
-                    
                 } else {
-                    const error = await response.json();
                     document.getElementById('replyStatus').className = 'error-message';
-                    document.getElementById('replyStatus').innerHTML = `❌ Error: ${error.description || 'Failed to send'}`;
+                    document.getElementById('replyStatus').innerHTML = '❌ Failed to send to both bots';
                 }
                 
             } catch (error) {
@@ -1550,17 +1563,27 @@
             document.getElementById('replyStatus').innerHTML = '';
             
             try {
-                const formData = new FormData();
-                formData.append('chat_id', selectedUserId);
-                formData.append('voice', selectedVoiceFile);
+                // Bot 1 এ পাঠান
+                const formData1 = new FormData();
+                formData1.append('chat_id', selectedUserId);
+                formData1.append('voice', selectedVoiceFile);
                 
-                const response = await fetch(`${TELEGRAM_API_URL}/sendVoice`, {
+                const response1 = await fetch(`${TELEGRAM_API_URL_BOT1}/sendVoice`, {
                     method: 'POST',
-                    body: formData
+                    body: formData1
                 });
                 
-                if (response.ok) {
-                    // Save to Firebase - IN THE USER'S CHAT MESSAGES
+                // Bot 2 এ পাঠান (একই ফাইল)
+                const formData2 = new FormData();
+                formData2.append('chat_id', selectedUserId);
+                formData2.append('voice', selectedVoiceFile);
+                
+                const response2 = await fetch(`${TELEGRAM_API_URL_BOT2}/sendVoice`, {
+                    method: 'POST',
+                    body: formData2
+                });
+                
+                if (response1.ok || response2.ok) {
                     const messageData = {
                         sender: 'admin',
                         type: 'voice',
@@ -1576,15 +1599,12 @@
                     clearVoicePreview();
                     
                     document.getElementById('replyStatus').className = 'success-message';
-                    document.getElementById('replyStatus').innerHTML = '✅ Voice sent successfully!';
+                    document.getElementById('replyStatus').innerHTML = '✅ Voice sent successfully to both bots!';
                     
-                    // Add to UI
                     addMessageToUI(messageData, 'admin');
-                    
                 } else {
-                    const error = await response.json();
                     document.getElementById('replyStatus').className = 'error-message';
-                    document.getElementById('replyStatus').innerHTML = `❌ Error: ${error.description || 'Failed to send'}`;
+                    document.getElementById('replyStatus').innerHTML = '❌ Failed to send to both bots';
                 }
                 
             } catch (error) {
@@ -1595,7 +1615,7 @@
         }
         
         // ============================================
-        // Send reply via Telegram Bot
+        // Send reply via Telegram Bot (উভয় বটে)
         // ============================================
         async function sendReply(type) {
             if (!selectedUserId || !selectedChatId) {
@@ -1606,7 +1626,7 @@
             document.getElementById('replyStatus').innerHTML = '';
             
             try {
-                let response;
+                let response1, response2;
                 let messageData;
                 
                 switch (type) {
@@ -1617,7 +1637,8 @@
                             return;
                         }
                         
-                        response = await fetch(`${TELEGRAM_API_URL}/sendMessage`, {
+                        // Bot 1 এ পাঠান
+                        response1 = await fetch(`${TELEGRAM_API_URL_BOT1}/sendMessage`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -1629,7 +1650,20 @@
                             })
                         });
                         
-                        if (response.ok) {
+                        // Bot 2 এ পাঠান
+                        response2 = await fetch(`${TELEGRAM_API_URL_BOT2}/sendMessage`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                chat_id: selectedUserId,
+                                text: text,
+                                parse_mode: 'Markdown'
+                            })
+                        });
+                        
+                        if (response1.ok || response2.ok) {
                             messageData = {
                                 sender: 'admin',
                                 type: 'text',
@@ -1637,14 +1671,16 @@
                                 timestamp: new Date().toISOString()
                             };
                             
-                            // Save to Firebase - IN THE USER'S CHAT MESSAGES
                             await database.ref(`live_chats/${selectedChatId}/messages`).push(messageData);
                             
                             document.getElementById('replyText').value = '';
                             document.getElementById('replyStatus').className = 'success-message';
-                            document.getElementById('replyStatus').innerHTML = '✅ Message sent successfully!';
+                            document.getElementById('replyStatus').innerHTML = '✅ Message sent successfully to both bots!';
                             
                             addMessageToUI(messageData, 'admin');
+                        } else {
+                            document.getElementById('replyStatus').className = 'error-message';
+                            document.getElementById('replyStatus').innerHTML = '❌ Failed to send to both bots';
                         }
                         break;
                         
@@ -1654,16 +1690,27 @@
                             return;
                         }
                         
-                        const formData = new FormData();
-                        formData.append('chat_id', selectedUserId);
-                        formData.append('photo', selectedImageFile);
+                        // Bot 1 এ পাঠান
+                        const formData1 = new FormData();
+                        formData1.append('chat_id', selectedUserId);
+                        formData1.append('photo', selectedImageFile);
                         
-                        response = await fetch(`${TELEGRAM_API_URL}/sendPhoto`, {
+                        response1 = await fetch(`${TELEGRAM_API_URL_BOT1}/sendPhoto`, {
                             method: 'POST',
-                            body: formData
+                            body: formData1
                         });
                         
-                        if (response.ok) {
+                        // Bot 2 এ পাঠান
+                        const formData2 = new FormData();
+                        formData2.append('chat_id', selectedUserId);
+                        formData2.append('photo', selectedImageFile);
+                        
+                        response2 = await fetch(`${TELEGRAM_API_URL_BOT2}/sendPhoto`, {
+                            method: 'POST',
+                            body: formData2
+                        });
+                        
+                        if (response1.ok || response2.ok) {
                             messageData = {
                                 sender: 'admin',
                                 type: 'image',
@@ -1674,22 +1721,18 @@
                                 }
                             };
                             
-                            // Save to Firebase - IN THE USER'S CHAT MESSAGES
                             await database.ref(`live_chats/${selectedChatId}/messages`).push(messageData);
                             
                             clearImagePreview();
                             document.getElementById('replyStatus').className = 'success-message';
-                            document.getElementById('replyStatus').innerHTML = '✅ Image sent successfully!';
+                            document.getElementById('replyStatus').innerHTML = '✅ Image sent successfully to both bots!';
                             
                             addMessageToUI(messageData, 'admin');
+                        } else {
+                            document.getElementById('replyStatus').className = 'error-message';
+                            document.getElementById('replyStatus').innerHTML = '❌ Failed to send to both bots';
                         }
                         break;
-                }
-                
-                if (!response.ok) {
-                    const error = await response.json();
-                    document.getElementById('replyStatus').className = 'error-message';
-                    document.getElementById('replyStatus').innerHTML = `❌ Error: ${error.description || 'Failed to send'}`;
                 }
                 
             } catch (error) {
@@ -1750,20 +1793,13 @@
             document.getElementById('imageModal').classList.remove('active');
         }
         
-        // ============================================
-        // Search functionality
-        // ============================================
         document.getElementById('searchUser').addEventListener('input', (e) => {
             updateUserList(allChats);
         });
         
-        // ============================================
-        // Initialize
-        // ============================================
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
             
-            // Auto refresh every 30 seconds
             setInterval(() => {
                 if (!document.hidden) {
                     loadData();
