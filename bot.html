@@ -112,6 +112,21 @@
             padding: 0 10px;
         }
 
+        /* সেকশন হেডার - অনলাইন/অফলাইন */
+        .section-header {
+            padding: 10px 5px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #888;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .section-header:first-of-type {
+            margin-top: 0;
+        }
+
         .user-item {
             display: flex;
             align-items: center;
@@ -886,7 +901,7 @@
         };
 
         // ============================================
-        // TWO BOT TOKENS - উভয় বটের টোকেন
+        // TWO BOT TOKENS
         // ============================================
         const BOT1_TOKEN = "8749804339:AAG7m5NYommYyP-j6DsRyxndOO5_1n9m_TU";
         const BOT2_TOKEN = "8395120592:AAE6b2-QDm9y-9SsQtWq-yT8PIkEQy02ZJI";
@@ -949,52 +964,13 @@
         }
         
         // ============================================
-        // নতুন ফাংশন: টেক্সট ইনপুটে এন্টার চাপলে সেন্ড হবে
+        // Handle Enter key in text input
         // ============================================
         function handleTextKeyPress(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 sendReply('text');
             }
-        }
-        
-        // ============================================
-        // দুই বটে মেসেজ পাঠানোর ফাংশন
-        // ============================================
-        async function sendToBothBots(endpoint, payload) {
-            const results = [];
-            
-            // Bot 1 এ পাঠান
-            try {
-                const response1 = await fetch(`${TELEGRAM_API_URL_BOT1}/${endpoint}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
-                results.push({ bot: 'bot1', response: response1 });
-            } catch (error) {
-                console.error('Error sending to Bot 1:', error);
-                results.push({ bot: 'bot1', error: error.message });
-            }
-            
-            // Bot 2 এ পাঠান
-            try {
-                const response2 = await fetch(`${TELEGRAM_API_URL_BOT2}/${endpoint}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(payload)
-                });
-                results.push({ bot: 'bot2', response: response2 });
-            } catch (error) {
-                console.error('Error sending to Bot 2:', error);
-                results.push({ bot: 'bot2', error: error.message });
-            }
-            
-            return results;
         }
         
         // ============================================
@@ -1040,9 +1016,7 @@
             let totalMessages = 0;
             
             for (let chatId in data) {
-                if (data[chatId].info && data[chatId].info.status === 'active') {
-                    totalUsers++;
-                }
+                totalUsers++;
                 if (data[chatId].messages) {
                     totalMessages += Object.keys(data[chatId].messages).length;
                 }
@@ -1053,26 +1027,23 @@
         }
         
         // ============================================
-        // Update user list in sidebar
+        // Update user list in sidebar (ONLINE/OFFLINE SEPARATED)
         // ============================================
         function updateUserList(data) {
             const userList = document.getElementById('userList');
             const searchTerm = document.getElementById('searchUser').value.toLowerCase();
             
-            let html = '';
-            let usersArray = [];
+            let onlineUsers = [];
+            let offlineUsers = [];
             let hasNewMessage = false;
             
+            // Convert to array for sorting
             for (let chatId in data) {
                 const chat = data[chatId];
                 const userInfo = chat.info || {};
-                
-                if (userInfo.status !== 'active') {
-                    continue;
-                }
-                
                 const messages = chat.messages || {};
                 
+                // Get last message
                 let lastMessage = '';
                 let lastTimestamp = '';
                 let messageCount = Object.keys(messages).length;
@@ -1085,6 +1056,7 @@
                     lastMessage = lastMsg.message || (lastMsg.file_info ? lastMsg.file_info.file_name || lastMsg.type : 'Media');
                     lastTimestamp = lastMsg.timestamp || '';
                     
+                    // Check for unread messages
                     if (lastMsg.sender !== 'admin') {
                         const lastSeen = lastSeenMessage[chatId] || '';
                         
@@ -1098,7 +1070,7 @@
                     }
                 }
                 
-                usersArray.push({
+                const userData = {
                     chatId: chatId,
                     userId: userInfo.user_id || 'Unknown',
                     userName: userInfo.full_name || userInfo.username || 'Unknown User',
@@ -1109,61 +1081,125 @@
                     messageCount: messageCount,
                     unread: unreadCount[chatId] || 0,
                     hasUnread: hasUnread
-                });
+                };
+                
+                // Separate online and offline users
+                if (userInfo.status === 'active') {
+                    onlineUsers.push(userData);
+                } else {
+                    offlineUsers.push(userData);
+                }
             }
             
-            if (hasNewMessage) {
-                playNotificationSound();
-            }
-            
-            usersArray.sort((a, b) => {
+            // Sort online users by last message timestamp (newest first)
+            onlineUsers.sort((a, b) => {
                 return (b.lastTimestamp || '').localeCompare(a.lastTimestamp || '');
             });
             
+            // Sort offline users by last message timestamp (newest first)
+            offlineUsers.sort((a, b) => {
+                return (b.lastTimestamp || '').localeCompare(a.lastTimestamp || '');
+            });
+            
+            // Filter by search
             if (searchTerm) {
-                usersArray = usersArray.filter(user => 
+                onlineUsers = onlineUsers.filter(user => 
+                    user.userName.toLowerCase().includes(searchTerm) ||
+                    user.userId.includes(searchTerm)
+                );
+                offlineUsers = offlineUsers.filter(user => 
                     user.userName.toLowerCase().includes(searchTerm) ||
                     user.userId.includes(searchTerm)
                 );
             }
             
-            usersArray.forEach(user => {
-                const isActive = selectedChatId === user.chatId;
-                const statusClass = user.status === 'active' ? 'active' : 'closed';
-                const avatarLetter = user.userName.charAt(0).toUpperCase();
-                const unreadClass = user.hasUnread ? 'unread' : '';
-                
-                html += `
-                    <div class="user-item ${isActive ? 'active' : ''} ${unreadClass}" onclick="selectUser('${user.chatId}')">
-                        <div class="user-avatar">${avatarLetter}</div>
-                        <div class="user-info">
-                            <div class="user-name">
-                                <span>${user.userName}</span>
-                                <span class="badge ${statusClass}">${user.status}</span>
-                            </div>
-                            <div class="last-message">
-                                ${user.lastMessage.substring(0, 30)}${user.lastMessage.length > 30 ? '...' : ''}
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-top: 5px;">
-                                <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">
-                                    <i class="far fa-clock"></i> ${formatTime(user.lastTimestamp)}
-                                </span>
-                                <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">
-                                    <i class="far fa-comment"></i> ${user.messageCount}
-                                </span>
-                            </div>
-                        </div>
-                        ${user.unread > 0 ? `<div class="unread-badge">${user.unread}</div>` : ''}
-                    </div>
-                `;
-            });
+            // Play sound if new message from non-selected user
+            if (hasNewMessage) {
+                playNotificationSound();
+            }
             
-            if (usersArray.length === 0) {
+            // Generate HTML with separate sections
+            let html = '';
+            
+            // Online Users Section
+            if (onlineUsers.length > 0) {
+                html += `<div class="section-header">🟢 ONLINE - ${onlineUsers.length}</div>`;
+                
+                onlineUsers.forEach(user => {
+                    const isActive = selectedChatId === user.chatId;
+                    const statusClass = user.status === 'active' ? 'active' : 'closed';
+                    const avatarLetter = user.userName.charAt(0).toUpperCase();
+                    const unreadClass = user.hasUnread ? 'unread' : '';
+                    
+                    html += `
+                        <div class="user-item ${isActive ? 'active' : ''} ${unreadClass}" onclick="selectUser('${user.chatId}')">
+                            <div class="user-avatar">${avatarLetter}</div>
+                            <div class="user-info">
+                                <div class="user-name">
+                                    <span>${user.userName}</span>
+                                    <span class="badge ${statusClass}">${user.status}</span>
+                                </div>
+                                <div class="last-message">
+                                    ${user.lastMessage.substring(0, 30)}${user.lastMessage.length > 30 ? '...' : ''}
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                    <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">
+                                        <i class="far fa-clock"></i> ${formatTime(user.lastTimestamp)}
+                                    </span>
+                                    <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">
+                                        <i class="far fa-comment"></i> ${user.messageCount}
+                                    </span>
+                                </div>
+                            </div>
+                            ${user.unread > 0 ? `<div class="unread-badge">${user.unread}</div>` : ''}
+                        </div>
+                    `;
+                });
+            }
+            
+            // Offline Users Section
+            if (offlineUsers.length > 0) {
+                html += `<div class="section-header">🔴 OFFLINE - ${offlineUsers.length}</div>`;
+                
+                offlineUsers.forEach(user => {
+                    const isActive = selectedChatId === user.chatId;
+                    const statusClass = user.status === 'active' ? 'active' : 'closed';
+                    const avatarLetter = user.userName.charAt(0).toUpperCase();
+                    const unreadClass = user.hasUnread ? 'unread' : '';
+                    
+                    html += `
+                        <div class="user-item ${isActive ? 'active' : ''} ${unreadClass}" onclick="selectUser('${user.chatId}')">
+                            <div class="user-avatar">${avatarLetter}</div>
+                            <div class="user-info">
+                                <div class="user-name">
+                                    <span>${user.userName}</span>
+                                    <span class="badge ${statusClass}">${user.status}</span>
+                                </div>
+                                <div class="last-message">
+                                    ${user.lastMessage.substring(0, 30)}${user.lastMessage.length > 30 ? '...' : ''}
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                                    <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">
+                                        <i class="far fa-clock"></i> ${formatTime(user.lastTimestamp)}
+                                    </span>
+                                    <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5);">
+                                        <i class="far fa-comment"></i> ${user.messageCount}
+                                    </span>
+                                </div>
+                            </div>
+                            ${user.unread > 0 ? `<div class="unread-badge">${user.unread}</div>` : ''}
+                        </div>
+                    `;
+                });
+            }
+            
+            // If no users at all
+            if (onlineUsers.length === 0 && offlineUsers.length === 0) {
                 html = `
                     <div class="empty-state">
                         <i class="fas fa-search"></i>
-                        <h3>No active users found</h3>
-                        <p>All chats are closed</p>
+                        <h3>No users found</h3>
+                        <p>Try a different search term</p>
                     </div>
                 `;
             }
@@ -1489,7 +1525,7 @@
             document.getElementById('replyStatus').innerHTML = '';
             
             try {
-                // প্রথমে Bot 1 এ পাঠান
+                // Send to Bot 1
                 const formData1 = new FormData();
                 formData1.append('chat_id', selectedUserId);
                 const file1 = new File([recordedBlob], 'voice_message.webm', { type: 'audio/webm' });
@@ -1500,7 +1536,7 @@
                     body: formData1
                 });
                 
-                // Bot 2 এ পাঠান
+                // Send to Bot 2
                 const formData2 = new FormData();
                 formData2.append('chat_id', selectedUserId);
                 const file2 = new File([recordedBlob], 'voice_message.webm', { type: 'audio/webm' });
@@ -1563,7 +1599,7 @@
             document.getElementById('replyStatus').innerHTML = '';
             
             try {
-                // Bot 1 এ পাঠান
+                // Send to Bot 1
                 const formData1 = new FormData();
                 formData1.append('chat_id', selectedUserId);
                 formData1.append('voice', selectedVoiceFile);
@@ -1573,7 +1609,7 @@
                     body: formData1
                 });
                 
-                // Bot 2 এ পাঠান (একই ফাইল)
+                // Send to Bot 2
                 const formData2 = new FormData();
                 formData2.append('chat_id', selectedUserId);
                 formData2.append('voice', selectedVoiceFile);
@@ -1615,7 +1651,7 @@
         }
         
         // ============================================
-        // Send reply via Telegram Bot (উভয় বটে)
+        // Send reply via Telegram Bot (to both bots)
         // ============================================
         async function sendReply(type) {
             if (!selectedUserId || !selectedChatId) {
@@ -1637,7 +1673,7 @@
                             return;
                         }
                         
-                        // Bot 1 এ পাঠান
+                        // Send to Bot 1
                         response1 = await fetch(`${TELEGRAM_API_URL_BOT1}/sendMessage`, {
                             method: 'POST',
                             headers: {
@@ -1650,7 +1686,7 @@
                             })
                         });
                         
-                        // Bot 2 এ পাঠান
+                        // Send to Bot 2
                         response2 = await fetch(`${TELEGRAM_API_URL_BOT2}/sendMessage`, {
                             method: 'POST',
                             headers: {
@@ -1690,7 +1726,7 @@
                             return;
                         }
                         
-                        // Bot 1 এ পাঠান
+                        // Send to Bot 1
                         const formData1 = new FormData();
                         formData1.append('chat_id', selectedUserId);
                         formData1.append('photo', selectedImageFile);
@@ -1700,7 +1736,7 @@
                             body: formData1
                         });
                         
-                        // Bot 2 এ পাঠান
+                        // Send to Bot 2
                         const formData2 = new FormData();
                         formData2.append('chat_id', selectedUserId);
                         formData2.append('photo', selectedImageFile);
