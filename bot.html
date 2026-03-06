@@ -213,7 +213,7 @@
 
         .chat-header {
             padding: 20px 30px;
-            background: #000;
+            background: white;
             border-bottom: 1px solid #e0e0e0;
             display: flex;
             justify-content: space-between;
@@ -263,7 +263,6 @@
 
         /* Messages Container */
         .messages-container {
-            background: black;
             flex: 1;
             overflow-y: auto;
             padding: 30px;
@@ -288,7 +287,6 @@
 
         .message-content {
             padding: 12px 18px;
-            background: #000;
             border-radius: 18px;
             position: relative;
             word-wrap: break-word;
@@ -460,7 +458,7 @@
         /* Reply Area */
         .reply-area {
             padding: 20px 30px;
-            background: #000;
+            background: white;
             border-top: 1px solid #e0e0e0;
         }
 
@@ -764,7 +762,7 @@
                 
                 <!-- Text Reply -->
                 <div id="textReply" class="reply-input-area">
-                    <input type="text" id="replyText" class="reply-text-input" placeholder="Type your reply here...">
+                    <input type="text" id="replyText" class="reply-text-input" placeholder="Type your reply here..." onkeypress="handleTextKeyPress(event)">
                     <button class="send-btn" onclick="sendReply('text')">
                         <i class="fas fa-paper-plane"></i> Send
                     </button>
@@ -888,6 +886,16 @@
         let recordingStartTime = null;
         let isRecording = false;
         let recordedBlob = null;
+        
+        // ============================================
+        // নতুন ফাংশন: টেক্সট ইনপুটে এন্টার চাপলে সেন্ড হবে
+        // ============================================
+        function handleTextKeyPress(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // ফর্ম সাবমিট হওয়া বন্ধ করে
+                sendReply('text');
+            }
+        }
         
         // ============================================
         // Load all data from Firebase
