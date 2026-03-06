@@ -133,6 +133,27 @@
             border-color: transparent;
         }
 
+        /* নতুন অ্যানিমেশন - যেসব ইউজারের মেসেজ দেখা হয়নি */
+        @keyframes pulse-avatar {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+            }
+        }
+
+        .user-item.unread .user-avatar {
+            animation: pulse-avatar 1.5s ease-in-out infinite;
+            border: 2px solid #ff6b6b;
+        }
+
         .user-avatar {
             width: 50px;
             height: 50px;
@@ -145,6 +166,7 @@
             font-size: 1.2rem;
             margin-right: 15px;
             flex-shrink: 0;
+            transition: all 0.3s;
         }
 
         .user-info {
@@ -877,6 +899,7 @@
         let selectedUserId = null;
         let selectedChatId = null;
         let unreadCount = {};
+        let lastSeenMessage = {}; // প্রতিটি ইউজারের শেষ দেখা মেসেজ ট্র্যাক করবে
         let currentReplyTab = 'text';
         let selectedImageFile = null;
         let selectedVoiceFile = null;
@@ -894,7 +917,7 @@
         // ============================================
         function handleTextKeyPress(event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // ফর্ম সাবমিট হওয়া বন্ধ করে
+                event.preventDefault();
                 sendReply('text');
             }
         }
@@ -944,7 +967,10 @@
             let totalMessages = 0;
             
             for (let chatId in data) {
-                totalUsers++;
+                // শুধু active ইউজারদের কাউন্ট করবো
+                if (data[chatId].info && data[chatId].info.status === 'active') {
+                    totalUsers++;
+                }
                 if (data[chatId].messages) {
                     totalMessages += Object.keys(data[chatId].messages).length;
                 }
@@ -968,12 +994,19 @@
             for (let chatId in data) {
                 const chat = data[chatId];
                 const userInfo = chat.info || {};
+                
+                // ✅ শুধু active ইউজারদের দেখাবো (closed_by_inactivity বা closed_by_user থাকলে দেখাবো না)
+                if (userInfo.status !== 'active') {
+                    continue; // এই ইউজারকে স্কিপ করবো
+                }
+                
                 const messages = chat.messages || {};
                 
                 // Get last message
                 let lastMessage = '';
                 let lastTimestamp = '';
                 let messageCount = Object.keys(messages).length;
+                let hasUnread = false;
                 
                 const messageKeys = Object.keys(messages);
                 if (messageKeys.length > 0) {
@@ -981,6 +1014,14 @@
                     const lastMsg = messages[lastMsgKey];
                     lastMessage = lastMsg.message || (lastMsg.file_info ? lastMsg.file_info.file_name || lastMsg.type : 'Media');
                     lastTimestamp = lastMsg.timestamp || '';
+                    
+                    // ✅ চেক করবো এই ইউজারের কোন আনরিড মেসেজ আছে কিনা
+                    if (lastMsg.sender !== 'admin') { // শুধু ইউজারের মেসেজ চেক করবো
+                        const lastSeen = lastSeenMessage[chatId] || '';
+                        if (lastMsgKey !== lastSeen) {
+                            hasUnread = true;
+                        }
+                    }
                 }
                 
                 usersArray.push({
@@ -992,7 +1033,8 @@
                     lastMessage: lastMessage,
                     lastTimestamp: lastTimestamp,
                     messageCount: messageCount,
-                    unread: unreadCount[chatId] || 0
+                    unread: unreadCount[chatId] || 0,
+                    hasUnread: hasUnread
                 });
             }
             
@@ -1015,8 +1057,11 @@
                 const statusClass = user.status === 'active' ? 'active' : 'closed';
                 const avatarLetter = user.userName.charAt(0).toUpperCase();
                 
+                // ✅ ইউজারের আনরিড স্ট্যাটাস অনুযায়ী ক্লাস যোগ করবো
+                const unreadClass = user.hasUnread ? 'unread' : '';
+                
                 html += `
-                    <div class="user-item ${isActive ? 'active' : ''}" onclick="selectUser('${user.chatId}')">
+                    <div class="user-item ${isActive ? 'active' : ''} ${unreadClass}" onclick="selectUser('${user.chatId}')">
                         <div class="user-avatar">${avatarLetter}</div>
                         <div class="user-info">
                             <div class="user-name">
@@ -1044,8 +1089,8 @@
                 html = `
                     <div class="empty-state">
                         <i class="fas fa-search"></i>
-                        <h3>No users found</h3>
-                        <p>Try a different search term</p>
+                        <h3>No active users found</h3>
+                        <p>All chats are closed</p>
                     </div>
                 `;
             }
@@ -1073,6 +1118,13 @@
             // Clear unread count for this chat
             unreadCount[chatId] = 0;
             
+            // ✅ এই ইউজারের শেষ মেসেজ টি সীড করেছি বলে সেভ করি
+            const messages = chat.messages || {};
+            const messageKeys = Object.keys(messages);
+            if (messageKeys.length > 0) {
+                lastSeenMessage[chatId] = messageKeys[messageKeys.length - 1];
+            }
+            
             // Update header
             document.getElementById('selectedUserName').textContent = userInfo.full_name || userInfo.username || 'Unknown User';
             document.getElementById('userId').textContent = userInfo.user_id || 'N/A';
@@ -1085,6 +1137,9 @@
             
             // Load messages
             loadUserMessages(chatId);
+            
+            // আবার ইউজার লিস্ট আপডেট করি (আনরিড স্ট্যাটাস রিমুভ করতে)
+            updateUserList(allChats);
         }
         
         // ============================================
