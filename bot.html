@@ -133,7 +133,7 @@
             border-color: transparent;
         }
 
-        /* নতুন অ্যানিমেশন - যেসব ইউজারের মেসেজ দেখা হয়নি */
+        /* অ্যানিমেশন - নতুন মেসেজ এলে */
         @keyframes pulse-avatar {
             0% {
                 transform: scale(1);
@@ -913,6 +913,32 @@
         let recordedBlob = null;
         
         // ============================================
+        // Audio Context for Notification Sound
+        // ============================================
+        function playNotificationSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800 Hz
+                oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1); // 600 Hz
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } catch (e) {
+                console.log('Audio not supported:', e);
+            }
+        }
+        
+        // ============================================
         // নতুন ফাংশন: টেক্সট ইনপুটে এন্টার চাপলে সেন্ড হবে
         // ============================================
         function handleTextKeyPress(event) {
@@ -989,15 +1015,16 @@
             
             let html = '';
             let usersArray = [];
+            let hasNewMessage = false;
             
             // Convert to array for sorting
             for (let chatId in data) {
                 const chat = data[chatId];
                 const userInfo = chat.info || {};
                 
-                // ✅ শুধু active ইউজারদের দেখাবো (closed_by_inactivity বা closed_by_user থাকলে দেখাবো না)
+                // ✅ শুধু active ইউজারদের দেখাবো
                 if (userInfo.status !== 'active') {
-                    continue; // এই ইউজারকে স্কিপ করবো
+                    continue;
                 }
                 
                 const messages = chat.messages || {};
@@ -1016,10 +1043,18 @@
                     lastTimestamp = lastMsg.timestamp || '';
                     
                     // ✅ চেক করবো এই ইউজারের কোন আনরিড মেসেজ আছে কিনা
-                    if (lastMsg.sender !== 'admin') { // শুধু ইউজারের মেসেজ চেক করবো
+                    // শুধু ইউজারের মেসেজ চেক করবো, অ্যাডমিনের না
+                    if (lastMsg.sender !== 'admin') {
                         const lastSeen = lastSeenMessage[chatId] || '';
+                        
+                        // যদি এই মেসেজটি আগে না দেখা হয়ে থাকে
                         if (lastMsgKey !== lastSeen) {
                             hasUnread = true;
+                            
+                            // যদি এই চ্যাটটি currently selected না থাকে, তাহলে সাউন্ড বাজাবে
+                            if (selectedChatId !== chatId) {
+                                hasNewMessage = true;
+                            }
                         }
                     }
                 }
@@ -1036,6 +1071,11 @@
                     unread: unreadCount[chatId] || 0,
                     hasUnread: hasUnread
                 });
+            }
+            
+            // যদি নতুন মেসেজ থাকে এবং সেটা কারেন্টলি সিলেক্টেড না হয়, তাহলে সাউন্ড বাজাও
+            if (hasNewMessage) {
+                playNotificationSound();
             }
             
             // Sort by last message timestamp (newest first)
@@ -1118,7 +1158,7 @@
             // Clear unread count for this chat
             unreadCount[chatId] = 0;
             
-            // ✅ এই ইউজারের শেষ মেসেজ টি সীড করেছি বলে সেভ করি
+            // ✅ এই ইউজারের শেষ মেসেজটি দেখেছি বলে সেভ করি
             const messages = chat.messages || {};
             const messageKeys = Object.keys(messages);
             if (messageKeys.length > 0) {
@@ -1139,7 +1179,9 @@
             loadUserMessages(chatId);
             
             // আবার ইউজার লিস্ট আপডেট করি (আনরিড স্ট্যাটাস রিমুভ করতে)
-            updateUserList(allChats);
+            setTimeout(() => {
+                updateUserList(allChats);
+            }, 100);
         }
         
         // ============================================
