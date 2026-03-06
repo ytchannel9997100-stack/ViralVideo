@@ -927,7 +927,7 @@
                 
                 // ⬇️ ভলিউম কমালাম (0.1 → 0.03)
                 gainNode.gain.setValueAtTime(0.10, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                gainNode.gain.exponentialRampToValueAtTime(0.5, audioContext.currentTime + 0.15);
                 
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
