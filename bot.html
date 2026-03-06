@@ -913,7 +913,7 @@
         let recordedBlob = null;
         
         // ============================================
-        // Audio Context for Notification Sound
+        // Audio Context for Notification Sound (Low Volume)
         // ============================================
         function playNotificationSound() {
             try {
@@ -925,14 +925,20 @@
                 oscillator.frequency.setValueAtTime(800, audioContext.currentTime); // 800 Hz
                 oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1); // 600 Hz
                 
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+                // ⬇️ ভলিউম কমালাম (0.1 → 0.03)
+                gainNode.gain.setValueAtTime(0.03, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
                 
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
                 oscillator.start();
-                oscillator.stop(audioContext.currentTime + 1);
+                oscillator.stop(audioContext.currentTime + 0.15);
+                
+                // Audio Context automatically closes after use
+                setTimeout(() => {
+                    audioContext.close();
+                }, 200);
             } catch (e) {
                 console.log('Audio not supported:', e);
             }
